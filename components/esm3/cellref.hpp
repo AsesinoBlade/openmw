@@ -45,6 +45,9 @@ namespace ESM
         // ID of creature trapped in this soul gem
         ESM::RefId mSoul;
 
+        // ID of poison which this object has
+        ESM::RefId mPoison;
+
         // The faction that owns this object (and will get angry if
         // you take it and are not a faction member)
         ESM::RefId mFaction;
