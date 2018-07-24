@@ -576,6 +576,7 @@ namespace MWGui
             }
         }
 
+
         if (!extra.empty())
         {
             Gui::EditBox* extraWidget = mDynamicToolTipBox->createWidget<Gui::EditBox>("SandText",
@@ -592,6 +593,40 @@ namespace MWGui
             MyGUI::IntSize extraTextSize = extraWidget->getTextSize();
             totalSize.height += extraTextSize.height + 4;
             totalSize.width = std::max(totalSize.width, extraTextSize.width);
+        }
+        if (!info.effects.empty())
+        {
+            MyGUI::Widget* effectArea = mDynamicToolTipBox->createWidget<MyGUI::Widget>("",
+                MyGUI::IntCoord(padding.left, totalSize.height, 300 - padding.left, 300 - totalSize.height),
+                MyGUI::Align::Stretch);
+
+            MyGUI::IntCoord coord(0, 6, totalSize.width, 24);
+
+            if (info.isPoison)
+            {
+                MyGUI::EditBox* poisonText = effectArea->createWidget<MyGUI::EditBox>("SandText",
+                    MyGUI::IntCoord(-padding.left, coord.top + imageCaptionVPadding, 300, 300), MyGUI::Align::Stretch,
+                    "ToolTipText");
+                poisonText->setEditStatic(true);
+                poisonText->setEditMultiLine(false);
+                poisonText->setEditWordWrap(true);
+                poisonText->setCaptionWithReplacing("#{sEffectPoison}:");
+                poisonText->setTextAlign(MyGUI::Align::HCenter | MyGUI::Align::Top);
+                poisonText->setNeedKeyFocus(false);
+                MyGUI::IntSize textSize = poisonText->getTextSize();
+                coord.top += textSize.height;
+            }
+
+            Widgets::MWEffectListPtr effectsWidget
+                = effectArea->createWidget<Widgets::MWEffectList>("MW_StatName", coord, MyGUI::Align::Default);
+            effectsWidget->setEffectList(info.effects);
+
+            std::vector<MyGUI::Widget*> effectItems;
+            effectsWidget->createEffectWidgets(
+                effectItems, effectArea, coord, true, info.isPotion ? Widgets::MWEffectList::EF_NoTarget : 0);
+            totalSize.height += coord.top - 6;
+            totalSize.width = std::max(totalSize.width, coord.width);
+
         }
 
         captionWidget->setCoord((totalSize.width - captionSize.width) / 2 + imageSize,
@@ -614,6 +649,7 @@ namespace MWGui
             {
                 horizontalScroll = 80 - mHorizontalScrollIndex;
             }
+
             captionWidget->setPosition(
                 MyGUI::IntPoint(horizontalScroll, captionWidget->getPosition().top + padding.top));
         }

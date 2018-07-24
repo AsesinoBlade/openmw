@@ -369,16 +369,25 @@ namespace MWMechanics
 
     bool CastSpell::cast(const ESM::Potion* potion)
     {
+        return CastSpell::cast(potion, false);
+    }
+
+    bool CastSpell::cast(const ESM::Potion* potion, bool poison)
+    {
         mSourceName = potion->mName;
         mId = potion->mId;
         mFlags = static_cast<ESM::ActiveSpells::Flags>(
             ESM::ActiveSpells::Flag_Temporary | ESM::ActiveSpells::Flag_Stackable);
 
+        if (poison)
+            inflict(mTarget, potion->mEffects, ESM::RT_Self);
+        else
         // Ignore range and don't apply area of effect
-        inflict(mCaster, potion->mEffects, ESM::RT_Self, true);
-        inflict(mCaster, potion->mEffects, ESM::RT_Touch, true);
-        inflict(mCaster, potion->mEffects, ESM::RT_Target, true);
-
+        {
+            inflict(mCaster, potion->mEffects, ESM::RT_Self, true);
+            inflict(mCaster, potion->mEffects, ESM::RT_Touch, true);
+            inflict(mCaster, potion->mEffects, ESM::RT_Target, true);
+        }
         return true;
     }
 

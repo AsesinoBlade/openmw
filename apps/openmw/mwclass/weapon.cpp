@@ -27,6 +27,7 @@
 
 #include "classmodel.hpp"
 #include "nameorid.hpp"
+#include "apps/openmw/mwbase/world.hpp"
 
 namespace MWClass
 {
@@ -201,7 +202,6 @@ namespace MWClass
                 text += "\n#{sAttack}: " + MWGui::ToolTips::toString(static_cast<int>(ref->mBase->mData.mChop[0]))
                     + " - " + MWGui::ToolTips::toString(static_cast<int>(ref->mBase->mData.mChop[1]));
             }
-
         }
 
         if (hasItemHealth(ptr))
@@ -242,30 +242,28 @@ namespace MWClass
             info.extra += MWGui::ToolTips::getMiscString(ref->mBase->mScript.getRefIdString(), "Script");
         }
 
-
         auto isNormal = false;
-        {
-            auto flags = ref->mBase->mData.mFlags;
-            bool isSilver = flags & ESM::Weapon::Silver;
-            bool isMagical = flags & ESM::Weapon::Magical;
-            bool isEnchanted = !(getEnchantment(ref).empty());
 
-            isNormal = !isSilver && !isMagical && (!isEnchanted || !Settings::Manager::getBool("enchanted weapons are magical", "Game"));
-        }
+        const ESM::RefId poison = ptr.getCellRef().getPoison();
+        if (!poison.empty())
 
-        if (isNormal)
         {
-            text += "\nNormal Weapon";
-        }
-        else
-        {
-            text += "\nEffective Against Undead";
+            const MWWorld::ESMStore& store = MWBase::Environment::get().getWorld()->getStore();
+            const ESM::Potion* poisonRef = store.get<ESM::Potion>().search(poison);
+            info.effects = MWGui::Widgets::MWEffectList::effectListFromESM(&poisonRef->mEffects);
+            info.isPotion = true;
+            info.isPoison = true;
         }
 
         info.text = std::move(text);
 
 
         return info;
+    }
+
+    ESM::RefId Weapon::getPoison(const MWWorld::ConstPtr& ptr) const
+    {
+        return ptr.getCellRef().getPoison();
     }
 
     ESM::RefId Weapon::getEnchantment(const MWWorld::ConstPtr& ptr) const
