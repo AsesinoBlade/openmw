@@ -375,8 +375,7 @@ namespace MWMechanics
         attackTerm += mageffects.getOrDefault(ESM::MagicEffect::FortifyAttack).getMagnitude()
             - mageffects.getOrDefault(ESM::MagicEffect::Blind).getMagnitude();
 
-        auto strike = std::max(attackTerm - defenseTerm, 33.0f);
-        return round(strike);
+        return round(attackTerm - defenseTerm);
     }
 
     void applyElementalShields(const MWWorld::Ptr& attacker, const MWWorld::Ptr& victim)
