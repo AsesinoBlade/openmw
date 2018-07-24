@@ -162,6 +162,20 @@ namespace MWWorld
         }
         void setSoul(const ESM::RefId& soul);
 
+        // ID of poison which this object has
+        ESM::RefId getPoison() const
+        {
+            struct Visitor
+            {
+                ESM::RefId operator()(const ESM::CellRef& ref) { return ref.mPoison; }
+                ESM::RefId operator()(const ESM4::Reference& /*ref*/) { return ESM::RefId(); }
+                ESM::RefId operator()(const ESM4::ActorCharacter& /*ref*/) { return ESM::RefId(); }
+            };
+            return std::visit(Visitor(), mCellRef.mVariant);
+        }
+
+    void setPoison(ESM::RefId poison);
+
         // The faction that owns this object (and will get angry if
         // you take it and are not a faction member)
         ESM::RefId getFaction() const

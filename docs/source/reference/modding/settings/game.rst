@@ -501,6 +501,7 @@ Game Settings
 
    .. math::
 
+
    	\text{new value} = 0.0001 \cdot (\text{soul magnitude})^3 + 2 \cdot (\text{soul magnitude})
 
 .. omw-setting::

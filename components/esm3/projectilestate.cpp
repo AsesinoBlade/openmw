@@ -58,6 +58,9 @@ namespace ESM
         esm.writeHNT("VEL_", mVelocity);
         esm.writeHNT("STR_", mAttackStrength);
         esm.writeHNT("WIND", mAttackWindUp);
+        if (!mPoisonId.empty())
+            esm.writeHNRefId("POI_", mPoisonId);
+
     }
 
     void ProjectileState::load(ESMReader& esm)
@@ -70,8 +73,12 @@ namespace ESM
         mAttackStrength = 1.f;
         esm.getHNOT(mAttackStrength, "STR_");
 
+
         mAttackWindUp = -1.f;
         esm.getHNOT(mAttackWindUp, "WIND");
+
+        mPoisonId = esm.getHNORefId("POI_");
+
     }
 
 }

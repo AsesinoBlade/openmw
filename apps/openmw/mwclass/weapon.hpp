@@ -59,6 +59,9 @@ namespace MWClass
         ESM::RefId getEnchantment(const MWWorld::ConstPtr& ptr) const override;
         ///< @return the enchantment ID if the object is enchanted, otherwise an empty string
 
+        virtual ESM::RefId getPoison(const MWWorld::ConstPtr& ptr) const;
+        ///< @return the poison ID if the object has it, otherwise an empty string
+        
         const ESM::RefId& applyEnchantment(const MWWorld::ConstPtr& ptr, const ESM::RefId& enchId, int enchCharge,
             const std::string& newName) const override;
         ///< Creates a new record using \a ptr as template, with the given name and the given enchantment applied to it.

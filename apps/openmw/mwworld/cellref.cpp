@@ -288,6 +288,20 @@ namespace MWWorld
         }
     }
 
+    void CellRef::setPoison(ESM::RefId poison)
+    {
+        if (poison != getPoison())
+        {
+            mChanged = true;
+            std::visit(ESM::VisitOverload{
+                           [&](ESM4::Reference& /*ref*/) {},
+                           [&](ESM4::ActorCharacter&) {},
+                           [&](ESM::CellRef& ref) { ref.mPoison = poison; },
+                       },
+                mCellRef.mVariant);
+        }
+    }
+
     void CellRef::setFaction(const ESM::RefId& faction)
     {
         if (faction != getFaction())
