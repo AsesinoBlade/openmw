@@ -13,6 +13,8 @@ namespace MWClass
 
         MWWorld::Ptr copyToCellImpl(const MWWorld::ConstPtr& ptr, MWWorld::CellStore& cell) const override;
 
+        bool isPoison(const MWWorld::ConstPtr& ptr) const;
+
     public:
         void insertObjectRendering(const MWWorld::Ptr& ptr, const std::string& model,
             MWRender::RenderingInterface& renderingInterface) const override;
@@ -31,6 +33,8 @@ namespace MWClass
 
         ESM::RefId getScript(const MWWorld::ConstPtr& ptr) const override;
         ///< Return name of the script attached to ptr
+
+        ESM::RefId getPoison(const MWWorld::ConstPtr& ptr) const override;
 
         int getValue(const MWWorld::ConstPtr& ptr) const override;
         ///< Return trade value of the object. Throws an exception, if the object can't be traded.
