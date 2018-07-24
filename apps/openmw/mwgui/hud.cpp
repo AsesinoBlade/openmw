@@ -26,10 +26,14 @@
 #include "draganddrop.hpp"
 #include "inventorywindow.hpp"
 #include "itemwidget.hpp"
+
 #include "spellicons.hpp"
 #include "worlditemmodel.hpp"
 
 #include <components/misc/strings/format.hpp>
+
+#include "components/esm3/loadalch.hpp"
+
 
 namespace MWGui
 {
@@ -42,6 +46,7 @@ namespace MWGui
         , mDrowning(nullptr)
         , mWeapImage(nullptr)
         , mSpellImage(nullptr)
+        , mPoisonImage(nullptr)
         , mWeapStatus(nullptr)
         , mSpellStatus(nullptr)
         , mEffectBox(nullptr)
@@ -102,6 +107,7 @@ namespace MWGui
         getWidget(mSpellBox, "SpellBox");
         getWidget(mSpellImage, "SpellImage");
         getWidget(mSpellStatus, "SpellStatus");
+        getWidget(mPoisonImage, "PoisonImage");
         mSpellBoxBaseLeft = mSpellBox->getLeft();
         mSpellBox->eventMouseButtonClick += MyGUI::newDelegate(this, &HUD::onMagicClicked);
 
@@ -312,25 +318,11 @@ namespace MWGui
     void HUD::onFrame(float dt)
     {
         LocalMapBase::onFrame(dt);
-        auto currentTime = MWBase::Environment::get().getWorld()->getTimeStamp(); 
-        int hour = currentTime.getHour();
-        int minute = ((float)currentTime.getHour() - hour) * 60;
-        auto minPad = minute < 10 ? "0" : "";
-        bool pm = false;
-        if (hour > 11)
-        {
-            hour -= 12;
-            pm = true;
-        }
-        if (hour == 0)
-            hour = 12;
-
-        std::string dateTimeText = Misc::StringUtils::format("%i:%s%i %s", hour, minPad, minute, pm ? "PM" : "AM");
 
         mCellNameTimer -= dt;
         mWeaponSpellTimer -= dt;
         if (mCellNameTimer < 0)
-            mCellNameBox->setCaption(dateTimeText);
+            mCellNameBox->setVisible(false);
         if (mWeaponSpellTimer < 0)
             mWeaponSpellBox->setVisible(false);
 
@@ -399,6 +391,26 @@ namespace MWGui
             mSpellImage->setSpellIcon({});
     }
 
+    void HUD::setSelectedPoison(ESM::RefId poisonId)
+    {
+        mPoisonImage->setImageTexture("");
+        if (poisonId.empty())
+        {
+            mPoisonImage->setVisible(false);
+            return;
+        }
+
+        mPoisonImage->setVisible(true);
+
+        const ESM::Potion* poison = MWBase::Environment::get().getWorld()->getStore().get<ESM::Potion>().find(poisonId);
+        // use the icon of the first effect
+        const ESM::MagicEffect* effect = MWBase::Environment::get().getWorld()->getStore().get<ESM::MagicEffect>().find(
+            poison->mEffects.mList.front().mData.mEffectID);
+
+        mPoisonImage->setImageTexture(Misc::ResourceHelpers::correctIconPath(
+            effect->mIcon, MWBase::Environment::get().getResourceSystem()->getVFS()));
+    }
+
     void HUD::setSelectedEnchantItem(const MWWorld::Ptr& item, int chargePercent)
     {
         std::string_view itemName = item.getClass().getName(item);
@@ -438,7 +450,11 @@ namespace MWGui
         mWeapStatus->setProgressPosition(durabilityPercent);
 
         mWeapImage->setItem(item);
+
+        auto poisonName = item.getClass().getPoison(item);
+        setSelectedPoison(poisonName);
     }
+
 
     void HUD::unsetSelectedSpell()
     {
@@ -474,6 +490,7 @@ namespace MWGui
 
         MWBase::World* world = MWBase::Environment::get().getWorld();
         MWWorld::Ptr player = world->getPlayerPtr();
+        setSelectedPoison(ESM::RefId());
 
         mWeapImage->setItem(MWWorld::Ptr());
         std::string icon = (player.getClass().getNpcStats(player).isWerewolf()) ? "icons\\k\\tx_werewolf_hand.dds"

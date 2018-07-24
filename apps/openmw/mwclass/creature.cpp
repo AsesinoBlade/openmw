@@ -332,6 +332,7 @@ namespace MWClass
 
             // Apply "On hit" enchanted weapons
             MWMechanics::applyOnStrikeEnchantment(ptr, victim, weapon, hitPosition);
+            MWMechanics::applyPoison(ptr, victim, weapon, hitPosition);
         }
         else if (isBipedal(ptr))
         {
