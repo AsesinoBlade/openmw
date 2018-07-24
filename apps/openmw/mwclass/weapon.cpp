@@ -28,6 +28,7 @@
 #include "apps/openmw/mwbase/world.hpp"
 #include "classmodel.hpp"
 #include "nameorid.hpp"
+#include "apps/openmw/mwbase/world.hpp"
 
 namespace MWClass
 {
