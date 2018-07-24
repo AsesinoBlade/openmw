@@ -8,9 +8,12 @@
 #include "../mwbase/world.hpp"
 #include <components/esm3/loadalch.hpp>
 #include <components/esm3/loadnpc.hpp>
+#include <components/settings/settings.hpp>
 
 #include "../mwworld/actionapply.hpp"
+
 #include "../mwworld/cellstore.hpp"
+#include "../mwworld/failedaction.hpp"
 #include "../mwworld/ptr.hpp"
 
 #include "../mwgui/tooltips.hpp"
@@ -23,12 +26,40 @@
 
 #include "classmodel.hpp"
 #include "nameorid.hpp"
+#include "apps/openmw/mwworld/esmstore.hpp"
+#include "components/esm3/loadmgef.hpp"
+
 
 namespace MWClass
 {
     Potion::Potion()
         : MWWorld::RegisteredClass<Potion>(ESM::Potion::sRecordId)
     {
+    }
+
+        bool Potion::isPoison(const MWWorld::ConstPtr& ptr) const
+    {
+        static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
+        if (!poisonsEnabled)
+            return false;
+
+        const MWWorld::LiveCellRef<ESM::Potion>* ref = ptr.get<ESM::Potion>();
+
+        for (std::vector<ESM::IndexedENAMstruct>::const_iterator effectIt(ref->mBase->mEffects.mList.begin());
+             effectIt != ref->mBase->mEffects.mList.end(); ++effectIt)
+        {
+            const ESM::MagicEffect* magicEffect
+                = MWBase::Environment::get().getWorld()->getStore().get<ESM::MagicEffect>().find(effectIt->mData.mEffectID);
+
+            if (magicEffect->mData.mFlags & ESM::MagicEffect::Harmful)
+            {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     void Potion::insertObjectRendering(
@@ -67,6 +98,11 @@ namespace MWClass
         return MWMechanics::getPotionValue(*ptr.get<ESM::Potion>()->mBase);
     }
 
+    ESM::RefId Potion::getPoison(const MWWorld::ConstPtr& ptr) const
+    {
+        return isPoison(ptr) ? ptr.getCellRef().getRefId() : ESM::RefId();
+    }
+
     const ESM::RefId& Potion::getUpSoundId(const MWWorld::ConstPtr& ptr) const
     {
         static const auto sound = ESM::RefId::stringRefId("Item Potion Up");
@@ -100,14 +136,13 @@ namespace MWClass
         text += "\n#{sWeight}: " + MWGui::ToolTips::toString(ref->mBase->mData.mWeight);
         text += MWGui::ToolTips::getValueString(getValue(ptr), "#{sValue}");
 
-        info.effects = MWGui::Widgets::MWEffectList::effectListFromESM(&ref->mBase->mEffects);
-
         // hide effects the player doesn't know about
         MWWorld::Ptr player = MWBase::Environment::get().getWorld()->getPlayerPtr();
         for (size_t i = 0; i < info.effects.size(); ++i)
             info.effects[i].mKnown = MWMechanics::Alchemy::knownEffect(i, player);
 
         info.isPotion = true;
+        info.isPoison = isPoison(ptr);
 
         if (MWBase::Environment::get().getWindowManager()->getFullHelp())
         {
@@ -124,11 +159,23 @@ namespace MWClass
     {
         MWWorld::LiveCellRef<ESM::Potion>* ref = ptr.get<ESM::Potion>();
 
-        auto action = std::make_unique<MWWorld::ActionApply>(ptr, ref->mBase->mId);
+        if (isPoison(ptr))
+        {
+            std::unique_ptr<MWWorld::Action> action(new MWWorld::ActionPoison(ptr, ref->mBase->mId));
 
-        action->setSound(ESM::RefId::stringRefId("Drink"));
+            action->setSound(ESM::RefId::stringRefId("Item Potion Down"));
 
-        return action;
+            return action;
+        }
+        else
+        {
+            std::unique_ptr<MWWorld::Action> action(new MWWorld::ActionApply(ptr, ref->mBase->mId));
+
+            action->setSound(ESM::RefId::stringRefId("Drink"));
+
+            return action;
+        }
+
     }
 
     MWWorld::Ptr Potion::copyToCellImpl(const MWWorld::ConstPtr& ptr, MWWorld::CellStore& cell) const

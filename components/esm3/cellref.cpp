@@ -94,6 +94,9 @@ namespace ESM
                     case fourCC("XSOL"):
                         getRefIdOrSkip(cellRef.mSoul);
                         break;
+                    case ESM::fourCC("POIS"):
+                        getRefIdOrSkip(cellRef.mPoison);
+                        break;
                     case fourCC("CNAM"):
                         getRefIdOrSkip(cellRef.mFaction);
                         break;
@@ -203,6 +206,7 @@ namespace ESM
 
         esm.writeHNOCString("BNAM", mGlobalVariable);
         esm.writeHNOCRefId("XSOL", mSoul);
+        esm.writeHNOCRefId("POIS", mPoison);
 
         if (!inInventory)
         {
@@ -256,6 +260,7 @@ namespace ESM
         mOwner = ESM::RefId();
         mGlobalVariable.clear();
         mSoul = ESM::RefId();
+        mPoison = ESM::RefId();
         mFaction = ESM::RefId();
         mFactionRank = -2;
         mChargeInt = -1;

@@ -278,8 +278,7 @@ namespace MWWorld
 
     const std::string& Class::getInventoryIcon(const MWWorld::ConstPtr& ptr) const
     {
-        //throw std::runtime_error ("class does not have any inventory icon");
-        return "";
+        throw std::runtime_error("class does not have any inventory icon");
     }
 
     MWGui::ToolTipInfo Class::getToolTipInfo(const ConstPtr& ptr, int count) const
@@ -301,6 +300,11 @@ namespace MWWorld
     }
 
     ESM::RefId Class::getEnchantment(const ConstPtr& ptr) const
+    {
+        return ESM::RefId();
+    }
+
+    ESM::RefId Class::getPoison(const ConstPtr& ptr) const
     {
         return ESM::RefId();
     }

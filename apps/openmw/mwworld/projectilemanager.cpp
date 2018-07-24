@@ -369,6 +369,7 @@ namespace MWWorld
         state.mBowId = bow.getCellRef().getRefId();
         state.mVelocity = orient * osg::Vec3f(0, 1, 0) * speed;
         state.mIdArrow = projectile.getCellRef().getRefId();
+        state.mPoisonId = projectile.getClass().getPoison(projectile);
         state.mCasterHandle = actor;
         state.mAttackStrength = attackStrength;
 
@@ -552,7 +553,14 @@ namespace MWWorld
 
             // Try to get a Ptr to the bow that was used. It might no longer exist.
             MWWorld::ManualRef projectileRef(*MWBase::Environment::get().getESMStore(), projectileState.mIdArrow);
-            MWWorld::Ptr bow = projectileRef.getPtr();
+            MWWorld::Ptr ammo = projectileRef.getPtr();
+            MWWorld::Ptr bow = ammo;
+
+            // Keep poisons for throwing weapon
+            if (projectileState.mIdArrow == projectileState.mBowId)
+            {
+                ammo.getCellRef().setPoison(projectileState.mPoisonId);
+            }
             if (!caster.isEmpty() && projectileState.mIdArrow != projectileState.mBowId)
             {
                 MWWorld::InventoryStore& inv = caster.getClass().getInventoryStore(caster);
@@ -566,8 +574,7 @@ namespace MWWorld
             if (projectile->getHitWater())
                 mRendering->emitWaterRipple(hitPosition);
 
-            MWMechanics::projectileHit(
-                caster, target, bow, projectileRef.getPtr(), hitPosition, projectileState.mAttackStrength);
+            MWMechanics::projectileHit(caster, target, bow, ammo, pos, projectileState.mAttackStrength);
             projectileState.mToDelete = true;
         }
         const MWWorld::ESMStore& esmStore = *MWBase::Environment::get().getESMStore();
@@ -669,11 +676,12 @@ namespace MWWorld
             writer.startRecord(ESM::REC_PROJ);
 
             ESM::ProjectileState state;
+
             state.mId = projectile.mIdArrow;
             state.mPosition = ESM::Vector3(osg::Vec3f(projectile.mNode->getPosition()));
             state.mOrientation = ESM::Quaternion(osg::Quat(projectile.mNode->getAttitude()));
             state.mCaster = projectile.mCaster;
-
+            state.mPoisonId = projectile.mPoisonId;
             state.mBowId = projectile.mBowId;
             state.mVelocity = projectile.mVelocity;
             state.mAttackStrength = projectile.mAttackStrength;
@@ -714,6 +722,7 @@ namespace MWWorld
             state.mBowId = esm.mBowId;
             state.mVelocity = esm.mVelocity;
             state.mIdArrow = esm.mId;
+            state.mPoisonId = esm.mPoisonId;
             state.mAttackStrength = esm.mAttackStrength;
             state.mToDelete = false;
 
