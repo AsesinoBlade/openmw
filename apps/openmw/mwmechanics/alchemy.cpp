@@ -22,10 +22,10 @@
 #include "../mwworld/containerstore.hpp"
 #include "../mwworld/esmstore.hpp"
 
-#include "creaturestats.hpp"
-#include "magiceffects.hpp"
 #include "components/settings/settings.hpp"
 #include "components/settings/values.hpp"
+#include "creaturestats.hpp"
+#include "magiceffects.hpp"
 
 namespace
 {
@@ -59,14 +59,14 @@ MWMechanics::Alchemy::Alchemy()
 
 bool MWMechanics::Alchemy::isPoison() const
 {
-    //static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
-    //if (!poisonsEnabled)
+    // static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
+    // if (!poisonsEnabled)
     if (!Settings::game().mPoisons)
         return false;
 
     std::vector<MWMechanics::EffectKey> effects(listEffects());
     for (std::vector<MWMechanics::EffectKey>::const_iterator effectIt(effects.begin()); effectIt != effects.end();
-         ++effectIt)
+        ++effectIt)
     {
         const ESM::MagicEffect* magicEffect
             = MWBase::Environment::get().getWorld()->getStore().get<ESM::MagicEffect>().find(effectIt->mId);
