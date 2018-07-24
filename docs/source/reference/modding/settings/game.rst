@@ -175,6 +175,19 @@ This is how Morrowind behaves.
 
 This setting can be controlled in the Settings tab of the launcher.
 
+poisons
+-------
+
+:Type:		boolean
+:Range:		True/False
+:Default:	False
+
+When enabled, OpenMW treats potions with only negative effects as poisons.
+Poison applies to equipped weapon and works similar to OnStrike enchantment.
+Also in this mode alchemy tools will not decrease power of negative effects, if positive effects are not present.
+
+This setting can only be configured by editing the settings configuration file.
+
 prevent merchant equipping
 --------------------------
 

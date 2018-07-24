@@ -73,6 +73,8 @@ namespace MWMechanics
         Result createSingle();
         ///< Try to create a potion from the ingredients, place it in the inventory of the alchemist and
         /// adjust the skills of the alchemist accordingly.
+        
+        bool isPoison() const;
 
         float getAlchemyFactor() const;
 
