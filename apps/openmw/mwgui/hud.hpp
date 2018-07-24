@@ -41,6 +41,7 @@ namespace MWGui
 
         void setSelectedSpell(const ESM::RefId& spellId, int successChancePercent);
         void setSelectedEnchantItem(const MWWorld::Ptr& item, int chargePercent);
+        void setSelectedPoison(ESM::RefId poisonId);
         const MWWorld::Ptr& getSelectedEnchantItem();
         void setSelectedWeapon(const MWWorld::Ptr& item, int durabilityPercent);
         void unsetSelectedSpell();
@@ -69,6 +70,7 @@ namespace MWGui
         MyGUI::Widget *mWeapBox, *mSpellBox, *mSneakBox;
         ItemWidget* mWeapImage;
         SpellWidget* mSpellImage;
+        MyGUI::ImageBox* mPoisonImage;
         MyGUI::ProgressBar *mWeapStatus, *mSpellStatus;
         MyGUI::Widget *mEffectBox, *mMinimapBox;
         MyGUI::Button* mMinimapButton;
