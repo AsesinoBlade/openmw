@@ -24,12 +24,11 @@
 #include "../mwmechanics/alchemy.hpp"
 #include "../mwmechanics/spellutil.hpp"
 
-#include "classmodel.hpp"
-#include "nameorid.hpp"
 #include "apps/openmw/mwworld/esmstore.hpp"
+#include "classmodel.hpp"
 #include "components/esm3/loadmgef.hpp"
 #include "components/settings/values.hpp"
-
+#include "nameorid.hpp"
 
 namespace MWClass
 {
@@ -40,18 +39,19 @@ namespace MWClass
 
     bool Potion::isPoison(const MWWorld::ConstPtr& ptr) const
     {
-        //static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
-        //if (!poisonsEnabled)
+        // static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
+        // if (!poisonsEnabled)
         if (!Settings::game().mPoisons)
             return false;
 
         const MWWorld::LiveCellRef<ESM::Potion>* ref = ptr.get<ESM::Potion>();
 
         for (std::vector<ESM::IndexedENAMstruct>::const_iterator effectIt(ref->mBase->mEffects.mList.begin());
-             effectIt != ref->mBase->mEffects.mList.end(); ++effectIt)
+            effectIt != ref->mBase->mEffects.mList.end(); ++effectIt)
         {
             const ESM::MagicEffect* magicEffect
-                = MWBase::Environment::get().getWorld()->getStore().get<ESM::MagicEffect>().find(effectIt->mData.mEffectID);
+                = MWBase::Environment::get().getWorld()->getStore().get<ESM::MagicEffect>().find(
+                    effectIt->mData.mEffectID);
 
             if (magicEffect->mData.mFlags & ESM::MagicEffect::Harmful)
             {
@@ -185,7 +185,6 @@ namespace MWClass
 
             return action;
         }
-
     }
 
     MWWorld::Ptr Potion::copyToCellImpl(const MWWorld::ConstPtr& ptr, MWWorld::CellStore& cell) const
