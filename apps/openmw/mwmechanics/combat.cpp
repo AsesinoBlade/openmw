@@ -4,6 +4,7 @@
 #include <array>
 
 #include <components/misc/rng.hpp>
+#include "../../esmtool/labels.hpp"
 #include <components/settings/values.hpp>
 
 #include <components/sceneutil/positionattitudetransform.hpp>
@@ -64,6 +65,39 @@ namespace MWMechanics
                     MWBase::Environment::get().getMechanicsManager()->updateMagicEffects(victim);
                 return true;
             }
+        }
+        return false;
+    }
+
+    bool applyPoison(
+        const MWWorld::Ptr& attacker, const MWWorld::Ptr& victim, MWWorld::Ptr& weapon, const osg::Vec3f& hitPosition)
+    {
+        auto poisonName = !weapon.isEmpty() ? weapon.getClass().getPoison(weapon) : ESM::RefId();
+        if (!poisonName.empty())
+        {
+
+            const ESM::Potion* poison
+                = MWBase::Environment::get().getWorld()->getStore().get<ESM::Potion>().find(poisonName);
+
+            MWMechanics::CastSpell cast(attacker, victim);
+            cast.mHitPosition = hitPosition;
+            cast.cast(poison, true);
+            // MWBase::Environment::get().getWindowManager()->messageBox(victim.getCellRef().getRefId() + " hit with " +
+            // poison->mName);
+            int alchemySkill = (int)(attacker.getClass().getSkill(attacker, ESM::Skill::Alchemy));
+            alchemySkill = alchemySkill > 99 ? 99 : alchemySkill;
+
+            int luck = attacker.getClass().getCreatureStats(attacker).getAttribute(ESM::Attribute::Luck).getModified();
+            luck = luck > 99 ? 99 : luck;
+
+            if (Misc::Rng::rollDice(101) > alchemySkill && Misc::Rng::rollDice(101) > luck)
+            {
+                MWBase::Environment::get().getWindowManager()->messageBox(
+                    std::string(weapon.getClass().getName(weapon)) + " is no longer poisoned; " + poison->mName + " has dried up.");
+                weapon.getCellRef().setPoison(ESM::RefId());
+            }
+
+            return true;
         }
         return false;
     }
@@ -222,7 +256,7 @@ namespace MWMechanics
     }
 
     void projectileHit(const MWWorld::Ptr& attacker, const MWWorld::Ptr& victim, MWWorld::Ptr weapon,
-        const MWWorld::Ptr& projectile, const osg::Vec3f& hitPosition, float attackStrength)
+        MWWorld::Ptr& projectile, const osg::Vec3f& hitPosition, float attackStrength)
     {
         MWBase::World* world = MWBase::Environment::get().getWorld();
         const MWWorld::Store<ESM::GameSetting>& gmst = world->getStore().get<ESM::GameSetting>();
@@ -290,6 +324,7 @@ namespace MWMechanics
 
         // Apply "On hit" effect of the projectile
         bool appliedEnchantment = applyOnStrikeEnchantment(attacker, victim, projectile, hitPosition, true);
+        applyPoison(attacker, victim, weapon, hitPosition);
 
         if (validVictim)
         {
@@ -340,8 +375,7 @@ namespace MWMechanics
         attackTerm += mageffects.getOrDefault(ESM::MagicEffect::FortifyAttack).getMagnitude()
             - mageffects.getOrDefault(ESM::MagicEffect::Blind).getMagnitude();
 
-        auto strike = std::max(attackTerm - defenseTerm, 33.0f);
-        return round(strike);
+        return round(attackTerm - defenseTerm);
     }
 
     void applyElementalShields(const MWWorld::Ptr& attacker, const MWWorld::Ptr& victim)

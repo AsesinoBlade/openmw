@@ -119,6 +119,9 @@ namespace MWWorld
             // RefID of the bow or crossbow the actor was using when this projectile was fired (may be empty)
             ESM::RefId mBowId;
 
+            // RefId of poison, applied to projectile
+            ESM::RefId mPoisonId;
+
             osg::Vec3f mVelocity;
             float mAttackStrength;
         };
