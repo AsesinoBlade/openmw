@@ -347,6 +347,7 @@ namespace MWWorld
         state.mBowId = bow.getCellRef().getRefId();
         state.mVelocity = orient * osg::Vec3f(0, 1, 0) * speed;
         state.mIdArrow = projectile.getCellRef().getRefId();
+        state.mPoisonId = projectile.getClass().getPoison(projectile);
         state.mCasterHandle = actor;
         state.mAttackStrength = attackStrength;
         int type = projectile.get<ESM::Weapon>()->mBase->mData.mType;
@@ -534,7 +535,14 @@ namespace MWWorld
 
             // Try to get a Ptr to the bow that was used. It might no longer exist.
             MWWorld::ManualRef projectileRef(*MWBase::Environment::get().getESMStore(), projectileState.mIdArrow);
-            MWWorld::Ptr bow = projectileRef.getPtr();
+            MWWorld::Ptr ammo = projectileRef.getPtr();
+            MWWorld::Ptr bow = ammo;
+
+            // Keep poisons for throwing weapon
+            if (projectileState.mIdArrow == projectileState.mBowId)
+            {
+                ammo.getCellRef().setPoison(projectileState.mPoisonId);
+            }
             if (!caster.isEmpty() && projectileState.mIdArrow != projectileState.mBowId)
             {
                 MWWorld::InventoryStore& inv = caster.getClass().getInventoryStore(caster);
@@ -548,8 +556,7 @@ namespace MWWorld
             if (projectile->getHitWater())
                 mRendering->emitWaterRipple(hitPosition);
 
-            MWMechanics::projectileHit(
-                caster, target, bow, projectileRef.getPtr(), hitPosition, projectileState.mAttackStrength);
+            MWMechanics::projectileHit(caster, target, bow, ammo, pos, projectileState.mAttackStrength);
             projectileState.mToDelete = true;
         }
         const MWWorld::ESMStore& esmStore = *MWBase::Environment::get().getESMStore();
@@ -651,7 +658,7 @@ namespace MWWorld
             state.mPosition = ESM::Vector3(osg::Vec3f(it->mNode->getPosition()));
             state.mOrientation = ESM::Quaternion(osg::Quat(it->mNode->getAttitude()));
             state.mActorId = it->mActorId;
-
+            state.mPoisonId = it->mPoisonId;
             state.mBowId = it->mBowId;
             state.mVelocity = it->mVelocity;
             state.mAttackStrength = it->mAttackStrength;
@@ -692,6 +699,7 @@ namespace MWWorld
             state.mBowId = esm.mBowId;
             state.mVelocity = esm.mVelocity;
             state.mIdArrow = esm.mId;
+            state.mPoisonId = esm.mPoisonId;
             state.mAttackStrength = esm.mAttackStrength;
             state.mToDelete = false;
 
