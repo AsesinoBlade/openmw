@@ -24,6 +24,7 @@
 
 #include "creaturestats.hpp"
 #include "magiceffects.hpp"
+#include "components/settings/settings.hpp"
 
 namespace
 {
@@ -55,7 +56,32 @@ MWMechanics::Alchemy::Alchemy()
 {
 }
 
+bool MWMechanics::Alchemy::isPoison() const
+{
+    static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
+    if (!poisonsEnabled)
+        return false;
+
+    std::vector<MWMechanics::EffectKey> effects(listEffects());
+    for (std::vector<MWMechanics::EffectKey>::const_iterator effectIt(effects.begin()); effectIt != effects.end();
+         ++effectIt)
+    {
+        const ESM::MagicEffect* magicEffect
+            = MWBase::Environment::get().getWorld()->getStore().get<ESM::MagicEffect>().find(effectIt->mId);
+
+        if (magicEffect->mData.mFlags & ESM::MagicEffect::Harmful)
+        {
+            continue;
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
 std::vector<MWMechanics::EffectKey> MWMechanics::Alchemy::listEffects() const
+
 {
     // We care about the order of these effects as each effect can affect the next when applied.
     // The player can affect effect order by placing ingredients into different slots
