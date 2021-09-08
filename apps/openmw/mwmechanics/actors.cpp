@@ -729,10 +729,12 @@ namespace MWMechanics
                     aggressive = isAggressive(actor1, actor2);
             }
         }
-
         // Make guards go aggressive with hostile creatures and werewolves that are in combat
+
         const auto world = MWBase::Environment::get().getWorld();
-        if (!aggressive && actor1.getClass().isClass(actor1, "Guard") && creatureStats2.getAiSequence().isInCombat())
+
+
+        if (!aggressive && actor1.getClass().isClass(actor1, "Guard") && !actor2.getClass().isClass(actor2, "Guard") && creatureStats2.getAiSequence().isInCombat())
         {
             // Check if the creature is too far
             static const float fAlarmRadius
