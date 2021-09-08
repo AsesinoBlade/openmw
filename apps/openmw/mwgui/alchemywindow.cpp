@@ -199,6 +199,7 @@ namespace MWGui
     void AlchemyWindow::updateFilters()
     {
         std::set<std::string> itemNames, itemEffects;
+        std::map<std::string, int> effectCnt;
         for (size_t i = 0; i < mModel->getItemCount(); ++i)
         {
             MWWorld::Ptr item = mModel->getItem(i).mBase;
@@ -211,7 +212,20 @@ namespace MWGui
             auto const alchemySkill = player.getClass().getSkill(player, ESM::Skill::Alchemy);
 
             auto const effects = MWMechanics::Alchemy::effectsDescription(item, alchemySkill);
-            itemEffects.insert(effects.begin(), effects.end());
+            for (std::string effect : effects)
+            {
+                if (effectCnt.find(effect) != effectCnt.end())
+                {
+                    effectCnt[effect]++;
+                    itemEffects.insert(effect);
+                }
+                else
+                {
+                    effectCnt[effect] = 1;
+                }
+            }
+
+           // itemEffects.insert(effects.begin(), effects.end());
         }
 
         mFilterValue->removeAllItems();
