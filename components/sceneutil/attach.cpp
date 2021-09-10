@@ -84,6 +84,7 @@ namespace SceneUtil
 
     namespace
     {
+
         void mergeUserData(const osg::UserDataContainer* source, osg::Object* target)
         {
             if (!source)
