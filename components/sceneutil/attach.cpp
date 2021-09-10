@@ -89,7 +89,7 @@ namespace SceneUtil
 
         if (!target->getUserDataContainer())
             target->setUserDataContainer(osg::clone(source, osg::CopyOp::SHALLOW_COPY));
-        else if (source)
+        else
         {
             for (unsigned int i = 0; i < source->getNumUserObjects(); ++i)
                 target->getUserDataContainer()->addUserObject(
