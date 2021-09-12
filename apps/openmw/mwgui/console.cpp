@@ -31,6 +31,8 @@
 
 #include "../mwworld/class.hpp"
 #include "../mwworld/esmstore.hpp"
+#include "apps/openmw/mwbase/world.hpp"
+#include "apps/openmw/mwphysics/raycasting.hpp"
 
 namespace
 {
@@ -90,6 +92,31 @@ namespace MWGui
         }
 
         return false;
+    }
+
+    float Console::dropObjectToGround(const MWWorld::Ptr& actor, MWWorld::Ptr& object, int amount)
+    {
+        MWWorld::Ptr dropped;
+        MWBase::World* world = MWBase::Environment::get().getWorld();
+
+        float len = 1000000.0;
+        auto orig = object.getRefData().getPosition().asVec3();
+        orig.z() += 20;
+        osg::Vec3f dir(0, 0, -1);
+
+        // float dist = world->getDistToNearestRayHit(orig, dir, len, false);
+        // world->dropObjectOnGround(actor, object, 1);
+
+        auto mRender = world->getRayCasting();
+        auto result = mRender->castRay(orig, orig + dir * len);
+        auto height = world->getHalfExtents(object);
+        auto hitHeight = world->getHalfExtents(result.mHitObject);
+        auto xRot = object.getRefData().getPosition().rot[0] * 180 / 3.14159265358979323846;
+        auto yRot = object.getRefData().getPosition().rot[1] * 180 / 3.14159265358979323846;
+        if (xRot < 45 && yRot < 45)
+            return result.mHitPos._v[2] + height._v[2];
+        else
+            return result.mHitPos._v[2] + height._v[0];
     }
 
     void Console::report(const std::string& message, const Compiler::TokenLoc& loc, Type type)
@@ -283,9 +310,211 @@ namespace MWGui
         resetReference();
     }
 
+
+    bool isWhitespace(char c)
+    {
+        return c == ' ' || c == '\t';
+    }
+
+    bool Console::validRepositionKey(const MyGUI::KeyCode key)
+    {
+        if (key == MyGUI::KeyCode::ArrowRight || key == MyGUI::KeyCode::ArrowLeft || key == MyGUI::KeyCode::ArrowUp
+            || key == MyGUI::KeyCode::ArrowDown || key == MyGUI::KeyCode::PageUp || key == MyGUI::KeyCode::PageDown
+            || key == MyGUI::KeyCode::A || key == MyGUI::KeyCode::D || key == MyGUI::KeyCode::W
+            || key == MyGUI::KeyCode::S || key == MyGUI::KeyCode::E || key == MyGUI::KeyCode::Q
+            || key == MyGUI::KeyCode::Z || key == MyGUI::KeyCode::RightBracket || key == MyGUI::KeyCode::LeftBracket
+            || key == MyGUI::KeyCode::One || key == MyGUI::KeyCode::Two || key == MyGUI::KeyCode::Three
+            || key == MyGUI::KeyCode::Four || key == MyGUI::KeyCode::Five || key == MyGUI::KeyCode::Zero
+            || key == MyGUI::KeyCode::F)
+            return true;
+        else
+            return false;
+    }
+
+    void Console::repositionObject(MWWorld::RefData obj, MWWorld::CellRef cellRef , MyGUI::KeyCode key)
+    {
+       /* std::string str;
+        str = "Pointing at " + obj.getRefId();
+        MWBase::Environment::get().getWindowManager()->messageBox(str);*/
+
+        if (MyGUI::InputManager::getInstance().isShiftPressed())
+        {
+            ESM::Position position = obj.getPosition();
+            float scale = cellRef.getScale();
+
+            if (key == MyGUI::KeyCode::ArrowRight)
+            {
+                float x = position.pos[0] + 5;
+                cellRef.hasChanged();
+                std::string str = "setpos x " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::ArrowLeft) 
+            {
+                float x = position.pos[0] = position.pos[0] - 5;
+                cellRef.hasChanged();
+                std::string str = "setpos x " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::ArrowUp) 
+            {
+                float x = position.pos[1] = position.pos[1] + 5;
+                cellRef.hasChanged();
+                std::string str = "setpos y " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::ArrowDown) 
+            {
+                float x = position.pos[1] = position.pos[1] - 5;
+                cellRef.hasChanged();
+                std::string str = "setpos y " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::PageUp) 
+            {
+                float x = position.pos[2] = position.pos[2] + 5;
+                cellRef.hasChanged();
+                std::string str = "setpos z " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::PageDown) 
+            {
+                float x = position.pos[2] = position.pos[2] - 5;
+                cellRef.hasChanged();
+                std::string str = "setpos z " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::D) 
+            {
+                float x = position.rot[0]  + 0.0872665;
+                position.rot[0] = x;
+                obj.setPosition(position);
+                cellRef.setPosition(position);
+                x = x * 180 / 3.14159265358979323846;
+                cellRef.hasChanged();
+                std::string str = "setangle x " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::A) 
+            {
+                float x = position.rot[0] - 0.0872665;
+                position.rot[0] = x;
+                obj.setPosition(position);
+                cellRef.setPosition(position);
+                x = x * 180 / 3.14159265358979323846;
+                cellRef.hasChanged();
+                std::string str = "setangle x " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::W) 
+            {
+                float x = position.rot[1] + 0.0872665;
+                position.rot[1] = x;
+                obj.setPosition(position);
+                cellRef.setPosition(position);
+                x = x * 180 / 3.14159265358979323846;
+                cellRef.hasChanged();
+                std::string str = "setangle y " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::S) 
+            {
+                float x = position.rot[1] - 0.0872665;
+                position.rot[1] = x;
+                obj.setPosition(position);
+                cellRef.setPosition(position);
+                x = x * 180 / 3.14159265358979323846;
+                cellRef.hasChanged();
+                std::string str = "setangle y " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::E) 
+            {
+                float x = position.rot[2] + 0.0872665;
+                position.rot[2] = x;
+                obj.setPosition(position);
+                cellRef.setPosition(position);
+                x = x * 180 / 3.14159265358979323846;
+                cellRef.hasChanged();
+                std::string str = "setangle z " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::Q) 
+            {
+                float x = position.rot[2] - 0.0872665;
+                position.rot[2] = x;
+                obj.setPosition(position);
+                cellRef.setPosition(position);
+                x = x * 180 / 3.14159265358979323846;
+                cellRef.hasChanged();
+                std::string str = "setangle z " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::Z) 
+            {
+                position.rot[0] = 0;
+                position.rot[1] = 0;
+                position.rot[2] = 0;
+                cellRef.hasChanged();
+                std::string str = "setangle x 0";
+
+                Console::execute(str);
+                str = "setangle y 0";
+                Console::execute(str);
+                str = "setangle z 0";
+                Console::execute(str);
+                obj.hasChanged();
+
+            }
+            else if (key == MyGUI::KeyCode::Equals)
+            {
+            float x = scale + 0.1;
+            cellRef.hasChanged();
+            std::string str = "setscale " + std::to_string(x);
+            obj.hasChanged();
+            Console::execute(str);
+            }
+            else if (key == MyGUI::KeyCode::Minus)
+            {
+            float x = scale - 0.1;
+            cellRef.hasChanged();
+            std::string str = "setscale " + std::to_string(x);
+            obj.hasChanged();
+            Console::execute(str);
+            }
+
+        }
+    }
+
+
     void Console::commandBoxKeyPress(MyGUI::Widget* /*sender*/, MyGUI::KeyCode key, MyGUI::Char /*value*/)
     {
-        if (MyGUI::InputManager::getInstance().isControlPressed())
+        if (!mPtr.isEmpty() && MyGUI::InputManager::getInstance().isShiftPressed()
+            && MyGUI::InputManager::getInstance().isControlPressed()
+            //&& key != MyGUI::KeyCode::LeftShift
+            //&& key != MyGUI::KeyCode::RightShift
+            && Console::validRepositionKey(key))
+        {
+
+            Console::repositionObject(mPtr.getRefData(), mPtr.mRef->mRef, key);
+        }
+
+        else if(MyGUI::InputManager::getInstance().isControlPressed()
+            && key != MyGUI::KeyCode::LeftControl 
+            && key != MyGUI::KeyCode::RightControl)
+
         {
             if (key == MyGUI::KeyCode::W)
             {
@@ -316,30 +545,6 @@ namespace MWGui
                 }
             }
         }
-        else if (key == MyGUI::KeyCode::Tab && mConsoleMode.empty())
-        {
-            std::vector<std::string> matches;
-            listNames();
-            std::string oldCaption = mCommandLine->getOnlyText();
-            std::string newCaption = complete(mCommandLine->getOnlyText(), matches);
-            mCommandLine->setOnlyText(newCaption);
-
-            // List candidates if repeatedly pressing tab
-            if (oldCaption == newCaption && !matches.empty())
-            {
-                int i = 0;
-                printOK({});
-                for (std::string& match : matches)
-                {
-                    if (i == 50)
-                        break;
-
-                    printOK(match);
-                    i++;
-                }
-            }
-        }
-
         if (mCommandHistory.empty())
             return;
 
