@@ -3,8 +3,8 @@
 #endif
 
 #include "console.hpp"
-#include <osg/Group>
 #include <osg/ComputeBoundsVisitor>
+#include <osg/Group>
 #include <osg/Timer>
 
 #include <osg/ref_ptr>
@@ -35,26 +35,25 @@
 #include <components/myguiplatform/myguiplatform.hpp>
 #include <components/myguiplatform/myguirendermanager.hpp>
 
-#include "../mwscript/extensions.hpp"
 #include "../mwrender/renderingmanager.hpp"
+#include "../mwscript/extensions.hpp"
 
 #include "../mwbase/environment.hpp"
 #include "../mwbase/luamanager.hpp"
 #include "../mwbase/scriptmanager.hpp"
 #include "../mwbase/windowmanager.hpp"
 
-#include "../mwbase/world.hpp"
 #include "../mwbase/luamanager.hpp"
+#include "../mwbase/world.hpp"
 #include "../mwmechanics/actorutil.hpp"
 
 #include "../mwphysics/raycasting.hpp"
 
-
 #include "../mwworld/class.hpp"
 #include "../mwworld/esmstore.hpp"
+#include "../mwworld/worldimp.hpp"
 #include "apps/openmw/mwbase/world.hpp"
 #include "apps/openmw/mwphysics/raycasting.hpp"
-#include "../mwworld/worldimp.hpp"
 
 namespace
 {
@@ -141,7 +140,7 @@ namespace MWGui
             return result.mHitPos._v[2] + height._v[0];
     }
 
-    void Console::report (const std::string& message, const Compiler::TokenLoc& loc, Type type)
+    void Console::report(const std::string& message, const Compiler::TokenLoc& loc, Type type)
     {
         std::ostringstream error;
         error << "column " << loc.mColumn << " (" << loc.mLiteral << "):";
@@ -332,7 +331,6 @@ namespace MWGui
         resetReference();
     }
 
-
     bool isWhitespace(char c)
     {
         return c == ' ' || c == '\t';
@@ -353,7 +351,7 @@ namespace MWGui
             return false;
     }
 
-    void Console::repositionObject(MWWorld::Ptr ref, MWWorld::CellRef cellRef , MyGUI::KeyCode key)
+    void Console::repositionObject(MWWorld::Ptr ref, MWWorld::CellRef cellRef, MyGUI::KeyCode key)
     {
         mCommandLine->setCaption("");
 
@@ -416,9 +414,9 @@ namespace MWGui
             else if (key == MyGUI::KeyCode::D)
             {
                 float x = position.rot[0] + (adjustment * 3.14159265358979323846 / 180);
-                //position.rot[0] = x;
-                //obj.setPosition(position);
-                //cellRef.setPosition(position);
+                // position.rot[0] = x;
+                // obj.setPosition(position);
+                // cellRef.setPosition(position);
                 x = x * 180 / 3.14159265358979323846;
                 cellRef.hasChanged();
                 std::string str = "setangle x " + std::to_string(x);
@@ -484,24 +482,23 @@ namespace MWGui
                 str = "setangle z 0";
                 Console::execute(str);
                 obj.hasChanged();
-
             }
             else if (key == MyGUI::KeyCode::RightBracket)
             {
-            float x = scale + 0.1;
-            cellRef.hasChanged();
-            std::string str = "setscale " + std::to_string(x);
-            obj.hasChanged();
-            Console::execute(str);
+                float x = scale + 0.1;
+                cellRef.hasChanged();
+                std::string str = "setscale " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
             }
             else if (key == MyGUI::KeyCode::LeftBracket)
             {
-            float x = scale - 0.1;
-            x = x < 0.1 ? 0.1 : x;
-            cellRef.hasChanged();
-            std::string str = "setscale " + std::to_string(x);
-            obj.hasChanged();
-            Console::execute(str);
+                float x = scale - 0.1;
+                x = x < 0.1 ? 0.1 : x;
+                cellRef.hasChanged();
+                std::string str = "setscale " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
             }
             else if (key == MyGUI::KeyCode::One)
             {
@@ -529,7 +526,7 @@ namespace MWGui
                 adjustment = 45;
             }
             else if (key == MyGUI::KeyCode::Zero)
-            { 
+            {
                 ESM::Position position = cellRef.getPosition();
                 std::string str = "setpos x " + std::to_string(position.pos[0]);
                 Console::execute(str);
@@ -562,7 +559,6 @@ namespace MWGui
         }
     }
 
-
     void Console::commandBoxKeyPress(MyGUI::Widget* /*sender*/, MyGUI::KeyCode key, MyGUI::Char /*value*/)
     {
         if (!mPtr.isEmpty() && MyGUI::InputManager::getInstance().isShiftPressed()
@@ -575,8 +571,7 @@ namespace MWGui
             Console::repositionObject(mPtr, mPtr.mRef->mRef, key);
         }
 
-        else if(MyGUI::InputManager::getInstance().isControlPressed()
-            && key != MyGUI::KeyCode::LeftControl 
+        else if (MyGUI::InputManager::getInstance().isControlPressed() && key != MyGUI::KeyCode::LeftControl
             && key != MyGUI::KeyCode::RightControl)
 
         {
@@ -610,22 +605,19 @@ namespace MWGui
             }
         }
 
-        else if (!mPtr.isEmpty() 
-            && MyGUI::InputManager::getInstance().isShiftPressed()
-            && MyGUI::InputManager::getInstance().isControlPressed()
-            && key != MyGUI::KeyCode::LeftShift 
-            && key != MyGUI::KeyCode::RightShift
-            )
+        else if (!mPtr.isEmpty() && MyGUI::InputManager::getInstance().isShiftPressed()
+            && MyGUI::InputManager::getInstance().isControlPressed() && key != MyGUI::KeyCode::LeftShift
+            && key != MyGUI::KeyCode::RightShift)
         {
-            
+
             Console::repositionObject(mPtr.mRef, mPtr.mRef->mRef, key);
         }
-        else if(key == MyGUI::KeyCode::Tab)
+        else if (key == MyGUI::KeyCode::Tab)
         {
             std::vector<std::string> matches;
             listNames();
             std::string oldCaption = mCommandLine->getCaption();
-            std::string newCaption = complete( mCommandLine->getOnlyText(), matches );
+            std::string newCaption = complete(mCommandLine->getOnlyText(), matches);
             mCommandLine->setCaption(newCaption);
 
             // List candidates if repeatedly pressing tab
@@ -633,9 +625,9 @@ namespace MWGui
             {
                 int i = 0;
                 printOK("");
-                for(std::string& match : matches)
+                for (std::string& match : matches)
                 {
-                    if(i == 50)
+                    if (i == 50)
                         break;
 
                     printOK(match);
@@ -644,9 +636,8 @@ namespace MWGui
             }
         }
 
-        if(mCommandHistory.empty()) 
+        if (mCommandHistory.empty())
             return;
-
 
         // Traverse history with up and down arrows
         if (key == MyGUI::KeyCode::ArrowUp)
