@@ -121,7 +121,7 @@ namespace MWGui
 
         void repositionObject(MWWorld::Ptr obj, MWWorld::CellRef cellRef, MyGUI::KeyCode key);
 
-        int  adjustment;
+        int adjustment;
 
         /// Report a file related error
         void report(const std::string& message, Type type) override;
@@ -131,7 +131,7 @@ namespace MWGui
         /// \note The list may contain duplicates (if a name is a keyword and an identifier at the same
         /// time).
         void listNames();
-        
+
         void initConsoleHistory();
     };
 }
