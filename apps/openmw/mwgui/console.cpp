@@ -393,6 +393,9 @@ namespace MWGui
             else if (key == MyGUI::KeyCode::D) 
             {
                 float x = position.rot[0]  + (adjustment * 3.14159265358979323846 / 180);
+                //position.rot[0] = x;
+                //obj.setPosition(position);
+                //cellRef.setPosition(position);
                 x = x * 180 / 3.14159265358979323846;
                 cellRef.hasChanged();
                 std::string str = "setangle x " + std::to_string(x);
