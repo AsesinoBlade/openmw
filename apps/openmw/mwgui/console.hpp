@@ -47,6 +47,10 @@ namespace MWGui
 
         void onOpen() override;
 
+        float dropObjectToGround(const MWWorld::Ptr& actor, MWWorld::Ptr& object, int amount);
+        static bool validRepositionKey(const MyGUI::KeyCode key);
+
+
         // Print a message to the console, in specified color.
         void print(const std::string& msg, std::string_view color = MWBase::WindowManager::sConsoleColor_Default);
 
@@ -124,6 +128,7 @@ namespace MWGui
         /// \note The list may contain duplicates (if a name is a keyword and an identifier at the same
         /// time).
         void listNames();
+        void repositionObject(MWWorld::RefData obj, MWWorld::CellRef cellRef, MyGUI::KeyCode key);
 
         void initConsoleHistory();
     };
