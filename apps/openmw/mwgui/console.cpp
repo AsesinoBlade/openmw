@@ -211,7 +211,7 @@ namespace MWGui
 
         // Set up the log window
         mHistory->setOverflowToTheLeft(true);
-
+        adjustment = 5;
         // compiler
         Compiler::registerExtensions(mExtensions, mConsoleOnlyScripts);
         mCompilerContext.setExtensions(&mExtensions);
@@ -344,7 +344,7 @@ namespace MWGui
 
             if (key == MyGUI::KeyCode::ArrowRight)
             {
-                float x = position.pos[0] + 5;
+                float x = position.pos[0] + adjustment;
                 cellRef.hasChanged();
                 std::string str = "setpos x " + std::to_string(x);
                 obj.hasChanged();
@@ -352,7 +352,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::ArrowLeft) 
             {
-                float x = position.pos[0] = position.pos[0] - 5;
+                float x = position.pos[0] = position.pos[0] - adjustment;
                 cellRef.hasChanged();
                 std::string str = "setpos x " + std::to_string(x);
                 obj.hasChanged();
@@ -360,7 +360,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::ArrowUp) 
             {
-                float x = position.pos[1] = position.pos[1] + 5;
+                float x = position.pos[1] = position.pos[1] + adjustment;
                 cellRef.hasChanged();
                 std::string str = "setpos y " + std::to_string(x);
                 obj.hasChanged();
@@ -368,7 +368,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::ArrowDown) 
             {
-                float x = position.pos[1] = position.pos[1] - 5;
+                float x = position.pos[1] = position.pos[1] - adjustment;
                 cellRef.hasChanged();
                 std::string str = "setpos y " + std::to_string(x);
                 obj.hasChanged();
@@ -376,7 +376,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::PageUp) 
             {
-                float x = position.pos[2] = position.pos[2] + 5;
+                float x = position.pos[2] = position.pos[2] + adjustment;
                 cellRef.hasChanged();
                 std::string str = "setpos z " + std::to_string(x);
                 obj.hasChanged();
@@ -384,7 +384,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::PageDown) 
             {
-                float x = position.pos[2] = position.pos[2] - 5;
+                float x = position.pos[2] = position.pos[2] - adjustment;
                 cellRef.hasChanged();
                 std::string str = "setpos z " + std::to_string(x);
                 obj.hasChanged();
@@ -392,10 +392,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::D) 
             {
-                float x = position.rot[0]  + 0.0872665;
-                position.rot[0] = x;
-                obj.setPosition(position);
-                cellRef.setPosition(position);
+                float x = position.rot[0]  + (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
                 cellRef.hasChanged();
                 std::string str = "setangle x " + std::to_string(x);
@@ -404,10 +401,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::A) 
             {
-                float x = position.rot[0] - 0.0872665;
-                position.rot[0] = x;
-                obj.setPosition(position);
-                cellRef.setPosition(position);
+                float x = position.rot[0] - (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
                 cellRef.hasChanged();
                 std::string str = "setangle x " + std::to_string(x);
@@ -416,10 +410,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::W) 
             {
-                float x = position.rot[1] + 0.0872665;
-                position.rot[1] = x;
-                obj.setPosition(position);
-                cellRef.setPosition(position);
+                float x = position.rot[1] + (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
                 cellRef.hasChanged();
                 std::string str = "setangle y " + std::to_string(x);
@@ -428,10 +419,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::S) 
             {
-                float x = position.rot[1] - 0.0872665;
-                position.rot[1] = x;
-                obj.setPosition(position);
-                cellRef.setPosition(position);
+                float x = position.rot[1] - (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
                 cellRef.hasChanged();
                 std::string str = "setangle y " + std::to_string(x);
@@ -440,10 +428,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::E) 
             {
-                float x = position.rot[2] + 0.0872665;
-                position.rot[2] = x;
-                obj.setPosition(position);
-                cellRef.setPosition(position);
+                float x = position.rot[2] + (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
                 cellRef.hasChanged();
                 std::string str = "setangle z " + std::to_string(x);
@@ -452,10 +437,7 @@ namespace MWGui
             }
             else if (key == MyGUI::KeyCode::Q) 
             {
-                float x = position.rot[2] - 0.0872665;
-                position.rot[2] = x;
-                obj.setPosition(position);
-                cellRef.setPosition(position);
+                float x = position.rot[2] - (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
                 cellRef.hasChanged();
                 std::string str = "setangle z " + std::to_string(x);
@@ -489,12 +471,57 @@ namespace MWGui
             else if (key == MyGUI::KeyCode::Minus)
             {
             float x = scale - 0.1;
+            x = x < 0.1 ? 0.1 : x;
             cellRef.hasChanged();
             std::string str = "setscale " + std::to_string(x);
             obj.hasChanged();
             Console::execute(str);
             }
-
+            else if (key == MyGUI::KeyCode::One)
+            {
+                MWBase::Environment::get().getWindowManager()->messageBox("adjustment amount changed to 1");
+                adjustment = 1;
+            }
+            else if (key == MyGUI::KeyCode::Two)
+            {
+                MWBase::Environment::get().getWindowManager()->messageBox("adjustment amount changed to 5");
+                adjustment = 5;
+            }
+            else if (key == MyGUI::KeyCode::Three)
+            {
+                MWBase::Environment::get().getWindowManager()->messageBox("adjustment amount changed to 10");
+                adjustment = 10;
+            }
+            else if (key == MyGUI::KeyCode::Four)
+            {
+                MWBase::Environment::get().getWindowManager()->messageBox("adjustment amount changed to 30");
+                adjustment = 30;
+            }
+            else if (key == MyGUI::KeyCode::Five)
+            {
+                MWBase::Environment::get().getWindowManager()->messageBox("adjustment amount changed to 45");
+                adjustment = 45;
+            }
+            else if (key == MyGUI::KeyCode::Zero)
+            { 
+                ESM::Position position = cellRef.getPosition();
+                std::string str = "setpos x " + std::to_string(position.pos[0]);
+                Console::execute(str);
+                str = "setpos y " + std::to_string(position.pos[1]);
+                Console::execute(str);
+                str = "setpos z " + std::to_string(position.pos[2]);
+                Console::execute(str);
+                str = "setangle x " + std::to_string(position.rot[0] * 180 / 3.14159265358979323846);
+                Console::execute(str);
+                str = "setangle y " + std::to_string(position.rot[1] * 180 / 3.14159265358979323846);
+                Console::execute(str);
+                str = "setangle z " + std::to_string(position.rot[2] * 180 / 3.14159265358979323846);
+                Console::execute(str);
+                str = "setscale 1";
+                Console::execute(str);
+                cellRef.hasChanged();
+                obj.hasChanged();
+            }
         }
     }
 
