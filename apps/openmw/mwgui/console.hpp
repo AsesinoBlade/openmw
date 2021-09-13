@@ -120,6 +120,8 @@ namespace MWGui
         /// Report error to the user.
         void report(const std::string& message, const Compiler::TokenLoc& loc, Type type) override;
 
+        int  adjustment;
+
         /// Report a file related error
         void report(const std::string& message, Type type) override;
 
