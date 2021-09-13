@@ -2120,7 +2120,7 @@ namespace MWWorld
 
         osg::Vec3f orig = pos.asVec3();
         orig.z() += 20;
-        osg::Vec3f dir(0, 0, -1);
+        osg::Vec3f dir (20, 0, -1);
 
         float len = 1000000.0;
 
