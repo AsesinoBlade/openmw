@@ -15,6 +15,7 @@
 #include "../mwbase/environment.hpp"
 #include "../mwbase/luamanager.hpp"
 #include "../mwbase/world.hpp"
+#include "../mwbase/mechanicsmanager.hpp"
 
 #include "../mwworld/cellstore.hpp"
 #include "../mwworld/class.hpp"
