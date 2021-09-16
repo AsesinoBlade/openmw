@@ -53,6 +53,7 @@ namespace Interpreter
     }
 
 
+
     int Runtime::getStackSize() const
     {
         return mStack.size();
