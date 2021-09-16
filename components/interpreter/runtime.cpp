@@ -52,7 +52,13 @@ namespace Interpreter
         mStack.push_back(data);
     }
 
-    void Runtime::push(Type_Integer value)
+
+    int Runtime::getStackSize() const
+    {
+        return mStack.size();
+    }
+
+    void Runtime::push (Type_Integer value)
     {
         Data data;
         data.mInteger = value;
