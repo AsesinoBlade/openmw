@@ -30,6 +30,8 @@ namespace Interpreter
 
         std::string_view getStringLiteral(int index) const;
 
+        int getStackSize() const;
+
         void configure(const Program& program, Context& context);
         ///< \a context and \a code must exist as least until either configure, clear or
         /// the destructor is called.
