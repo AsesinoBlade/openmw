@@ -52,8 +52,6 @@ namespace Interpreter
         mStack.push_back(data);
     }
 
-
-
     int Runtime::getStackSize() const
     {
         return mStack.size();
