@@ -47,14 +47,14 @@ namespace Interpreter
         mStack.clear();
     }
 
-    void Runtime::push(const Data& data)
-    {
-        mStack.push_back(data);
-    }
-
     int Runtime::getStackSize() const
     {
         return mStack.size();
+    }
+
+    void Runtime::push (const Data& data)
+    {
+        mStack.push_back (data);
     }
 
     void Runtime::push (Type_Integer value)
