@@ -1,11 +1,11 @@
 #include "miscextensions.hpp"
-#include <regex>
 #include <chrono>
 #include <cstdlib>
 #include <iomanip>
+#include <regex>
 
-#include <sstream>
 #include <components/misc/rng.hpp>
+#include <sstream>
 
 #include <components/compiler/extensions.hpp>
 #include <components/compiler/locals.hpp>
@@ -20,8 +20,8 @@
 #include <components/misc/resourcehelpers.hpp>
 #include <components/resource/resourcesystem.hpp>
 
-#include <components/esm3/loadmgef.hpp>
 #include <components/esm3/loadcrea.hpp>
+#include <components/esm3/loadmgef.hpp>
 
 #include "../openmw//apps/esmtool/labels.hpp"
 
@@ -72,11 +72,6 @@
 #include "../mwclass/actor.hpp"
 #include "../mwclass/npc.hpp"
 
-#include "../mwworld/class.hpp"
-#include "../mwworld/player.hpp"
-#include "../mwworld/containerstore.hpp"
-#include "../mwworld/inventorystore.hpp"
-#include "../mwworld/esmstore.hpp"
 #include "../mwworld/cellstore.hpp"
 #include "../mwworld/class.hpp"
 #include "../mwworld/containerstore.hpp"
@@ -104,8 +99,6 @@
 
 #include <boost/iostreams/filter/zlib.hpp>
 #include <components/files/configurationmanager.hpp>
-
-
 
 namespace
 {
@@ -180,7 +173,7 @@ namespace
 namespace MWScript
 {
     namespace Misc
-    {        
+    {
         class OpMenuMode : public Interpreter::Opcode0
         {
         public:
@@ -897,12 +890,10 @@ namespace MWScript
             }
         };
 
-
         template <class R>
         class OpListSpells : public Interpreter::Opcode0
         {
         public:
-
             void execute(Interpreter::Runtime& runtime) override
             {
                 MWWorld::Ptr ptr = R()(runtime);
@@ -915,41 +906,43 @@ namespace MWScript
                 {
                     const ESM::Spell* spell = *iter;
                     str = spell->mName + "   [" + spell->mId.toString() + "]";
-                    for (auto effectIt = spell->mEffects.mList.begin(); effectIt != spell->mEffects.mList.end(); ++effectIt)
+                    for (auto effectIt = spell->mEffects.mList.begin(); effectIt != spell->mEffects.mList.end();
+                        ++effectIt)
                     {
 
-                         auto &effect = *effectIt;
-                         auto effectIDStr = ESM::MagicEffect::indexToGmstString(effect.mData.mEffectID);
-                         const ESM::MagicEffect* magicEffect = store.get<ESM::MagicEffect>().search(effect.mData.mEffectID);
+                        auto& effect = *effectIt;
+                        auto effectIDStr = ESM::MagicEffect::indexToGmstString(effect.mData.mEffectID);
+                        const ESM::MagicEffect* magicEffect
+                            = store.get<ESM::MagicEffect>().search(effect.mData.mEffectID);
 
-                         std::string range = (effect.mData.mRange == 0 ? "Self" : effect.mData.mRange == 1 ? "Touch" : "Target");
-                         std::string magnitude = "";
-                         std::string area = "";
-                         if (effect.mData.mMagnMin > 0)
-                             magnitude += std::to_string(effect.mData.mMagnMin);
-                         std::string duration = "";
-                         if (effect.mData.mMagnMax > effect.mData.mMagnMin && effect.mData.mMagnMin > 0)
-                             magnitude += " to " + std::to_string(effect.mData.mMagnMax);
+                        std::string range = (effect.mData.mRange == 0 ? "Self"
+                                : effect.mData.mRange == 1            ? "Touch"
+                                                                      : "Target");
+                        std::string magnitude = "";
+                        std::string area = "";
+                        if (effect.mData.mMagnMin > 0)
+                            magnitude += std::to_string(effect.mData.mMagnMin);
+                        std::string duration = "";
+                        if (effect.mData.mMagnMax > effect.mData.mMagnMin && effect.mData.mMagnMin > 0)
+                            magnitude += " to " + std::to_string(effect.mData.mMagnMax);
 
-                         if (effect.mData.mMagnMin > 0 )
-                             if (effect.mData.mMagnMin > 1 || effect.mData.mMagnMax > 1)
-                                 magnitude += " pts";
-                             else
-                                 magnitude += " pt";
+                        if (effect.mData.mMagnMin > 0)
+                            if (effect.mData.mMagnMin > 1 || effect.mData.mMagnMax > 1)
+                                magnitude += " pts";
+                            else
+                                magnitude += " pt";
 
-                         if (effect.mData.mDuration > 0)
-                             if (effect.mData.mDuration > 1)
+                        if (effect.mData.mDuration > 0)
+                            if (effect.mData.mDuration > 1)
                                 duration = "for " + std::to_string(effect.mData.mDuration) + " secs";
-                             else
+                            else
                                 duration = "for " + std::to_string(effect.mData.mDuration) + " sec";
 
-                         if (effect.mData.mArea > 0)
-                             area = " in " + std::to_string(effect.mData.mArea) + " ft";
+                        if (effect.mData.mArea > 0)
+                            area = " in " + std::to_string(effect.mData.mArea) + " ft";
 
-                         effectIDStr += " " + magnitude + " " + duration + area + " on " + range;
-                         str += "\n ---- " + effectIDStr;
-
-
+                        effectIDStr += " " + magnitude + " " + duration + area + " on " + range;
+                        str += "\n ---- " + effectIDStr;
                     }
                     runtime.getContext().report(str + "\n");
                 }
@@ -1384,11 +1377,11 @@ namespace MWScript
         class OpGetFollowers : public Interpreter::Opcode0
         {
         public:
-
             void execute(Interpreter::Runtime& runtime) override
             {
                 std::set<MWWorld::Ptr> followers;
-                MWBase::Environment::get().getMechanicsManager()->getActorsFollowing(MWMechanics::getPlayer(), followers);
+                MWBase::Environment::get().getMechanicsManager()->getActorsFollowing(
+                    MWMechanics::getPlayer(), followers);
                 std::string str = "";
                 for (auto& f : followers)
                 {
@@ -1398,27 +1391,22 @@ namespace MWScript
             }
         };
 
-
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <set>
-#include <string>
 #include <sstream>
+#include <string>
 
-class OpSetFollowers : public Interpreter::Opcode0
+        class OpSetFollowers : public Interpreter::Opcode0
         {
         public:
             void execute(Interpreter::Runtime& runtime) override
             {
                 std::string fileStr = "Saved";
 
-
                 Files::ConfigurationManager cfgMgr;
                 std::filesystem::path logPath = cfgMgr.getLogPath();
                 std::filesystem::path gdsOpenMW = logPath / "gdsOpenMW.xml";
-
-
-
 
                 std::set<MWWorld::Ptr> followers;
                 MWBase::Environment::get().getMechanicsManager()->getActorsFollowing(
@@ -1431,13 +1419,13 @@ class OpSetFollowers : public Interpreter::Opcode0
                 size_t n = 1;
                 for (const auto& f : followers)
                 {
-                    xmlStream << "  <F" << n << ">" << f.getCellRef().getRefId().toString() << "</F" << n << ">" << std::endl;
+                    xmlStream << "  <F" << n << ">" << f.getCellRef().getRefId().toString() << "</F" << n << ">"
+                              << std::endl;
                     n++;
                 }
 
-
                 xmlStream << "</Followers>" << std::endl;
-                if (n == 1) //no followers - do not write out file
+                if (n == 1) // no followers - do not write out file
                 {
                     fileStr = "No followers found.";
                 }
@@ -1493,7 +1481,6 @@ class OpSetFollowers : public Interpreter::Opcode0
                 }
 
                 std::map<std::string, std::string> data;
-
 
                 std::ifstream inputFile(gdsOpenMW);
                 if (inputFile.is_open())
@@ -1553,22 +1540,24 @@ class OpSetFollowers : public Interpreter::Opcode0
                     }
                     else
                     {
-                        //move to player
+                        // move to player
                         MWWorld::CellStore* store = nullptr;
                         try
                         {
-                            store = &MWBase::Environment::get().getWorldModel()->getInterior(MWMechanics::getPlayer().getCell()->getCell()->getDisplayName());
+                            store = &MWBase::Environment::get().getWorldModel()->getInterior(
+                                MWMechanics::getPlayer().getCell()->getCell()->getDisplayName());
                         }
                         catch (std::exception&)
                         {
                             auto pos = MWMechanics::getPlayer().getCellRef().getPosition().asVec3();
 
                             store = &MWBase::Environment::get().getWorldModel()->getExterior(
-                                ESM::ExteriorCellLocation(pos[0], pos[1],ESM::Cell::sDefaultWorldspaceId ));
+                                ESM::ExteriorCellLocation(pos[0], pos[1], ESM::Cell::sDefaultWorldspaceId));
                             if (pos.isNaN())
                             {
-                                std::string error = "Warning: PositionCell: unknown interior cell (" + 
-                                    std::string(MWMechanics::getPlayer().getCell()->getCell()->getDisplayName()) + "), moving to exterior instead";
+                                std::string error = "Warning: PositionCell: unknown interior cell ("
+                                    + std::string(MWMechanics::getPlayer().getCell()->getCell()->getDisplayName())
+                                    + "), moving to exterior instead";
                                 runtime.getContext().report(error);
                                 Log(Debug::Warning) << error;
                             }
@@ -1579,19 +1568,20 @@ class OpSetFollowers : public Interpreter::Opcode0
                         auto position = player.getRefData().getPosition().asVec3();
                         MWWorld::Ptr baseCompanion = companion;
 
-
                         position[0] += (::Misc::Rng::rollDice(81) - 40 + 1);
                         position[1] += (::Misc::Rng::rollDice(81) - 40 + 1);
 
-                        str = "recover " + ptr.getCellRef().getRefId().toString() + " to " + 
-                            std::string(MWMechanics::getPlayer().getCell()->getCell()->getDisplayName()) + ":" +
-                            std::to_string(position[0]) + ":" + std::to_string(position[1]) + ":" + std::to_string(position[2]);
+                        str = "recover " + ptr.getCellRef().getRefId().toString() + " to "
+                            + std::string(MWMechanics::getPlayer().getCell()->getCell()->getDisplayName()) + ":"
+                            + std::to_string(position[0]) + ":" + std::to_string(position[1]) + ":"
+                            + std::to_string(position[2]);
                         Log(Debug::Info) << str;
                         runtime.getContext().report("report: " + str);
 
-
-                        companion = MWBase::Environment::get().getWorld()->moveObject(companion, MWMechanics::getPlayer().getCell(), osg::Vec3f(position));
-                        dynamic_cast<MWScript::InterpreterContext&>(runtime.getContext()).updatePtr(baseCompanion, companion);
+                        companion = MWBase::Environment::get().getWorld()->moveObject(
+                            companion, MWMechanics::getPlayer().getCell(), osg::Vec3f(position));
+                        dynamic_cast<MWScript::InterpreterContext&>(runtime.getContext())
+                            .updatePtr(baseCompanion, companion);
 
                         auto rot = companion.getRefData().getPosition().asRotationVec3();
                         rot.z() = osg::DegreesToRadians(0.0f);
@@ -1599,30 +1589,38 @@ class OpSetFollowers : public Interpreter::Opcode0
 
                         companion.getClass().adjustPosition(companion, false);
 
-                        //set wander / follow AI packages -- wander packages must come first so that follow is the latest and most current package
-                        MWMechanics::AiWander wanderPackage(120, 60, 40, std::vector<unsigned char>{30, 20, 0, 0, 0, 0, 0, 0, 0}, false);
-                        companion.getClass().getCreatureStats(companion).getAiSequence().stack(wanderPackage, companion);
+                        // set wander / follow AI packages -- wander packages must come first so that follow is the
+                        // latest and most current package
+                        MWMechanics::AiWander wanderPackage(
+                            120, 60, 40, std::vector<unsigned char>{ 30, 20, 0, 0, 0, 0, 0, 0, 0 }, false);
+                        companion.getClass().getCreatureStats(companion).getAiSequence().stack(
+                            wanderPackage, companion);
 
-                        MWMechanics::AiFollow followPackage(MWMechanics::getPlayer().getCellRef().getRefId(), 0, 0, 0, 0, true);
+                        MWMechanics::AiFollow followPackage(
+                            MWMechanics::getPlayer().getCellRef().getRefId(), 0, 0, 0, 0, true);
 
-                        companion.getClass().getCreatureStats(companion).getAiSequence().stack(followPackage, companion);
+                        companion.getClass().getCreatureStats(companion).getAiSequence().stack(
+                            followPackage, companion);
 
-                        //set disposition and health
+                        // set disposition and health
                         if (companion.getClass().isNpc())
                         {
                             companion.getClass().getNpcStats(companion).setBaseDisposition(100);
 
-                            //get player health
+                            // get player health
                             float playerHealthValue;
                             if (player.getClass().hasItemHealth(player))
-                                playerHealthValue = static_cast<Interpreter::Type_Float>(player.getClass().getItemMaxHealth(player));
+                                playerHealthValue
+                                    = static_cast<Interpreter::Type_Float>(player.getClass().getItemMaxHealth(player));
                             else
-                                playerHealthValue = player.getClass().getCreatureStats(player).getDynamic(0).getCurrent();
+                                playerHealthValue
+                                    = player.getClass().getCreatureStats(player).getDynamic(0).getCurrent();
 
                             float oldValue;
 
                             if (companion.getClass().hasItemHealth(companion))
-                                oldValue = static_cast<Interpreter::Type_Float>(companion.getClass().getItemMaxHealth(companion));
+                                oldValue = static_cast<Interpreter::Type_Float>(
+                                    companion.getClass().getItemMaxHealth(companion));
                             else
                                 oldValue = companion.getClass().getCreatureStats(companion).getDynamic(0).getCurrent();
 
@@ -1630,8 +1628,8 @@ class OpSetFollowers : public Interpreter::Opcode0
                             {
                                 auto newValue = oldValue * 10;
 
-                                MWMechanics::DynamicStat<float> stat(companion.getClass().getCreatureStats(companion)
-                                    .getDynamic(0));
+                                MWMechanics::DynamicStat<float> stat(
+                                    companion.getClass().getCreatureStats(companion).getDynamic(0));
 
                                 stat.setModifier(newValue);
                                 stat.setCurrent(newValue);
@@ -1644,9 +1642,6 @@ class OpSetFollowers : public Interpreter::Opcode0
                 runtime.getContext().report(str);
             }
         };
-
-
-
 
         template <class R>
         class OpCast : public Interpreter::Opcode0
@@ -1797,13 +1792,13 @@ class OpSetFollowers : public Interpreter::Opcode0
         class OpBetaComment : public Interpreter::Opcode1
         {
         public:
-
-            std::string processInventory(MWWorld::ConstPtr ptr, int slot )
+            std::string processInventory(MWWorld::ConstPtr ptr, int slot)
             {
                 std::stringstream msg;
 
-                const std::vector<std::string> slotNames{ "Helmet","Cuirass","Greaves","LeftPauldron","RightPauldron","LeftGauntlet","RightGauntlet", "Boots", "Shirt",
-            "Pants", "Skirt","Robe","LeftRing","RightRing", "Amulet","Belt","CarriedRight", "CarriedLeft", "Ammunition" };
+                const std::vector<std::string> slotNames{ "Helmet", "Cuirass", "Greaves", "LeftPauldron",
+                    "RightPauldron", "LeftGauntlet", "RightGauntlet", "Boots", "Shirt", "Pants", "Skirt", "Robe",
+                    "LeftRing", "RightRing", "Amulet", "Belt", "CarriedRight", "CarriedLeft", "Ammunition" };
 
                 if (ptr.isEmpty())
                     return "";
@@ -1857,9 +1852,12 @@ class OpSetFollowers : public Interpreter::Opcode0
                     if (!archive.empty())
                         msg << "(" << archive << ")" << std::endl;
                 }
-                if (::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs) != "icons\\")
+                if (::Misc::ResourceHelpers::correctIconPath(
+                        VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
+                    != "icons\\")
                 {
-                    std::string icon = ::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
+                    std::string icon = ::Misc::ResourceHelpers::correctIconPath(
+                        VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
                     msg << "Icon: " << icon << std::endl;
                     if (!icon.empty())
                     {
@@ -1874,7 +1872,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                 return msg.str();
             };
 
-            void execute(Interpreter::Runtime &runtime, unsigned int arg0) override
+            void execute(Interpreter::Runtime& runtime, unsigned int arg0) override
 
             {
                 MWWorld::Ptr ptr = R()(runtime);
@@ -2002,11 +2000,12 @@ class OpSetFollowers : public Interpreter::Opcode0
                     }
                     try
                     {
-                        if (::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
+                        if (::Misc::ResourceHelpers::correctIconPath(
+                                VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
                             != "icons\\")
                         {
-                            std::string icon
-                                = ::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
+                            std::string icon = ::Misc::ResourceHelpers::correctIconPath(
+                                VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
                             msg << "Icon: " << icon << std::endl;
                             if (!icon.empty())
                             {
@@ -2020,10 +2019,8 @@ class OpSetFollowers : public Interpreter::Opcode0
                     }
                     catch (const std::exception& e)
                     {
-                        
                     }
                 }
-
 
                 while (arg0 > 0)
                 {
@@ -2054,28 +2051,28 @@ class OpSetFollowers : public Interpreter::Opcode0
                         << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Strength).getBase())
                         << "("
                         << round(ptr.getClass()
-                                     .getCreatureStats(ptr)
-                                     .getAttribute(ESM::Attribute::Strength)
-                                     .getModified())
+                                   .getCreatureStats(ptr)
+                                   .getAttribute(ESM::Attribute::Strength)
+                                   .getModified())
                         << ")" << std::endl;
                     msg << "Intelligence: "
                         << round(ptr.getClass()
-                                     .getCreatureStats(ptr)
-                                     .getAttribute(ESM::Attribute::Intelligence)
-                                     .getBase())
+                                   .getCreatureStats(ptr)
+                                   .getAttribute(ESM::Attribute::Intelligence)
+                                   .getBase())
                         << "("
                         << round(ptr.getClass()
-                                     .getCreatureStats(ptr)
-                                     .getAttribute(ESM::Attribute::Intelligence)
-                                     .getModified())
+                                   .getCreatureStats(ptr)
+                                   .getAttribute(ESM::Attribute::Intelligence)
+                                   .getModified())
                         << ")" << std::endl;
                     msg << "Willpower: "
                         << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Willpower).getBase())
                         << "("
                         << round(ptr.getClass()
-                                     .getCreatureStats(ptr)
-                                     .getAttribute(ESM::Attribute::Willpower)
-                                     .getModified())
+                                   .getCreatureStats(ptr)
+                                   .getAttribute(ESM::Attribute::Willpower)
+                                   .getModified())
                         << ")" << std::endl;
                     msg << "Agility: "
                         << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Agility).getBase())
@@ -2092,25 +2089,24 @@ class OpSetFollowers : public Interpreter::Opcode0
                         << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Endurance).getBase())
                         << "("
                         << round(ptr.getClass()
-                                     .getCreatureStats(ptr)
-                                     .getAttribute(ESM::Attribute::Endurance)
-                                     .getModified())
+                                   .getCreatureStats(ptr)
+                                   .getAttribute(ESM::Attribute::Endurance)
+                                   .getModified())
                         << ")" << std::endl;
                     msg << "Personality: "
                         << round(
                                ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Personality).getBase())
                         << "("
                         << round(ptr.getClass()
-                                     .getCreatureStats(ptr)
-                                     .getAttribute(ESM::Attribute::Personality)
-                                     .getModified())
+                                   .getCreatureStats(ptr)
+                                   .getAttribute(ESM::Attribute::Personality)
+                                   .getModified())
                         << ")" << std::endl;
                     msg << "Luck: "
                         << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Luck).getBase())
                         << "("
                         << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Luck).getModified())
                         << ")" << std::endl;
-
                 }
 
                 if (ptr.getClass().isNpc())
@@ -2162,7 +2158,7 @@ class OpSetFollowers : public Interpreter::Opcode0
             {
                 const std::string& global = std::string(runtime.getStringLiteral(runtime[0].mInteger));
                 runtime.pop();
-                
+
                 MWBase::World* world = MWBase::Environment::get().getWorld();
 
                 std::string str = "";
@@ -2172,24 +2168,24 @@ class OpSetFollowers : public Interpreter::Opcode0
 
                 switch (type)
                 {
-                case 's':
+                    case 's':
 
-                    str += std::to_string(runtime.getContext().getGlobalShort(global)) + " (short)";
-                    break;
+                        str += std::to_string(runtime.getContext().getGlobalShort(global)) + " (short)";
+                        break;
 
-                case 'l':
+                    case 'l':
 
-                    str += std::to_string(runtime.getContext().getGlobalLong(global)) + " (long)";
-                    break;
+                        str += std::to_string(runtime.getContext().getGlobalLong(global)) + " (long)";
+                        break;
 
-                case 'f':
+                    case 'f':
 
-                    str += std::to_string(runtime.getContext().getGlobalFloat(global)) + " (float)";
-                    break;
+                        str += std::to_string(runtime.getContext().getGlobalFloat(global)) + " (float)";
+                        break;
 
-                default:
+                    default:
 
-                    str += "<unknown type>";
+                        str += "<unknown type>";
                 }
 
                 runtime.getContext().report(str);
@@ -2331,19 +2327,19 @@ class OpSetFollowers : public Interpreter::Opcode0
 
         class OpReportActiveQuests : public Interpreter::Opcode0
         {
-            public:
+        public:
+            void execute(Interpreter::Runtime& runtime) override
+            {
+                MWBase::Journal* journal = MWBase::Environment::get().getJournal();
+                std::string str = "";
 
-                void execute (Interpreter::Runtime& runtime) override
-                {
-                    MWBase::Journal* journal = MWBase::Environment::get().getJournal(); 
-                    std::string str = "";
-
-                    for (MWBase::Journal::TQuestIter i = journal->questBegin(); i != journal->questEnd(); ++i)
-                        if (!(i->second.isFinished()))
-                            str += " Name: " + std::string(i->second.getName()) + "\n  ID : " + i->second.getTopic().toString() +
-                               "\n  Index : " + std::to_string(i->second.getIndex()) + "\n";
-                    runtime.getContext().report (str);
-                }
+                for (MWBase::Journal::TQuestIter i = journal->questBegin(); i != journal->questEnd(); ++i)
+                    if (!(i->second.isFinished()))
+                        str += " Name: " + std::string(i->second.getName())
+                            + "\n  ID : " + i->second.getTopic().toString()
+                            + "\n  Index : " + std::to_string(i->second.getIndex()) + "\n";
+                runtime.getContext().report(str);
+            }
         };
 
         class OpToggleActorsPaths : public Interpreter::Opcode0
@@ -2372,7 +2368,8 @@ class OpSetFollowers : public Interpreter::Opcode0
                 }
 
                 MWBase::Environment::get().getWorld()->setNavMeshNumberToRender(
-                    static_cast<std::size_t>(navMeshNumber));            }
+                    static_cast<std::size_t>(navMeshNumber));
+            }
         };
 
         template <class R>
@@ -2407,17 +2404,17 @@ class OpSetFollowers : public Interpreter::Opcode0
                 {
                     switch (c)
                     {
-                            case '*':
-                            case '0':
-                                regex += ".*";
-                                break;
-                            case '?':
-                            case '1':
-                                regex += '.';
-                                break;
-                            default:
-                                regex += c;
-                                break;
+                        case '*':
+                        case '0':
+                            regex += ".*";
+                            break;
+                        case '?':
+                        case '1':
+                            regex += '.';
+                            break;
+                        default:
+                            regex += c;
+                            break;
                     }
                 }
                 return regex;
@@ -2434,8 +2431,8 @@ class OpSetFollowers : public Interpreter::Opcode0
                     std::vector<std::string> commands;
                     MWBase::Environment::get().getScriptManager()->getExtensions().listKeywords(commands);
                     for (const auto& command : commands)
-                            if (std::regex_match(command, regexFilter))
-                                message << command << "\n";
+                        if (std::regex_match(command, regexFilter))
+                            message << command << "\n";
                     runtime.getContext().report(message.str());
                 }
                 else
@@ -2648,8 +2645,8 @@ class OpSetFollowers : public Interpreter::Opcode0
             interpreter.installSegment5<OpGetFollowers>(Compiler::Misc::opcodeGetFollowers);
             interpreter.installSegment5<OpSetFollowers>(Compiler::Misc::opcodeSetFollowers);
             interpreter.installSegment5<OpRecoverFollowers>(Compiler::Misc::opcodeRecoverFollowers);
-            interpreter.installSegment5<OpListSpells<ImplicitRef>> (Compiler::Misc::opcodeListSpells);
-            interpreter.installSegment5<OpListSpells<ExplicitRef>> (Compiler::Misc::opcodeListSpellsExplicit);
+            interpreter.installSegment5<OpListSpells<ImplicitRef>>(Compiler::Misc::opcodeListSpells);
+            interpreter.installSegment5<OpListSpells<ExplicitRef>>(Compiler::Misc::opcodeListSpellsExplicit);
         }
     }
 }
