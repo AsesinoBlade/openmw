@@ -1477,7 +1477,9 @@ namespace MWScript
                 if (!ptr.getCellRef().getCount())
                     msg << "[Deleted]" << std::endl;
 
+                msg << "Name: " << ptr.getClass().getName(ptr) << std::endl;
                 msg << "RefID: " << ptr.getCellRef().getRefId() << std::endl;
+                msg << "Ref Type: " << ptr.getTypeDescription() << std::endl;
                 msg << "Memory address: " << ptr.getBase() << std::endl;
 
                 if (ptr.isInCell())
@@ -1543,6 +1545,17 @@ namespace MWScript
                         else
                         {
                             msg << "[None]" << std::endl;
+                        }
+                    }
+                    if (::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs) != "icons\\")
+                    {
+                        std::string icon = ::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs);
+                        msg << "Icon: " << icon << std::endl;
+                        if (!icon.empty())
+                        {
+                            const std::string archive = vfs->getArchive(icon);
+                            if (!archive.empty())
+                                msg << "(" << archive << ")" << std::endl;
                         }
                     }
                     if (!ptr.getClass().getScript(ptr).empty())
