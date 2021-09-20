@@ -152,7 +152,6 @@ namespace MWGui
     bool ContainerWindow::canDropItem(MWWorld::Ptr& item, std::size_t count)
     {
         return mModel->onDropItem(item, count);
-
     }
 
     void ContainerWindow::dropItem()
@@ -252,7 +251,7 @@ namespace MWGui
     void ContainerWindow::onCloseButtonClicked(MyGUI::Widget* /*sender*/)
     {
         exitCleanup();
-        //MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+        // MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
     }
 
     void ContainerWindow::refresh()
@@ -309,7 +308,7 @@ namespace MWGui
         }
 
         exitCleanup();
-        //MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+        // MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
     }
 
     void ContainerWindow::onDisposeCorpseButtonClicked(MyGUI::Widget* /*sender*/)
@@ -388,7 +387,7 @@ namespace MWGui
 
     void ContainerWindow::onReferenceUnavailable()
     {
-        //MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+        // MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
         exitCleanup();
     }
 

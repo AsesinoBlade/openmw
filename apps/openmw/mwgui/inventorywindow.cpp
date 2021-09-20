@@ -32,6 +32,7 @@
 #include "../mwmechanics/actorutil.hpp"
 #include "../mwmechanics/npcstats.hpp"
 
+#include "companionitemmodel.hpp"
 #include "companionwindow.hpp"
 #include "container.hpp"
 #include "countdialog.hpp"
@@ -44,8 +45,6 @@
 #include "sortfilteritemmodel.hpp"
 #include "statswindow.hpp"
 #include "tooltips.hpp"
-#include "companionitemmodel.hpp"
-#include "container.hpp"
 #include "tradeitemmodel.hpp"
 #include "tradewindow.hpp"
 
@@ -394,7 +393,7 @@ namespace MWGui
             else if (shift)
             {
                 auto companionWindow = MWBase::Environment::get().getWindowManager()->getCompanionWindow();
-           //     auto companionItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
+                //     auto companionItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
                 auto companionItemModel = companionWindow == nullptr ? nullptr : companionWindow->getModel();
 
                 if (companionItemModel && companionWindow)
@@ -408,7 +407,7 @@ namespace MWGui
                 else
                 {
                     auto containerWindow = MWBase::Environment::get().getWindowManager()->getContainerWindow();
-               //     auto containerItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
+                    //     auto containerItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
                     auto containerItemModel = containerWindow == nullptr ? nullptr : containerWindow->getModel();
 
                     if (containerItemModel && containerWindow)
@@ -430,7 +429,7 @@ namespace MWGui
                         dragItem(nullptr, count);
                 }
             }
-            else 
+            else
 
                 dragItem(nullptr, count);
         }
@@ -729,7 +728,6 @@ namespace MWGui
         // else: will be updated in open()
     }
 
-
     void InventoryWindow::onAvatarClicked(MyGUI::Widget* /*sender*/)
     {
         if (mDragAndDrop->mIsOnDragAndDrop)
@@ -767,7 +765,6 @@ namespace MWGui
                 else
                     mEquippedStackableCount = 0;
             }
-
 
             MWBase::Environment::get().getLuaManager()->useItem(ptr, MWMechanics::getPlayer(), false);
         }
