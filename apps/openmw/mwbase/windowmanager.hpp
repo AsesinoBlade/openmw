@@ -12,6 +12,8 @@
 #include <MyGUI_KeyCode.h>
 
 #include "../mwgui/mode.hpp"
+#include "../mwgui/inventoryitemmodel.hpp"
+#include "../mwgui/companionwindow.hpp"
 
 #include <components/sdlutil/events.hpp>
 
@@ -158,6 +160,13 @@ namespace MWBase
         virtual MWGui::ConfirmationDialog* getConfirmationDialog() = 0;
         virtual MWGui::TradeWindow* getTradeWindow() = 0;
         virtual MWGui::PostProcessorHud* getPostProcessorHud() = 0;
+
+        virtual MWGui::ItemModel* getShareItemModel() = 0;
+        virtual void setShareItemModel(MWGui::ItemModel* shareItemModel) = 0;
+        virtual MWGui::ContainerWindow* getContainerWindow() = 0;
+        virtual void setContainerWindow(MWGui::ContainerWindow* containerWindow) = 0;
+        virtual MWGui::CompanionWindow* getCompanionWindow() = 0;
+        virtual void setCompanionWindow(MWGui::CompanionWindow* containerWindow) = 0;
 
         /// Make the player use an item, while updating GUI state accordingly
         virtual void useItem(const MWWorld::Ptr& item, bool force = false) = 0;
