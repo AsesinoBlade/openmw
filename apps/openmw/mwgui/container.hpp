@@ -34,10 +34,12 @@ namespace MWGui
         void onClose() override;
 
         void clear() override { resetReference(); }
+        void refresh();
 
         void onFrame(float dt) override;
 
         void resetReference() override;
+        bool canDropItem(MWWorld::Ptr& item, size_t count);
 
         void onDeleteCustomData(const MWWorld::Ptr& ptr) override;
 
@@ -77,6 +79,11 @@ namespace MWGui
         void onCloseButtonClicked(MyGUI::Widget* sender);
         void onTakeAllButtonClicked(MyGUI::Widget* sender);
         void onDisposeCorpseButtonClicked(MyGUI::Widget* sender);
+
+
+        /// @return is taking the item allowed?
+        bool onTakeItem(const ItemStack& item, int count);
+        void exitCleanup();
 
         void onReferenceUnavailable() override;
     };
