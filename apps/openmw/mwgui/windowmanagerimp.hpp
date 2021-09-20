@@ -484,7 +484,6 @@ namespace MWGui
         ControllerButtonsOverlay* mControllerButtonsOverlay;
         InventoryTabsOverlay* mInventoryTabsOverlay;
 
-
         std::vector<std::unique_ptr<WindowBase>> mWindows;
 
         // Mapping windowId -> Window; used by Lua bindings.
