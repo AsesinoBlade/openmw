@@ -106,7 +106,21 @@ namespace MWGui
         else if (Settings::gui().mControllerMenus || MyGUI::InputManager::getInstance().isAltPressed())
             transferItem(nullptr, count);
         else
-            dragItem(nullptr, count);
+        {
+            if (shift)
+            {
+                if (const auto inventoryWindow = MWBase::Environment::get().getWindowManager()->getInventoryWindow())
+                {
+                    mModel->moveItem(item, count, inventoryWindow->getModel());
+                    inventoryWindow->updateItemView();
+                    mItemView->update();
+                }
+                else
+                    dragItem(nullptr, count);
+            }
+            else
+                dragItem(nullptr, count);
+        }
     }
 
     void ContainerWindow::dragItem(MyGUI::Widget* /*sender*/, std::size_t count)
@@ -133,6 +147,12 @@ namespace MWGui
             return;
 
         mItemTransfer->apply(item, count, *mItemView);
+    }
+
+    bool ContainerWindow::canDropItem(MWWorld::Ptr& item, std::size_t count)
+    {
+        return mModel->onDropItem(item, count);
+
     }
 
     void ContainerWindow::dropItem()
@@ -178,6 +198,12 @@ namespace MWGui
         {
             model = std::make_unique<ContainerItemModel>(container);
         }
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+        MWBase::Environment::get().getWindowManager()->setContainerWindow(nullptr);
+        MWBase::Environment::get().getWindowManager()->setCompanionWindow(nullptr);
+
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(mModel);
+        MWBase::Environment::get().getWindowManager()->setContainerWindow(this);
 
         mDisposeCorpseButton->setVisible(loot);
         mModel = model.get();
@@ -223,7 +249,13 @@ namespace MWGui
 
     void ContainerWindow::onCloseButtonClicked(MyGUI::Widget* /*sender*/)
     {
-        MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+        exitCleanup();
+        //MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+    }
+
+    void ContainerWindow::refresh()
+    {
+        mItemView->update();
     }
 
     void ContainerWindow::onTakeAllButtonClicked(MyGUI::Widget* /*sender*/)
@@ -274,7 +306,8 @@ namespace MWGui
             mModel->moveItem(item, item.mCount, playerModel);
         }
 
-        MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+        exitCleanup();
+        //MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
     }
 
     void ContainerWindow::onDisposeCorpseButtonClicked(MyGUI::Widget* /*sender*/)
@@ -332,23 +365,36 @@ namespace MWGui
                         }
                     }
                 }
+                MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+                MWBase::Environment::get().getWindowManager()->setContainerWindow(nullptr);
 
                 MWBase::Environment::get().getWorld()->deleteObject(ptr);
             }
 
+            MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+            MWBase::Environment::get().getWindowManager()->setContainerWindow(nullptr);
             mPtr = MWWorld::Ptr();
         }
     }
 
+    void ContainerWindow::exitCleanup()
+    {
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+        MWBase::Environment::get().getWindowManager()->setContainerWindow(nullptr);
+        MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+    }
+
     void ContainerWindow::onReferenceUnavailable()
     {
-        MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+        //MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+        exitCleanup();
     }
 
     void ContainerWindow::onDeleteCustomData(const MWWorld::Ptr& ptr)
     {
         if (mModel && mModel->usesContainer(ptr))
-            MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
+            exitCleanup();
+        // MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Container);
     }
 
     ControllerButtons* ContainerWindow::getControllerButtons()

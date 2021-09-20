@@ -13,6 +13,10 @@
 
 #include "../mwworld/class.hpp"
 
+#include "messagebox.hpp"
+#include "inventorywindow.hpp"
+#include "itemview.hpp"
+#include "sortfilteritemmodel.hpp"
 #include "companionitemmodel.hpp"
 #include "countdialog.hpp"
 #include "draganddrop.hpp"
@@ -70,7 +74,7 @@ namespace MWGui
         mControllerButtons.mL2 = "#{Interface:Inventory}";
     }
 
-    void CompanionWindow::onItemSelected(int index)
+void CompanionWindow::onItemSelected(int index)
     {
         if (mDragAndDrop->mIsOnDragAndDrop)
         {
@@ -78,30 +82,27 @@ namespace MWGui
             updateEncumbranceBar();
             return;
         }
-
         const ItemStack& item = mSortModel->getItem(index);
-
-        // We can't take conjured items from a companion actor
+        // We can't take conjured items from a companion NPC
         if (item.mFlags & ItemStack::Flag_Bound)
         {
             MWBase::Environment::get().getWindowManager()->messageBox("#{sBarterDialog12}");
             return;
         }
-
         MWWorld::Ptr object = item.mBase;
         size_t count = item.mCount;
         bool shift = MyGUI::InputManager::getInstance().isShiftPressed();
         if (MyGUI::InputManager::getInstance().isControlPressed())
             count = 1;
-
         mSelectedItem = mSortModel->mapToSource(index);
-
         if (count > 1 && !shift)
         {
             CountDialog* dialog = MWBase::Environment::get().getWindowManager()->getCountDialog();
+
             std::string name{ object.getClass().getName(object) };
             name += MWGui::ToolTips::getSoulString(object.getCellRef());
             dialog->openCountDialog(name, "#{sTake}", static_cast<int>(count));
+
             dialog->eventOkClicked.clear();
             if (Settings::gui().mControllerMenus || MyGUI::InputManager::getInstance().isAltPressed())
                 dialog->eventOkClicked += MyGUI::newDelegate(this, &CompanionWindow::transferItem);
@@ -111,10 +112,32 @@ namespace MWGui
         else if (Settings::gui().mControllerMenus || MyGUI::InputManager::getInstance().isAltPressed())
             transferItem(nullptr, count);
         else
-            dragItem(nullptr, count);
+        {
+            if (shift)
+            {
+                auto inventoryWindow = MWBase::Environment::get().getWindowManager()->getInventoryWindow();
+                if (inventoryWindow)
+                {
+                    mModel->moveItem(item, count, inventoryWindow->getModel());
+                    inventoryWindow->updateItemView();
+                    mItemView->update();
+                }
+                else
+                    dragItem(nullptr, count);
+            }
+            else
+                dragItem(nullptr, count);
+        }
+    }
+
+
+    void CompanionWindow::refresh()
+    {
+        mItemView->update();
     }
 
     void CompanionWindow::onNameFilterChanged(MyGUI::EditBox* sender)
+
     {
         mSortModel->setNameFilter(sender->getCaption());
         mItemView->update();
@@ -168,20 +191,22 @@ namespace MWGui
         }
     }
 
-    void CompanionWindow::updateEncumbranceBar()
+ void CompanionWindow::updateEncumbranceBar()
     {
         if (mPtr.isEmpty())
             return;
+
         int capacity = static_cast<int>(mPtr.getClass().getCapacity(mPtr));
         float encumbrance = std::ceil(mPtr.getClass().getEncumbrance(mPtr));
         mEncumbranceBar->setValue(static_cast<int>(encumbrance), capacity);
+
 
         if (mModel && mModel->hasProfit(mPtr))
         {
             mProfitLabel->setCaptionWithReplacing("#{sProfitValue} " + MyGUI::utility::toString(getProfit(mPtr)));
         }
         else
-            mProfitLabel->setCaption({});
+            mProfitLabel->setCaption("");
     }
 
     void CompanionWindow::onCloseButtonClicked(MyGUI::Widget* /*sender*/)
@@ -189,7 +214,6 @@ namespace MWGui
         if (exit())
             MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Companion);
     }
-
     bool CompanionWindow::exit()
     {
         if (mModel && mModel->hasProfit(mPtr) && getProfit(mPtr) < 0)
@@ -202,6 +226,8 @@ namespace MWGui
                 += MyGUI::newDelegate(this, &CompanionWindow::onMessageBoxButtonClicked);
             return false;
         }
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+        MWBase::Environment::get().getWindowManager()->setCompanionWindow(nullptr);
         return true;
     }
 
@@ -209,6 +235,8 @@ namespace MWGui
     {
         if (button == 0)
         {
+            MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+            MWBase::Environment::get().getWindowManager()->setCompanionWindow(nullptr);
             MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Companion);
             // Important for Calvus' contract script to work properly
             MWBase::Environment::get().getWindowManager()->exitCurrentGuiMode();
@@ -217,6 +245,8 @@ namespace MWGui
 
     void CompanionWindow::onReferenceUnavailable()
     {
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+        MWBase::Environment::get().getWindowManager()->setCompanionWindow(nullptr);
         MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Companion);
     }
 
@@ -243,6 +273,7 @@ namespace MWGui
     {
         mItemTransfer->removeTarget(*mItemView);
     }
+
 
     bool CompanionWindow::onControllerButtonEvent(const SDL_ControllerButtonEvent& arg)
     {
@@ -271,4 +302,5 @@ namespace MWGui
         mItemView->setActiveControllerWindow(active);
         WindowBase::setActiveControllerWindow(active);
     }
+
 }
