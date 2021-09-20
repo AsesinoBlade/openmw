@@ -11,6 +11,10 @@
 
 #include "../mwworld/class.hpp"
 
+#include "messagebox.hpp"
+#include "inventorywindow.hpp"
+#include "itemview.hpp"
+#include "sortfilteritemmodel.hpp"
 #include "companionitemmodel.hpp"
 #include "countdialog.hpp"
 #include "draganddrop.hpp"
@@ -60,7 +64,7 @@ namespace MWGui
         setCoord(200, 0, 600, 300);
     }
 
-    void CompanionWindow::onItemSelected(int index)
+void CompanionWindow::onItemSelected(int index)
     {
         if (mDragAndDrop->mIsOnDragAndDrop)
         {
@@ -68,38 +72,52 @@ namespace MWGui
             updateEncumbranceBar();
             return;
         }
-
         const ItemStack& item = mSortModel->getItem(index);
-
-        // We can't take conjured items from a companion actor
+        // We can't take conjured items from a companion NPC
         if (item.mFlags & ItemStack::Flag_Bound)
         {
             MWBase::Environment::get().getWindowManager()->messageBox("#{sBarterDialog12}");
             return;
         }
-
         MWWorld::Ptr object = item.mBase;
         int count = item.mCount;
         bool shift = MyGUI::InputManager::getInstance().isShiftPressed();
         if (MyGUI::InputManager::getInstance().isControlPressed())
             count = 1;
-
         mSelectedItem = mSortModel->mapToSource(index);
-
         if (count > 1 && !shift)
         {
             CountDialog* dialog = MWBase::Environment::get().getWindowManager()->getCountDialog();
-            std::string name{ object.getClass().getName(object) };
-            name += MWGui::ToolTips::getSoulString(object.getCellRef());
+            std::string name = std::string(object.getClass().getName(object)) + MWGui::ToolTips::getSoulString(object.getCellRef());
             dialog->openCountDialog(name, "#{sTake}", count);
             dialog->eventOkClicked.clear();
             dialog->eventOkClicked += MyGUI::newDelegate(this, &CompanionWindow::dragItem);
         }
         else
-            dragItem(nullptr, count);
+        {
+            if (shift)
+            {
+                auto inventoryWindow = MWBase::Environment::get().getWindowManager()->getInventoryWindow();
+                if (inventoryWindow)
+                {
+                    mModel->moveItem(item, count, inventoryWindow->getModel());
+                    inventoryWindow->updateItemView();
+                    mItemView->update();
+                }
+                else
+                    dragItem(nullptr, count);
+            }
+            else
+                dragItem(nullptr, count);
+        }
     }
 
-    void CompanionWindow::onNameFilterChanged(MyGUI::EditBox* _sender)
+void CompanionWindow::refresh()
+{
+    mItemView->update();
+}
+
+void CompanionWindow::onNameFilterChanged(MyGUI::EditBox* _sender)
     {
         mSortModel->setNameFilter(_sender->getCaption());
         mItemView->update();
@@ -142,28 +160,25 @@ namespace MWGui
         updateEncumbranceBar();
     }
 
-    void CompanionWindow::updateEncumbranceBar()
+ void CompanionWindow::updateEncumbranceBar()
     {
         if (mPtr.isEmpty())
             return;
         float capacity = mPtr.getClass().getCapacity(mPtr);
         float encumbrance = mPtr.getClass().getEncumbrance(mPtr);
         mEncumbranceBar->setValue(std::ceil(encumbrance), static_cast<int>(capacity));
-
         if (mModel && mModel->hasProfit(mPtr))
         {
             mProfitLabel->setCaptionWithReplacing("#{sProfitValue} " + MyGUI::utility::toString(getProfit(mPtr)));
         }
         else
-            mProfitLabel->setCaption({});
+            mProfitLabel->setCaption("");
     }
-
     void CompanionWindow::onCloseButtonClicked(MyGUI::Widget* _sender)
     {
         if (exit())
             MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Companion);
     }
-
     bool CompanionWindow::exit()
     {
         if (mModel && mModel->hasProfit(mPtr) && getProfit(mPtr) < 0)
@@ -176,6 +191,8 @@ namespace MWGui
                 += MyGUI::newDelegate(this, &CompanionWindow::onMessageBoxButtonClicked);
             return false;
         }
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+        MWBase::Environment::get().getWindowManager()->setCompanionWindow(nullptr);
         return true;
     }
 
@@ -183,6 +200,8 @@ namespace MWGui
     {
         if (button == 0)
         {
+            MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+            MWBase::Environment::get().getWindowManager()->setCompanionWindow(nullptr);
             MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Companion);
             // Important for Calvus' contract script to work properly
             MWBase::Environment::get().getWindowManager()->exitCurrentGuiMode();
@@ -191,6 +210,8 @@ namespace MWGui
 
     void CompanionWindow::onReferenceUnavailable()
     {
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+        MWBase::Environment::get().getWindowManager()->setCompanionWindow(nullptr);
         MWBase::Environment::get().getWindowManager()->removeGuiMode(GM_Companion);
     }
 
@@ -201,5 +222,4 @@ namespace MWGui
         mModel = nullptr;
         mSortModel = nullptr;
     }
-
 }
