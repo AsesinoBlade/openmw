@@ -1547,9 +1547,12 @@ namespace MWScript
                             msg << "[None]" << std::endl;
                         }
                     }
-                    if (::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs) != "icons\\")
+                    if (::Misc::ResourceHelpers::correctIconPath(
+                            VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
+                        != "icons\\")
                     {
-                        std::string icon = ::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs);
+                        std::string icon = ::Misc::ResourceHelpers::correctIconPath(
+                            VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
                         msg << "Icon: " << icon << std::endl;
                         if (!icon.empty())
                         {

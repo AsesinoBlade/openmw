@@ -29,8 +29,12 @@ namespace MWGui
 
         void resetReference() override;
 
+
         void setPtr(const MWWorld::Ptr& actor) override;
         void onFrame(float dt) override;
+
+        void refresh();
+
         void clear() override { resetReference(); }
 
         void onInventoryUpdate(const MWWorld::Ptr& ptr) override;
@@ -60,7 +64,9 @@ namespace MWGui
         MessageBoxManager* mMessageBoxManager;
 
         void onItemSelected(int index);
+
         void onNameFilterChanged(MyGUI::EditBox* sender);
+
         void onBackgroundSelected();
         void dragItem(MyGUI::Widget* sender, std::size_t count);
         void transferItem(MyGUI::Widget* sender, std::size_t count);
