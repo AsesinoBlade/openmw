@@ -39,6 +39,8 @@
 #include "settings.hpp"
 #include "sortfilteritemmodel.hpp"
 #include "tooltips.hpp"
+#include "companionitemmodel.hpp"
+#include "container.hpp"
 #include "tradeitemmodel.hpp"
 #include "tradewindow.hpp"
 
@@ -332,7 +334,44 @@ namespace MWGui
                 sellItem(nullptr, count);
             else if (MyGUI::InputManager::getInstance().isAltPressed())
                 transferItem(nullptr, count);
-            else
+            else if (shift)
+            {
+                auto companionItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
+                auto companionWindow = MWBase::Environment::get().getWindowManager()->getCompanionWindow();
+
+                if (companionItemModel && companionWindow)
+                {
+                    mTradeModel->moveItem(item, count, companionItemModel);
+                    companionItemModel->update();
+                    mTradeModel->update();
+                    MWBase::Environment::get().getWindowManager()->getInventoryWindow()->updateItemView();
+                    companionWindow->refresh();
+                }
+                else
+                {
+                    auto containerItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
+                    auto containerWindow = MWBase::Environment::get().getWindowManager()->getContainerWindow();
+                    if (containerItemModel && containerWindow)
+                    {
+                        if (!containerWindow->canDropItem(object, count))
+                        {
+                            // MWBase::Environment::get().getWindowManager()->
+                            //   messageBox("#{sContentsMessage2}");
+                            return;
+                        }
+
+                        mTradeModel->moveItem(item, count, containerItemModel);
+                        containerItemModel->update();
+                        mTradeModel->update();
+                        MWBase::Environment::get().getWindowManager()->getInventoryWindow()->updateItemView();
+                        containerWindow->refresh();
+                    }
+                    else
+                        dragItem(nullptr, count);
+                }
+            }
+            else 
+
                 dragItem(nullptr, count);
         }
     }
@@ -610,11 +649,12 @@ namespace MWGui
         // else: will be updated in open()
     }
 
-    void InventoryWindow::onAvatarClicked(MyGUI::Widget* _sender)
+        void InventoryWindow::onAvatarClicked(MyGUI::Widget* _sender)
     {
         if (mDragAndDrop->mIsOnDragAndDrop)
         {
             MWWorld::Ptr ptr = mDragAndDrop->mItem.mBase;
+
 
             auto [canEquipRes, canEquipMsg] = ptr.getClass().canBeEquipped(ptr, mPtr);
             if (canEquipRes == 0) // cannot equip
@@ -624,12 +664,29 @@ namespace MWGui
                 return;
             }
 
+            mDragAndDrop->finish();
             if (mDragAndDrop->mSourceModel != mTradeModel)
             {
                 // Move item to the player's inventory
                 ptr = mDragAndDrop->mSourceModel->moveItem(
                     mDragAndDrop->mItem, mDragAndDrop->mDraggedCount, mTradeModel);
             }
+
+            // Handles partial equipping
+            mEquippedStackableCount.reset();
+            const auto slots = ptr.getClass().getEquipmentSlots(ptr);
+            if (!slots.first.empty() && slots.second)
+            {
+                MWWorld::InventoryStore& invStore = mPtr.getClass().getInventoryStore(mPtr);
+                MWWorld::ConstContainerStoreIterator slotIt = invStore.getSlot(slots.first.front());
+
+                // Save the currently equipped count before useItem()
+                if (slotIt != invStore.end() && slotIt->getCellRef().getRefId() == ptr.getCellRef().getRefId())
+                    mEquippedStackableCount = slotIt->getCellRef().getCount();
+                else
+                    mEquippedStackableCount = 0;
+            }
+
 
             MWBase::Environment::get().getLuaManager()->useItem(ptr, MWMechanics::getPlayer(), false);
         }
@@ -638,11 +695,9 @@ namespace MWGui
             MyGUI::IntPoint mousePos
                 = MyGUI::InputManager::getInstance().getLastPressedPosition(MyGUI::MouseButton::Left);
             MyGUI::IntPoint relPos = mousePos - mAvatarImage->getAbsolutePosition();
-
             MWWorld::Ptr itemSelected = getAvatarSelectedItem(relPos.left, relPos.top);
             if (itemSelected.isEmpty())
                 return;
-
             for (size_t i = 0; i < mTradeModel->getItemCount(); ++i)
             {
                 if (mTradeModel->getItem(i).mBase == itemSelected)
