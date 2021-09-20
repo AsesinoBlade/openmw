@@ -1672,6 +1672,31 @@ namespace MWGui
         return mPostProcessorHud;
     }
 
+        MWGui::ItemModel* WindowManager::getShareItemModel()
+    {
+        return mItemModel;
+    }
+    void WindowManager::setShareItemModel(MWGui::ItemModel* itemModel)
+    {
+        mItemModel = itemModel;
+    }
+    MWGui::ContainerWindow* WindowManager::getContainerWindow()
+    {
+        return mContainerWindow;
+    }
+    void WindowManager::setContainerWindow(MWGui::ContainerWindow* shareWindow)
+    {
+        mContainerWindow = shareWindow;
+    }
+    MWGui::CompanionWindow* WindowManager::getCompanionWindow()
+    {
+        return mCompanionWindow;
+    }
+    void WindowManager::setCompanionWindow(MWGui::CompanionWindow* shareWindow)
+    {
+        mCompanionWindow = shareWindow;
+    }
+
     void WindowManager::useItem(const MWWorld::Ptr& item, bool bypassBeastRestrictions)
     {
         if (mInventoryWindow)
