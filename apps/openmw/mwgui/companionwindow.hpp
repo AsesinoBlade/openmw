@@ -26,8 +26,12 @@ namespace MWGui
 
         void resetReference() override;
 
+
         void setPtr(const MWWorld::Ptr& actor) override;
         void onFrame(float dt) override;
+
+        void refresh();
+
         void clear() override { resetReference(); }
 
         std::string_view getWindowIdForLua() const override { return "Companion"; }
@@ -48,6 +52,7 @@ namespace MWGui
 
         void onItemSelected(int index);
         void onNameFilterChanged(MyGUI::EditBox* _sender);
+
         void onBackgroundSelected();
         void dragItem(MyGUI::Widget* sender, int count);
 
