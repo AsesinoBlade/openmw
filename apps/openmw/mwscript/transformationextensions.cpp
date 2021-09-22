@@ -7,6 +7,7 @@
 #include <components/esm/util.hpp>
 
 #include <components/compiler/opcodes.hpp>
+#include <components/misc/rng.hpp>
 
 #include <components/interpreter/interpreter.hpp>
 #include <components/interpreter/opcodes.hpp>
@@ -370,7 +371,7 @@ namespace MWScript
             }
         };
 
-        template <class R>
+         template <class R>
         class OpPositionCell : public Interpreter::Opcode0
         {
         public:
@@ -500,6 +501,7 @@ namespace MWScript
                 MWBase::Environment::get().getLuaManager()->objectTeleported(ptr);
             }
         };
+
 
         class OpPlaceItemCell : public Interpreter::Opcode0
         {
