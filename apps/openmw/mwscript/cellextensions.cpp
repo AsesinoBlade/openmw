@@ -133,10 +133,12 @@ namespace MWScript
 
                 pos.rot[0] = pos.rot[1] = pos.rot[2] = 0;
 
-                MWWorld::ActionTeleport(ESM::RefId::esm3ExteriorCell(x, y), pos, false).execute(playerPtr);
+
+                MWWorld::ActionTeleport(ESM::RefId::esm3ExteriorCell(x, y), pos, true).execute(playerPtr);
                 playerPtr = world->getPlayerPtr(); // could be changed by ActionTeleport
                 world->adjustPosition(playerPtr, false);
             }
+
         };
 
         class OpGetInterior : public Interpreter::Opcode0
