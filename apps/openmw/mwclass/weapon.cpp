@@ -248,7 +248,7 @@ namespace MWClass
             auto flags = ref->mBase->mData.mFlags;
             bool isSilver = flags & ESM::Weapon::Silver;
             bool isMagical = flags & ESM::Weapon::Magical;
-            bool isEnchanted = !ref - getEnchantment(ref).empty();
+            bool isEnchanted = !(getEnchantment(ref).empty());
 
             isNormal = !isSilver && !isMagical && (!isEnchanted || !Settings::Manager::getBool("enchanted weapons are magical", "Game"));
         }
