@@ -33,8 +33,10 @@ namespace Resource
 
         void reportStats(unsigned int frameNumber, osg::Stats* stats) const override;
 
-    private:
         osg::ref_ptr<osg::Image> mWarningImage;
+
+    private:
+
         osg::ref_ptr<osgDB::Options> mOptions;
         osg::ref_ptr<osgDB::Options> mOptionsNoFlip;
 
