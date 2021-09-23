@@ -153,6 +153,7 @@ namespace MWGui
 
     void MainMenu::onExitConfirmed()
     {
+        MWBase::Environment::get().getStateManager()->quickSave("Autosave"); 
         MWBase::Environment::get().getStateManager()->requestQuit();
     }
 
