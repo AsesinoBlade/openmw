@@ -65,6 +65,8 @@
 #include "matrixtransform.hpp"
 #include "particle.hpp"
 
+#include <boost/iostreams/filter/zlib.hpp>
+
 namespace
 {
     struct DisableOptimizer : osg::NodeVisitor
@@ -566,6 +568,9 @@ namespace NifOsg
 
         osg::ref_ptr<osg::Image> handleSourceTexture(const Nif::NiSourceTexture* st) const
         {
+            if (!st)
+                return nullptr;
+
             if (st)
             {
                 if (st->mExternal)
@@ -1076,7 +1081,32 @@ namespace NifOsg
             if (!mImageManager)
                 return nullptr;
 
-            return mImageManager->getImage(Misc::ResourceHelpers::correctTexturePath(path, *mImageManager->getVFS()));
+            std::string filename = Misc::ResourceHelpers::correctTexturePath(path, *mImageManager->getVFS());
+
+            if (filename.size() > 7)
+            {
+                auto norm = filename.substr(filename.size() - 7);
+                if (norm == "_nm.dds")
+                {
+                    filename = filename.substr(0, filename.size() - 7) + "_n.dds";
+                }
+            }
+
+            if (filename.size() > 8)
+            {
+                auto norm = filename.substr(filename.size() - 8);
+                if (norm == "_nrm.dds")
+                {
+                    filename = filename.substr(0, filename.size() - 8) + "_n.dds";
+                }
+            }
+
+            auto image
+                = mImageManager->getImage(Misc::ResourceHelpers::correctTexturePath(path, *mImageManager->getVFS()));
+            if (image == mImageManager->mWarningImage)
+                Log(Debug::Error) << this->mFilename << " Failed to open image: " << filename << "\n";
+            return image;
+
         }
 
         static osg::ref_ptr<osg::Texture2D> attachTexture(const std::string& name, osg::ref_ptr<osg::Image> image,
