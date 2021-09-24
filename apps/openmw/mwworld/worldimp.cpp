@@ -3358,6 +3358,15 @@ namespace MWWorld
     {
         MWWorld::Ptr player = getPlayerPtr();
         player.getClass().getInventoryStore(player).rechargeItems(duration);
+        std::set<MWWorld::Ptr> followers;
+
+        MWBase::Environment::get().getMechanicsManager()->getActorsFollowing(player, followers);
+        for (std::set<MWWorld::Ptr>::iterator it = followers.begin(); it != followers.end(); ++it)
+        {
+            MWWorld::Ptr companion = *it;
+            if (it->getClass().hasInventoryStore(*it))
+                it->getClass().getInventoryStore(*it).rechargeItems(duration);
+        }
 
         if (activeOnly)
         {
