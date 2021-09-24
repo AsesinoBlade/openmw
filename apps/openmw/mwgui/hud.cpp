@@ -30,6 +30,8 @@
 #include "spellicons.hpp"
 #include "worlditemmodel.hpp"
 
+#include <components/misc/strings/format.hpp>
+
 namespace MWGui
 {
     HUD::HUD(CustomMarkerCollection& customMarkers, DragAndDrop* dragAndDrop, MWRender::LocalMap* localMapRender)
