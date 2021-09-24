@@ -56,7 +56,7 @@ namespace MWScript
 
                 MWMechanics::AiActivate activatePackage(objectID, repeat);
                 ptr.getClass().getCreatureStats(ptr).getAiSequence().stack(activatePackage, ptr);
-                Log(Debug::Info) << "AiActivate";
+                //Log(Debug::Info) << "AiActivate";
             }
         };
 
@@ -88,7 +88,7 @@ namespace MWScript
                 MWMechanics::AiTravel travelPackage(x, y, z, repeat);
                 ptr.getClass().getCreatureStats(ptr).getAiSequence().stack(travelPackage, ptr);
 
-                Log(Debug::Info) << "AiTravel: " << x << ", " << y << ", " << z;
+                //Log(Debug::Info) << "AiTravel: " << x << ", " << y << ", " << z;
             }
         };
 
@@ -126,7 +126,7 @@ namespace MWScript
                 MWMechanics::AiEscort escortPackage(actorID, {}, static_cast<int>(duration), x, y, z, repeat);
                 ptr.getClass().getCreatureStats(ptr).getAiSequence().stack(escortPackage, ptr);
 
-                Log(Debug::Info) << "AiEscort: " << x << ", " << y << ", " << z << ", " << duration;
+                //Log(Debug::Info) << "AiEscort: " << x << ", " << y << ", " << z << ", " << duration;
             }
         };
 
@@ -173,7 +173,7 @@ namespace MWScript
                 MWMechanics::AiEscort escortPackage(actorID, cellID, static_cast<int>(duration), x, y, z, repeat);
                 ptr.getClass().getCreatureStats(ptr).getAiSequence().stack(escortPackage, ptr);
 
-                Log(Debug::Info) << "AiEscort: " << x << ", " << y << ", " << z << ", " << duration;
+                //Log(Debug::Info) << "AiEscort: " << x << ", " << y << ", " << z << ", " << duration;
             }
         };
 
@@ -355,7 +355,7 @@ namespace MWScript
                 MWMechanics::AiFollow followPackage(actorID, {}, duration, x, y, z, repeat);
                 ptr.getClass().getCreatureStats(ptr).getAiSequence().stack(followPackage, ptr);
 
-                Log(Debug::Info) << "AiFollow: " << actorID << ", " << x << ", " << y << ", " << z << ", " << duration;
+                //Log(Debug::Info) << "AiFollow: " << actorID << ", " << x << ", " << y << ", " << z << ", " << duration;
             }
         };
 
@@ -395,7 +395,7 @@ namespace MWScript
 
                 MWMechanics::AiFollow followPackage(actorID, cellID, duration, x, y, z, repeat);
                 ptr.getClass().getCreatureStats(ptr).getAiSequence().stack(followPackage, ptr);
-                Log(Debug::Info) << "AiFollow: " << actorID << ", " << x << ", " << y << ", " << z << ", " << duration;
+                //Log(Debug::Info) << "AiFollow: " << actorID << ", " << x << ", " << y << ", " << z << ", " << duration;
             }
         };
 
