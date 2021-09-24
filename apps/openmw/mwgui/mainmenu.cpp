@@ -155,7 +155,13 @@ namespace MWGui
 
     void MainMenu::onExitConfirmed()
     {
-        MWBase::Environment::get().getStateManager()->quickSave("Autosave"); 
+        bool isMainMenu =
+            MWBase::Environment::get().getWindowManager()->containsMode(MWGui::GM_MainMenu) &&
+            MWBase::Environment::get().getStateManager()->getState() == MWBase::StateManager::State_NoGame; 
+        
+        if (!isMainMenu)
+            MWBase::Environment::get().getStateManager()->quickSave("Autosave");
+
         MWBase::Environment::get().getStateManager()->requestQuit();
     }
 
