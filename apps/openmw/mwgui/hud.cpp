@@ -35,7 +35,6 @@
 
 #include "components/esm3/loadalch.hpp"
 
-
 namespace MWGui
 {
     HUD::HUD(CustomMarkerCollection& customMarkers, DragAndDrop* dragAndDrop, MWRender::LocalMap* localMapRender)
@@ -300,25 +299,11 @@ namespace MWGui
     void HUD::onFrame(float dt)
     {
         LocalMapBase::onFrame(dt);
-        auto currentTime = MWBase::Environment::get().getWorld()->getTimeStamp(); 
-        int hour = currentTime.getHour();
-        int minute = ((float)currentTime.getHour() - hour) * 60;
-        auto minPad = minute < 10 ? "0" : "";
-        bool pm = false;
-        if (hour > 12)
-        {
-            hour -= 12;
-            pm = true;
-        }
-        else if (hour == 0)
-            hour = 12;
-
-        std::string dateTimeText = Misc::StringUtils::format("%i:%s%i %s", hour, minPad, minute, pm ? "PM" : "AM");
 
         mCellNameTimer -= dt;
         mWeaponSpellTimer -= dt;
         if (mCellNameTimer < 0)
-            mCellNameBox->setCaption(dateTimeText);
+            mCellNameBox->setVisible(false);
         if (mWeaponSpellTimer < 0)
             mWeaponSpellBox->setVisible(false);
 
@@ -405,7 +390,6 @@ namespace MWGui
 
          mPoisonImage->setImageTexture(Misc::ResourceHelpers::correctIconPath(
             VFS::Path::toNormalized(effect->mIcon), *MWBase::Environment::get().getResourceSystem()->getVFS()));
-
     }
 
     void HUD::setSelectedEnchantItem(const MWWorld::Ptr& item, int chargePercent)
@@ -451,7 +435,6 @@ namespace MWGui
         auto poisonName = item.getClass().getPoison(item);
         setSelectedPoison(poisonName);
     }
-
 
     void HUD::unsetSelectedSpell()
     {
