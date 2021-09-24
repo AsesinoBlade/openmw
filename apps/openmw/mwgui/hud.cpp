@@ -293,11 +293,25 @@ namespace MWGui
     void HUD::onFrame(float dt)
     {
         LocalMapBase::onFrame(dt);
+        auto currentTime = MWBase::Environment::get().getWorld()->getTimeStamp(); 
+        int hour = currentTime.getHour();
+        int minute = ((float)currentTime.getHour() - hour) * 60;
+        auto minPad = minute < 10 ? "0" : "";
+        bool pm = false;
+        if (hour > 12)
+        {
+            hour -= 12;
+            pm = true;
+        }
+        else if (hour == 0)
+            hour = 12;
+
+        std::string dateTimeText = Misc::StringUtils::format("%i:%s%i %s", hour, minPad, minute, pm ? "PM" : "AM");
 
         mCellNameTimer -= dt;
         mWeaponSpellTimer -= dt;
         if (mCellNameTimer < 0)
-            mCellNameBox->setVisible(false);
+            mCellNameBox->setCaption(dateTimeText);
         if (mWeaponSpellTimer < 0)
             mWeaponSpellBox->setVisible(false);
 
