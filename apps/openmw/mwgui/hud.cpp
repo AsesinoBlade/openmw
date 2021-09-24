@@ -30,6 +30,8 @@
 
 #include "itemwidget.hpp"
 
+#include <components/misc/strings/format.hpp>
+
 namespace MWGui
 {
 
