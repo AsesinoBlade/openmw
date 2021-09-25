@@ -117,8 +117,8 @@ namespace MWGui
                 val += pcStats.getLevelupAttributeMultiplier(attribute.mId);
             }
 
-            if (val >= 100)
-                val = 100;
+            if (val >= 200)
+                val = 200;
 
             mAttributeWidgets[attribute.mId].mValue->setCaption(MyGUI::utility::toString(val));
         }
@@ -196,14 +196,15 @@ namespace MWGui
         for (const ESM::Attribute& attribute : MWBase::Environment::get().getESMStore()->get<ESM::Attribute>())
         {
             const auto& widgets = mAttributeWidgets[attribute.mId];
-            if (pcStats.getAttribute(attribute.mId).getBase() < 100)
+            if (pcStats.getAttribute(attribute.mId).getBase() < 200)
             {
                 widgets.mButton->setEnabled(true);
                 widgets.mValue->setEnabled(true);
                 availableAttributes++;
 
                 int mult = pcStats.getLevelupAttributeMultiplier(attribute.mId);
-                mult = std::min(mult, static_cast<int>(100 - pcStats.getAttribute(attribute.mId).getBase()));
+                mult = std::min(mult, static_cast<int>(200 - pcStats.getAttribute(attribute.mId).getBase()));
+
                 if (mult <= 1)
                     widgets.mMultiplier->setCaption({});
                 else
@@ -253,8 +254,8 @@ namespace MWGui
                 MWMechanics::AttributeValue attribute = pcStats.getAttribute(mSpentAttributes[i]);
                 attribute.setBase(attribute.getBase() + pcStats.getLevelupAttributeMultiplier(mSpentAttributes[i]));
 
-                if (attribute.getBase() >= 100)
-                    attribute.setBase(100);
+                if (attribute.getBase() >= 200)
+                    attribute.setBase(200);
                 pcStats.setAttribute(mSpentAttributes[i], attribute);
             }
 

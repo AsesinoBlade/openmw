@@ -279,7 +279,7 @@ namespace MWGui
                 nameWidget->setSize(nameWidget->getWidth() - (widthAfter - widthBefore), nameWidget->getHeight());
             }
 
-            if (value.getBase() < 100)
+            if (value.getBase() < 200)
             {
                 nameWidget->setUserString("Visible_SkillMaxed", "false");
                 nameWidget->setUserString("UserData^Hidden_SkillMaxed", "true");
@@ -342,7 +342,8 @@ namespace MWGui
         for (const auto& attribute : store->get<ESM::Attribute>())
         {
             int mult = playerStats.getLevelupAttributeMultiplier(attribute.mId);
-            mult = std::min(mult, static_cast<int>(100 - playerStats.getAttribute(attribute.mId).getBase()));
+            mult = std::min(mult, static_cast<int>(200 - playerStats.getAttribute(attribute.mId).getBase()));
+
             if (mult > 1)
             {
                 if (!first)
