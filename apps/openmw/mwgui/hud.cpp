@@ -300,12 +300,12 @@ namespace MWGui
         int minute = ((float)currentTime.getHour() - hour) * 60;
         auto minPad = minute < 10 ? "0" : "";
         bool pm = false;
-        if (hour > 12)
+        if (hour > 11)
         {
             hour -= 12;
             pm = true;
         }
-        else if (hour == 0)
+        if (hour == 0)
             hour = 12;
 
         std::string dateTimeText = Misc::StringUtils::format("%i:%s%i %s", hour, minPad, minute, pm ? "PM" : "AM");
