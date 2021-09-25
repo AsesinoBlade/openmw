@@ -39,7 +39,8 @@ end
 
 local function skillLevelUpHandler(skillid, source, params)
     local skillStat = NPC.stats.skills[skillid](self)
-    if (skillStat.base >= 100 and params.skillIncreaseValue > 0) or 
+
+    if (skillStat.base >= 200 and params.skillIncreaseValue > 0) or 
         (skillStat.base <= 0 and params.skillIncreaseValue < 0) then 
         return false 
     end
