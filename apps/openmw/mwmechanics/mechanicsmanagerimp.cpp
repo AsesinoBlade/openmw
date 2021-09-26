@@ -1522,10 +1522,44 @@ namespace MWMechanics
         if (target == player || !attacker.getClass().isActor())
             return false;
 
+
+        MWMechanics::CreatureStats& statsTarget = target.getClass().getCreatureStats(target);
+        
+        bool friendlyFire = false;
+
+        std::set<MWWorld::Ptr> followers;
+        MWBase::Environment::get().getMechanicsManager()->getActorsFollowing(player, followers);
+        for (std::set<MWWorld::Ptr>::iterator it = followers.begin(); it != followers.end(); ++it)
+        {
+            MWWorld::Ptr companion = *it;
+            if (attacker == companion)
+            {
+                friendlyFire = true;
+                break;
+            }
+
+            
+        }
+
+        if (attacker == player || friendlyFire)
+        {
+            std::set<MWWorld::Ptr> followersAttacker;
+            getActorsSidingWith(attacker, followersAttacker);
+            if (followersAttacker.find(target) != followersAttacker.end())
+            {
+                statsTarget.friendlyHit();
+
+                if (statsTarget.getFriendlyHits() < 2000000000)
+                {
+                    MWBase::Environment::get().getDialogueManager()->say(target, ESM::RefId::stringRefId("hit"));
+                    return false;
+                }
+            }
+        }
+
         if (canCommitCrimeAgainst(target, attacker))
             commitCrime(attacker, target, MWBase::MechanicsManager::OT_Assault);
 
-        MWMechanics::CreatureStats& statsTarget = target.getClass().getCreatureStats(target);
         AiSequence& seq = statsTarget.getAiSequence();
 
         if (!attacker.isEmpty()
