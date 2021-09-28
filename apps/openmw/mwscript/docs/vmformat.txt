@@ -486,5 +486,5 @@ op 0x2000323: SetPCVisionBonus
 op 0x2000324: ModPCVisionBonus
 op 0x2000325: TestModels, T3D
 op 0x2000326: FillJournal
-
-opcodes 0x2000327-0x3ffffff unused
+op 0x2000327: ReportActiveQuests
+opcodes 0x2000328-0x3ffffff unused
