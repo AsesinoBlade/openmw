@@ -550,7 +550,6 @@ namespace Compiler
             extensions.registerInstruction("fixme", "", opcodeFixme);
             extensions.registerInstruction("ra", "", opcodeResetActors);
             extensions.registerInstruction("movetopc", "fl", opcodeMoveToPC, opcodeMoveToPCExplicit);
-
         }
     }
 
