@@ -330,6 +330,8 @@ namespace Compiler
         const int opcodeHelp = 0x2000320;
         const int opcodeReloadLua = 0x2000321;
         const int opcodeTestModels = 0x2000325;
+        const int opcodeReportActiveQuests = 0x2000326;
+
     }
 
     namespace Sky
