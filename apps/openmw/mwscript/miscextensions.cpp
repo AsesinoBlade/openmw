@@ -58,6 +58,9 @@
 #include "../mwbase/windowmanager.hpp"
 #include "../mwbase/world.hpp"
 
+#include "../mwbase/luamanager.hpp"
+#include "../mwbase/journal.hpp"
+
 #include "../mwworld/cellstore.hpp"
 #include "../mwworld/class.hpp"
 #include "../mwworld/containerstore.hpp"
@@ -1695,6 +1698,23 @@ namespace MWScript
             }
         };
 
+        class OpReportActiveQuests : public Interpreter::Opcode0
+        {
+            public:
+
+                void execute (Interpreter::Runtime& runtime) override
+                {
+                    MWBase::Journal* journal = MWBase::Environment::get().getJournal(); 
+                    std::string str = "";
+
+                    for (MWBase::Journal::TQuestIter i = journal->questBegin(); i != journal->questEnd(); ++i)
+                        if (!(i->second.isFinished()))
+                            str += " Name: " + std::string(i->second.getName()) + "\n  ID : " + i->second.getTopic().toString() +
+                               "\n  Index : " + std::to_string(i->second.getIndex()) + "\n";
+                    runtime.getContext().report (str);
+                }
+        };
+
         class OpToggleActorsPaths : public Interpreter::Opcode0
         {
         public:
@@ -1721,8 +1741,7 @@ namespace MWScript
                 }
 
                 MWBase::Environment::get().getWorld()->setNavMeshNumberToRender(
-                    static_cast<std::size_t>(navMeshNumber));
-            }
+                    static_cast<std::size_t>(navMeshNumber));            }
         };
 
         template <class R>
@@ -1953,6 +1972,8 @@ namespace MWScript
             interpreter.installSegment5<OpHelp>(Compiler::Misc::opcodeHelp);
             interpreter.installSegment5<OpReloadLua>(Compiler::Misc::opcodeReloadLua);
             interpreter.installSegment5<OpTestModels>(Compiler::Misc::opcodeTestModels);
+            interpreter.installSegment5<OpReportActiveQuests>(Compiler::Misc::opcodeReportActiveQuests);
+
         }
     }
 }

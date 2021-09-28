@@ -328,6 +328,8 @@ namespace Compiler
             extensions.registerInstruction("reloadlua", "", opcodeReloadLua);
             extensions.registerInstruction("testmodels", "", opcodeTestModels);
             extensions.registerInstruction("t3d", "", opcodeTestModels);
+            extensions.registerInstruction("raq", "", opcodeReportActiveQuests);
+            extensions.registerInstruction("reportactivequests", "", opcodeReportActiveQuests);
         }
     }
 
