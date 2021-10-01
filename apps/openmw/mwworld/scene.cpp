@@ -363,7 +363,8 @@ namespace MWWorld
     {
         if (mActiveCells.find(cell) == mActiveCells.end())
             return;
-        Log(Debug::Info) << "Unloading cell " << cell->getCell()->getDescription();
+        //Log(Debug::Info) << "Unloading cell " << cell->getCell()->getDescription();
+
 
         ListAndResetObjectsVisitor visitor;
 
@@ -429,7 +430,8 @@ namespace MWWorld
         assert(mActiveCells.find(&cell) == mActiveCells.end());
         mActiveCells.insert(&cell);
 
-        Log(Debug::Info) << "Loading cell " << cell.getCell()->getDescription();
+        //Log(Debug::Info) << "Loading cell " << cell->getCell()->getDescription();
+
 
         const int cellX = cell.getCell()->getGridX();
         const int cellY = cell.getCell()->getGridY();
@@ -947,7 +949,7 @@ namespace MWWorld
             return;
         }
 
-        Log(Debug::Info) << "Changing to interior";
+        //Log(Debug::Info) << "Changing to interior";
 
         auto navigatorUpdateGuard = mNavigator.makeUpdateGuard();
 
