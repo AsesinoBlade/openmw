@@ -1494,6 +1494,25 @@ namespace MWScript
                             << std::endl;
                     osg::Vec3f pos(ptr.getRefData().getPosition().asVec3());
                     msg << "Coordinates: " << pos.x() << " " << pos.y() << " " << pos.z() << std::endl;
+
+                    if (ptr.getTypeName() == "struct ESM::Weapon")
+                    {
+                        const MWWorld::LiveCellRef<ESM::Weapon>* ref = ptr.get<ESM::Weapon>();
+                        msg << "Enchant: " << ref->mBase->mEnchant << std::endl;
+                    }
+
+                    if (ptr.getTypeName() == "struct ESM::Armor")
+                    {
+                        const MWWorld::LiveCellRef<ESM::Armor>* ref = ptr.get<ESM::Armor>();
+                        msg << "Enchant: " << ref->mBase->mEnchant << std::endl;
+                    }
+
+                    if (ptr.getTypeName() == "struct ESM::Clothing")
+                    {
+                        const auto* ref = ptr.get<ESM::Clothing>();
+                        msg << "Enchant: " << ref->mBase->mEnchant << std::endl;
+                    }
+
                     auto vfs = MWBase::Environment::get().getResourceSystem()->getVFS();
                     const VFS::Path::Normalized model
                         = ::Misc::ResourceHelpers::correctActorModelPath(ptr.getClass().getCorrectedModel(ptr), vfs);
