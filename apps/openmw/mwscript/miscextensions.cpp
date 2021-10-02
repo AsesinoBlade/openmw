@@ -1495,19 +1495,19 @@ namespace MWScript
                     osg::Vec3f pos(ptr.getRefData().getPosition().asVec3());
                     msg << "Coordinates: " << pos.x() << " " << pos.y() << " " << pos.z() << std::endl;
 
-                    if (ptr.getTypeName() == "struct ESM::Weapon")
+                    if (ptr.getTypeDescription() == "struct ESM::Weapon")
                     {
                         const MWWorld::LiveCellRef<ESM::Weapon>* ref = ptr.get<ESM::Weapon>();
                         msg << "Enchant: " << ref->mBase->mEnchant << std::endl;
                     }
 
-                    if (ptr.getTypeName() == "struct ESM::Armor")
+                    if (ptr.getTypeDescription() == "struct ESM::Armor")
                     {
                         const MWWorld::LiveCellRef<ESM::Armor>* ref = ptr.get<ESM::Armor>();
                         msg << "Enchant: " << ref->mBase->mEnchant << std::endl;
                     }
 
-                    if (ptr.getTypeName() == "struct ESM::Clothing")
+                    if (ptr.getTypeDescription() == "struct ESM::Clothing")
                     {
                         const auto* ref = ptr.get<ESM::Clothing>();
                         msg << "Enchant: " << ref->mBase->mEnchant << std::endl;
