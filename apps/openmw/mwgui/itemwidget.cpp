@@ -143,8 +143,10 @@ namespace MWGui
         std::string invIcon = Misc::ResourceHelpers::correctIconPath(icon, vfs);
         if (!vfs->exists(invIcon))
         {
+
             Log(Debug::Error) << "Failed to open image: '" << invIcon
-                              << "' not found, falling back to 'default-icon.tga'";
+                              << "' not found, falling back to 'default-icon.tga' for object: "
+                              << ptr.getCellRef().getRefId();
             invIcon = Misc::ResourceHelpers::correctIconPath("default icon.tga", vfs);
         }
         setIcon(invIcon);
