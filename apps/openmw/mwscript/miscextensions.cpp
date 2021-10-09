@@ -1621,6 +1621,47 @@ namespace MWScript
             }
         };
 
+        class OpGetGlobal : public Interpreter::Opcode0
+        {
+        public:
+            void execute(Interpreter::Runtime& runtime) override
+            {
+                const std::string& global = std::string(runtime.getStringLiteral(runtime[0].mInteger));
+                runtime.pop();
+                
+                MWBase::World* world = MWBase::Environment::get().getWorld();
+
+                std::string str = "";
+
+                char type = world->getGlobalVariableType(global);
+                str = "\n" + global + " = ";
+
+                switch (type)
+                {
+                case 's':
+
+                    str += std::to_string(runtime.getContext().getGlobalShort(global)) + " (short)";
+                    break;
+
+                case 'l':
+
+                    str += std::to_string(runtime.getContext().getGlobalLong(global)) + " (long)";
+                    break;
+
+                case 'f':
+
+                    str += std::to_string(runtime.getContext().getGlobalFloat(global)) + " (float)";
+                    break;
+
+                default:
+
+                    str += "<unknown type>";
+                }
+
+                runtime.getContext().report(str);
+            }
+        };
+
         class OpRemoveFromLevCreature : public Interpreter::Opcode0
         {
         public:
@@ -1992,7 +2033,7 @@ namespace MWScript
             interpreter.installSegment5<OpReloadLua>(Compiler::Misc::opcodeReloadLua);
             interpreter.installSegment5<OpTestModels>(Compiler::Misc::opcodeTestModels);
             interpreter.installSegment5<OpReportActiveQuests>(Compiler::Misc::opcodeReportActiveQuests);
-
+            interpreter.installSegment5<OpGetGlobal>(Compiler::Misc::opcodeGetGlobal);
         }
     }
 }
