@@ -329,6 +329,8 @@ namespace Compiler
             extensions.registerInstruction("t3d", "", opcodeTestModels);
             extensions.registerInstruction("raq", "", opcodeReportActiveQuests);
             extensions.registerInstruction("reportactivequests", "", opcodeReportActiveQuests);
+            extensions.registerInstruction("getglobal", "c", opcodeGetGlobal);
+            extensions.registerInstruction("gg", "c", opcodeGetGlobal);
         }
     }
 
