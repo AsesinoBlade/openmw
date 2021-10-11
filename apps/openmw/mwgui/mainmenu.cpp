@@ -14,14 +14,17 @@
 #include "../mwbase/statemanager.hpp"
 #include "../mwbase/windowmanager.hpp"
 #include "../mwbase/world.hpp"
-
 #include "../mwworld/globals.hpp"
-
+#include "../mwbase/statemanager.hpp"
+#include "../mwclass/actor.hpp"
+#include "savegamedialog.hpp"
+#include "confirmationdialog.hpp"
 #include "backgroundimage.hpp"
 #include "confirmationdialog.hpp"
 #include "savegamedialog.hpp"
 #include "settingswindow.hpp"
 #include "videowidget.hpp"
+#include "apps/openmw/mwmechanics/creaturestats.hpp"
 
 namespace MWGui
 {
@@ -158,7 +161,14 @@ namespace MWGui
             MWBase::Environment::get().getStateManager()->getState() == MWBase::StateManager::State_NoGame; 
         
         if (!isMainMenu)
-            MWBase::Environment::get().getStateManager()->quickSave("Autosave");
+        {
+            MWBase::StateManager::State state = MWBase::Environment::get().getStateManager()->getState();
+            if (state == MWBase::StateManager::State_Running &&
+                MWBase::Environment::get().getWorld()->getGlobalInt(MWWorld::Globals::sCharGenState) == -1 &&
+                MWBase::Environment::get().getWindowManager()->isSavingAllowed() &&
+                !(MWBase::Environment::get().getWorld()->getPlayerPtr().getClass().getCreatureStats(MWBase::Environment::get().getWorld()->getPlayerPtr()).isDead()))
+                MWBase::Environment::get().getStateManager()->quickSave("Autosave");
+        }
 
         MWBase::Environment::get().getStateManager()->requestQuit();
     }
