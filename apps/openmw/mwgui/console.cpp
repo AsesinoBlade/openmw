@@ -1,4 +1,13 @@
+#ifndef MWGUI_WINDOWMANAGERIMP_H
+#define MWGUI_WINDOWMANAGERIMP_H
+#endif
+
 #include "console.hpp"
+#include <osg/Group>
+#include <osg/ComputeBoundsVisitor>
+#include <osg/Timer>
+
+#include <osg/ref_ptr>
 
 #include <MyGUI_Button.h>
 #include <MyGUI_EditBox.h>
@@ -23,16 +32,29 @@
 
 #include "../mwscript/extensions.hpp"
 #include "../mwscript/interpretercontext.hpp"
+#include <components/myguiplatform/myguiplatform.hpp>
+#include <components/myguiplatform/myguirendermanager.hpp>
+
+#include "../mwscript/extensions.hpp"
+#include "../mwrender/renderingmanager.hpp"
 
 #include "../mwbase/environment.hpp"
 #include "../mwbase/luamanager.hpp"
 #include "../mwbase/scriptmanager.hpp"
 #include "../mwbase/windowmanager.hpp"
 
+#include "../mwbase/world.hpp"
+#include "../mwbase/luamanager.hpp"
+#include "../mwmechanics/actorutil.hpp"
+
+#include "../mwphysics/raycasting.hpp"
+
+
 #include "../mwworld/class.hpp"
 #include "../mwworld/esmstore.hpp"
 #include "apps/openmw/mwbase/world.hpp"
 #include "apps/openmw/mwphysics/raycasting.hpp"
+#include "../mwworld/worldimp.hpp"
 
 namespace
 {
@@ -119,7 +141,7 @@ namespace MWGui
             return result.mHitPos._v[2] + height._v[0];
     }
 
-    void Console::report(const std::string& message, const Compiler::TokenLoc& loc, Type type)
+    void Console::report (const std::string& message, const Compiler::TokenLoc& loc, Type type)
     {
         std::ostringstream error;
         error << "column " << loc.mColumn << " (" << loc.mLiteral << "):";
@@ -331,11 +353,12 @@ namespace MWGui
             return false;
     }
 
-    void Console::repositionObject(MWWorld::RefData obj, MWWorld::CellRef cellRef , MyGUI::KeyCode key)
+    void Console::repositionObject(MWWorld::Ptr ref, MWWorld::CellRef cellRef , MyGUI::KeyCode key)
     {
        /* std::string str;
         str = "Pointing at " + obj.getRefId();
         MWBase::Environment::get().getWindowManager()->messageBox(str);*/
+        auto obj = ref.getRefData();
 
         if (MyGUI::InputManager::getInstance().isShiftPressed())
         {
@@ -525,6 +548,17 @@ namespace MWGui
                 cellRef.hasChanged();
                 obj.hasChanged();
             }
+            else if (key == MyGUI::KeyCode::F)
+            {
+                auto pos = Console::dropObjectToGround(MWMechanics::getPlayer(), ref, 1);
+                float x = pos;
+                ESM::Position position = obj.getPosition();
+                float scale = cellRef.getScale();
+                std::string str = "setpos z " + std::to_string(x);
+                obj.hasChanged();
+                Console::execute(str);
+                obj.hasChanged();
+            }
         }
     }
 
@@ -538,7 +572,7 @@ namespace MWGui
             && Console::validRepositionKey(key))
         {
 
-            Console::repositionObject(mPtr.getRefData(), mPtr.mRef->mRef, key);
+            Console::repositionObject(mPtr, mPtr.mRef->mRef, key);
         }
 
         else if(MyGUI::InputManager::getInstance().isControlPressed()
@@ -575,8 +609,42 @@ namespace MWGui
                 }
             }
         }
-        if (mCommandHistory.empty())
+        else if (!mPtr.isEmpty() 
+            && MyGUI::InputManager::getInstance().isShiftPressed()
+            && key != MyGUI::KeyCode::LeftShift 
+            && key != MyGUI::KeyCode::RightShift
+            )
+        {
+            
+            Console::repositionObject(mPtr.mRef, mPtr.mRef->mRef, key);
+        }
+        else if(key == MyGUI::KeyCode::Tab)
+        {
+            std::vector<std::string> matches;
+            listNames();
+            std::string oldCaption = mCommandLine->getCaption();
+            std::string newCaption = complete( mCommandLine->getOnlyText(), matches );
+            mCommandLine->setCaption(newCaption);
+
+            // List candidates if repeatedly pressing tab
+            if (oldCaption == newCaption && !matches.empty())
+            {
+                int i = 0;
+                printOK("");
+                for(std::string& match : matches)
+                {
+                    if(i == 50)
+                        break;
+
+                    printOK(match);
+                    i++;
+                }
+            }
+        }
+
+        if(mCommandHistory.empty()) 
             return;
+
 
         // Traverse history with up and down arrows
         if (key == MyGUI::KeyCode::ArrowUp)
