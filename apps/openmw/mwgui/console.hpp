@@ -120,6 +120,8 @@ namespace MWGui
         /// Report error to the user.
         void report(const std::string& message, const Compiler::TokenLoc& loc, Type type) override;
 
+        void repositionObject(MWWorld::Ptr obj, MWWorld::CellRef cellRef, MyGUI::KeyCode key);
+
         int  adjustment;
 
         /// Report a file related error
@@ -130,8 +132,7 @@ namespace MWGui
         /// \note The list may contain duplicates (if a name is a keyword and an identifier at the same
         /// time).
         void listNames();
-        void repositionObject(MWWorld::RefData obj, MWWorld::CellRef cellRef, MyGUI::KeyCode key);
-
+        
         void initConsoleHistory();
     };
 }
