@@ -561,6 +561,7 @@ VCPKG_PATH="vcpkg-x64-windows-${DEPS_MSVC_YEAR:?}-${VCPKG_TAG:?}"
 VCPKG_PDB_PATH="vcpkg-x64-windows-${DEPS_MSVC_YEAR:?}-pdb-${VCPKG_TAG:?}"
 VCPKG_MANIFEST="${VCPKG_PATH:?}-manifest.txt"
 VCPKG_PDB_MANIFEST="${VCPKG_PDB_PATH:?}-manifest.txt"
+add_cmake_opts "-DOPENMW_LTO_BUILD=True"
 
 echo
 echo "==================================="
