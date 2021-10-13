@@ -532,11 +532,13 @@ fi
 QT_VER='6.6.3'
 AQT_VERSION='v3.1.15'
 
+
 VCPKG_REVISION='65ef3a6db0e01983efc7d8286f44020beeee2ea3'
 VCPKG_PATH="vcpkg-x64-windows-${VS_VERSION:?}-${VCPKG_REVISION:?}"
 VCPKG_ARCHIVE="${VCPKG_PATH:?}.7z"
 VCPKG_PDB_PATH="vcpkg-x64-windows-${VS_VERSION:?}-pdb-${VCPKG_REVISION:?}"
 VCPKG_PDB_ARCHIVE="${VCPKG_PDB_PATH:?}.7z"
+add_cmake_opts "-DOPENMW_LTO_BUILD=True"
 
 echo
 echo "==================================="
