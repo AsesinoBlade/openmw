@@ -907,32 +907,32 @@ namespace MWScript
                     {
 
                          auto &effect = *effectIt;
-                         auto effectIDStr = ESM::MagicEffect::indexToGmstString(effect.mEffectID);
-                         const ESM::MagicEffect* magicEffect = store.get<ESM::MagicEffect>().search(effect.mEffectID);
+                         auto effectIDStr = ESM::MagicEffect::indexToGmstString(effect.mData.mEffectID);
+                         const ESM::MagicEffect* magicEffect = store.get<ESM::MagicEffect>().search(effect.mData.mEffectID);
 
-                         std::string range = (effect.mRange == 0 ? "Self" : effect.mRange == 1 ? "Touch" : "Target");
+                         std::string range = (effect.mData.mRange == 0 ? "Self" : effect.mData.mRange == 1 ? "Touch" : "Target");
                          std::string magnitude = "";
                          std::string area = "";
-                         if (effect.mMagnMin > 0)
-                             magnitude += std::to_string(effect.mMagnMin);
+                         if (effect.mData.mMagnMin > 0)
+                             magnitude += std::to_string(effect.mData.mMagnMin);
                          std::string duration = "";
-                         if (effect.mMagnMax > effect.mMagnMin && effect.mMagnMin > 0)
-                             magnitude += " to " + std::to_string(effect.mMagnMax);
+                         if (effect.mData.mMagnMax > effect.mData.mMagnMin && effect.mData.mMagnMin > 0)
+                             magnitude += " to " + std::to_string(effect.mData.mMagnMax);
 
-                         if (effect.mMagnMin > 0 )
-                             if (effect.mMagnMin > 1 || effect.mMagnMax > 1)
+                         if (effect.mData.mMagnMin > 0 )
+                             if (effect.mData.mMagnMin > 1 || effect.mData.mMagnMax > 1)
                                  magnitude += " pts";
                              else
                                  magnitude += " pt";
 
-                         if (effect.mDuration > 0)
-                             if (effect.mDuration > 1)
-                                duration = "for " + std::to_string(effect.mDuration) + " secs";
+                         if (effect.mData.mDuration > 0)
+                             if (effect.mData.mDuration > 1)
+                                duration = "for " + std::to_string(effect.mData.mDuration) + " secs";
                              else
-                                duration = "for " + std::to_string(effect.mDuration) + " sec";
+                                duration = "for " + std::to_string(effect.mData.mDuration) + " sec";
 
-                         if (effect.mArea > 0)
-                             area = " in " + std::to_string(effect.mArea) + " ft";
+                         if (effect.mData.mArea > 0)
+                             area = " in " + std::to_string(effect.mData.mArea) + " ft";
 
                          effectIDStr += " " + magnitude + " " + duration + area + " on " + range;
                          str += "\n ---- " + effectIDStr;

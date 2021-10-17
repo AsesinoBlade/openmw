@@ -329,9 +329,39 @@ namespace MWGui
         }
 
         std::string compare = Utf8Stream::lowerCaseUtf8(item.mBase.getClass().getName(item.mBase));
-        if (compare.find(mNameFilter) == std::string::npos)
-            return false;
 
+        compare += Utf8Stream::lowerCaseUtf8(base.getClass().getSearchTags(base));
+        mNameFilter = Utf8Stream::lowerCaseUtf8(mNameFilter);
+
+        if (compare.find(mNameFilter) == std::string::npos)
+        {
+            //check for components
+            bool found = false;
+            std::string s = mNameFilter;
+            std::string deliminator = " ";
+            std::vector<std::string> tokens;
+            size_t pos = 0;
+            while ((pos = s.find(deliminator)) != std::string::npos)
+            {
+                tokens.push_back(s.substr(0, pos));
+                s.erase(0, pos + deliminator.length());
+            }
+            tokens.push_back(s);\
+
+            for (std::string c : tokens)
+            {
+                bool pos = true;
+                if (c[0] == '-')
+                {
+                    c.erase(0, 1);
+                    pos = false;
+                }
+
+                if ((pos && compare.find(c) == std::string::npos) || (!pos && compare.find(c) != std::string::npos))
+                    return false;
+            }
+            return true;
+        }
         return true;
     }
 
