@@ -550,6 +550,12 @@ namespace MWClass
         return getNameOrId<ESM::NPC>(ptr);
     }
 
+    std::string_view Npc::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " npc ";
+    }
+
+
     MWMechanics::CreatureStats& Npc::getCreatureStats(const MWWorld::Ptr& ptr) const
     {
         ensureCustomData(ptr);
