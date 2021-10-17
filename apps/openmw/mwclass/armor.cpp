@@ -57,6 +57,48 @@ namespace MWClass
         return getNameOrId<ESM::Armor>(ptr);
     }
 
+    std::string_view Armor::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        std::string str = " armor ";
+
+        const MWWorld::LiveCellRef<ESM::Armor>* ref = ptr.get<ESM::Armor>();
+
+        switch (ref->mBase->mData.mType)
+        {
+        case ESM::Armor::Helmet: str += " helmet "; break;
+        case ESM::Armor::Cuirass: str += " cuirass "; break;
+        case ESM::Armor::LPauldron:
+        case ESM::Armor::RPauldron: str += " pauldron "; break;
+        case ESM::Armor::Greaves: str += " greaves "; break;
+        case ESM::Armor::Boots: str += " boots "; break;
+        case ESM::Armor::LGauntlet:
+        case ESM::Armor::RGauntlet: str += " gauntlet "; break;
+        case ESM::Armor::Shield: str += " shield "; break;
+        case ESM::Armor::LBracer:
+        case ESM::Armor::RBracer: str += " bracer "; break;
+        }
+
+
+        // get armor type string (light/medium/heavy)
+        std::string typeText;
+        if (ref->mBase->mData.mWeight == 0)
+            str = str;
+        else
+        {
+            auto armorType = getEquipmentSkill(ptr);
+            if (armorType == ESM::Skill::LightArmor)
+                str += " light ";
+            else if (armorType == ESM::Skill::MediumArmor)
+                str += " medium ";
+            else
+                str += " heavy ";
+        }
+
+        str += ref->mBase->mModel;
+
+        return std::string_view(str);
+    }
+
     std::unique_ptr<MWWorld::Action> Armor::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         return defaultItemActivate(ptr, actor);
