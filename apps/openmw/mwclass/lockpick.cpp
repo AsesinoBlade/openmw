@@ -51,6 +51,11 @@ namespace MWClass
         return !name.empty() ? name : ref->mBase->mId.getRefIdString();
     }
 
+    std::string_view Lockpick::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " stealth lockpick ";
+    }
+
     std::unique_ptr<MWWorld::Action> Lockpick::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         return defaultItemActivate(ptr, actor);

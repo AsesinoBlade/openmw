@@ -62,6 +62,9 @@ namespace MWClass
         MWMechanics::NpcStats& getNpcStats(const MWWorld::Ptr& ptr) const override;
         ///< Return NPC stats
 
+        std::string_view getSearchTags(const MWWorld::ConstPtr& ptr) const override;
+        /// <\ return meta data relevant for searches
+
         MWWorld::ContainerStore& getContainerStore(const MWWorld::Ptr& ptr) const override;
         ///< Return container store
 

@@ -547,6 +547,12 @@ namespace MWClass
         return !name.empty() ? name : ref->mBase->mId.getRefIdString();
     }
 
+    std::string_view Npc::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " npc ";
+    }
+
+
     MWMechanics::CreatureStats& Npc::getCreatureStats(const MWWorld::Ptr& ptr) const
     {
         ensureCustomData(ptr);

@@ -82,6 +82,14 @@ namespace MWClass
         return !name.empty() ? name : ref->mBase->mId.getRefIdString();
     }
 
+    std::string_view Potion::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        if (isPoison(ptr))
+            return " poison ";
+        else
+            return " potion ";
+    }
+
     std::unique_ptr<MWWorld::Action> Potion::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         return defaultItemActivate(ptr, actor);

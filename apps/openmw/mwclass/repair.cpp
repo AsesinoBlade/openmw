@@ -49,6 +49,11 @@ namespace MWClass
         return !name.empty() ? name : ref->mBase->mId.getRefIdString();
     }
 
+    std::string_view Repair::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " repair ";
+    }
+
     std::unique_ptr<MWWorld::Action> Repair::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         return defaultItemActivate(ptr, actor);

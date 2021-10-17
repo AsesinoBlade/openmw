@@ -65,6 +65,13 @@ namespace MWClass
     {
     }
 
+
+    std::string_view Container::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " container ";
+    }
+
+
     void Container::ensureCustomData(const MWWorld::Ptr& ptr) const
     {
         if (!ptr.getRefData().getCustomData())

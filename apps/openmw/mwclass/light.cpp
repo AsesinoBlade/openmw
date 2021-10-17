@@ -86,6 +86,12 @@ namespace MWClass
         return !name.empty() ? name : ref->mBase->mId.getRefIdString();
     }
 
+
+     std::string_view Light::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " lightsource ";
+    }
+
     bool Light::isItem(const MWWorld::ConstPtr& ptr) const
     {
         return ptr.get<ESM::Light>()->mBase->mData.mFlags & ESM::Light::Carry;

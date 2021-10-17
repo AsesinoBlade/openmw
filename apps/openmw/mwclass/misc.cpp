@@ -25,6 +25,7 @@
 #include "../mwrender/renderinginterface.hpp"
 
 #include "classmodel.hpp"
+#include "apps/openmw/mwbase/world.hpp"
 
 namespace MWClass
 {
@@ -60,6 +61,20 @@ namespace MWClass
         const std::string& name = ref->mBase->mName;
 
         return !name.empty() ? name : ref->mBase->mId.getRefIdString();
+    }
+
+
+    std::string_view Miscellaneous::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        std::string str = " miscellaneous ";
+
+        if (ptr.getClass().isKey(ptr))
+            str += " key ";
+
+        if (!(ptr.getCellRef().getSoul() == "" || !MWBase::Environment::get().getWorld()->getStore().get<ESM::Creature>().search(ptr.getCellRef().getSoul())))
+            str += " filled ";
+
+        return std::string_view(str);
     }
 
     std::unique_ptr<MWWorld::Action> Miscellaneous::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const

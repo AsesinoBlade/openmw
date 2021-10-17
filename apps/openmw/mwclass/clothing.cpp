@@ -51,6 +51,12 @@ namespace MWClass
 
         return !name.empty() ? name : ref->mBase->mId.getRefIdString();
     }
+     
+    std::string_view Clothing::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " clothing ";
+    }
+
 
     std::unique_ptr<MWWorld::Action> Clothing::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {

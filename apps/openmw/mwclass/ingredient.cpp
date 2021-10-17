@@ -52,6 +52,11 @@ namespace MWClass
         return !name.empty() ? name : ref->mBase->mId.getRefIdString();
     }
 
+    std::string_view Ingredient::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " ingredient ";
+    }
+
     std::unique_ptr<MWWorld::Action> Ingredient::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         return defaultItemActivate(ptr, actor);
