@@ -105,6 +105,11 @@ namespace MWClass
         return getNameOrId<ESM::Door>(ptr);
     }
 
+    std::string_view Door::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " door ";
+    }
+
     std::unique_ptr<MWWorld::Action> Door::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         MWWorld::LiveCellRef<ESM::Door>* ref = ptr.get<ESM::Door>();

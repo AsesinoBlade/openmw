@@ -258,9 +258,6 @@ namespace MWSound
         if (!mOutput->isInitialized())
             return;
 
-        Log(Debug::Verbose) << "Playing " << filename;
-        mLastPlayedMusic = filename;
-
         stopMusic();
         if (filename.value().empty())
             return;

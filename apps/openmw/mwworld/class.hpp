@@ -86,6 +86,8 @@ namespace MWWorld
 
         unsigned int getType() const { return mType; }
 
+        virtual std::string_view getSearchTags(const ConstPtr& ptr) const;
+         
         virtual void insertObjectRendering(
             const Ptr& ptr, const std::string& mesh, MWRender::RenderingInterface& renderingInterface) const;
         virtual void insertObject(const Ptr& ptr, const std::string& mesh, const osg::Quat& rotation,

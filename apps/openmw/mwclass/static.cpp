@@ -53,6 +53,12 @@ namespace MWClass
         return {};
     }
 
+    std::string_view Static::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " static ";
+    }
+
+
     bool Static::hasToolTip(const MWWorld::ConstPtr& ptr) const
     {
         return false;

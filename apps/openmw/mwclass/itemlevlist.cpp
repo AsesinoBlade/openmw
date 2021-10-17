@@ -14,6 +14,12 @@ namespace MWClass
         return {};
     }
 
+    std::string_view ItemLevList::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " item level list ";
+    }
+
+
     bool ItemLevList::hasToolTip(const MWWorld::ConstPtr& ptr) const
     {
         return false;

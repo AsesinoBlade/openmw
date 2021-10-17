@@ -217,6 +217,11 @@ namespace MWClass
         return getNameOrId<ESM::Creature>(ptr);
     }
 
+    std::string_view Creature::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " creature ";
+    }
+
     MWMechanics::CreatureStats& Creature::getCreatureStats(const MWWorld::Ptr& ptr) const
     {
         ensureCustomData(ptr);

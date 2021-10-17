@@ -33,6 +33,9 @@ namespace MWClass
         ///< @return true if this object has a tooltip when focused (default implementation: true)
 
         std::string_view getModel(const MWWorld::ConstPtr& ptr) const override;
+
+        std::string_view getSearchTags(const MWWorld::ConstPtr& ptr) const override;
+        /// <\ return meta data relevant for searches
     };
 }
 

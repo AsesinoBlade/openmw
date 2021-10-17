@@ -25,6 +25,9 @@ namespace MWClass
 
         bool isItem(const MWWorld::ConstPtr&) const override { return true; }
 
+        std::string_view getSearchTags(const MWWorld::ConstPtr& ptr) const override;
+        /// <\return relevant information about the type - used in inventory filter
+            
         std::unique_ptr<MWWorld::Action> activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const override;
         ///< Generate action for activation
 
