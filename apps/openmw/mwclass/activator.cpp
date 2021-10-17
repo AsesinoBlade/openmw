@@ -84,6 +84,11 @@ namespace MWClass
         return ref->mBase->mName;
     }
 
+    std::string_view Activator::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " activator ";
+    }
+
     ESM::RefId Activator::getScript(const MWWorld::ConstPtr& ptr) const
     {
         const MWWorld::LiveCellRef<ESM::Activator>* ref = ptr.get<ESM::Activator>();

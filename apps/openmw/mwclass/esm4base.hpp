@@ -106,6 +106,8 @@ namespace MWClass
 
         std::string_view getName(const MWWorld::ConstPtr& ptr) const override { return {}; }
 
+        std::string_view getSearchTags(const MWWorld::ConstPtr& ptr) const override { return ""; }
+
         std::string_view getModel(const MWWorld::ConstPtr& ptr) const override
         {
             std::string_view model = getClassModel<Record>(ptr);

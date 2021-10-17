@@ -52,6 +52,12 @@ namespace MWClass
         return getNameOrId<ESM::Book>(ptr);
     }
 
+    std::string_view Book::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " book ";
+    }
+
+
     std::unique_ptr<MWWorld::Action> Book::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         if (actor.getClass().isNpc() && actor.getClass().getNpcStats(actor).isWerewolf())

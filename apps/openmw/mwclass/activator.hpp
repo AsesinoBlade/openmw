@@ -29,6 +29,9 @@ namespace MWClass
         std::string_view getName(const MWWorld::ConstPtr& ptr) const override;
         ///< \return name or ID; can return an empty string.
 
+        std::string_view getSearchTags(const MWWorld::ConstPtr& ptr) const override;
+        /// <\ return meta data relevant for searches
+
         bool hasToolTip(const MWWorld::ConstPtr& ptr) const override;
         ///< @return true if this object has a tooltip when focused (default implementation: true)
 

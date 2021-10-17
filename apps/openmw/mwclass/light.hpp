@@ -34,6 +34,9 @@ namespace MWClass
         MWGui::ToolTipInfo getToolTipInfo(const MWWorld::ConstPtr& ptr, int count) const override;
         ///< @return the content of the tool tip to be displayed. raises exception if the object has no tooltip.
 
+        std::string_view getSearchTags(const MWWorld::ConstPtr& ptr) const override;
+        /// <\ return meta data relevant for searches
+
         bool showsInInventory(const MWWorld::ConstPtr& ptr) const override;
 
         bool isItem(const MWWorld::ConstPtr&) const override;
