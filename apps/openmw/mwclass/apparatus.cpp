@@ -46,6 +46,11 @@ namespace MWClass
         return getNameOrId<ESM::Apparatus>(ptr);
     }
 
+    std::string_view Apparatus::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " apparatus ";
+    }
+
     std::unique_ptr<MWWorld::Action> Apparatus::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         return defaultItemActivate(ptr, actor);
