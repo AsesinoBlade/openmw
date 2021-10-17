@@ -55,6 +55,32 @@ namespace MWClass
         return getNameOrId<ESM::Weapon>(ptr);
     }
 
+    std::string_view Weapon::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        std::string str = " weapon ";
+        const MWWorld::LiveCellRef<ESM::Weapon>* ref = ptr.get<ESM::Weapon>();
+        const ESM::WeaponType* weaponType = MWMechanics::getWeaponType(ref->mBase->mData.mType);
+
+        auto skill = MWMechanics::getWeaponType(ref->mBase->mData.mType)->mSkill;
+        str += ESM::Skill::indexToRefId(ESM::Skill::refIdToIndex(skill)).serializeText();
+        std::string oneOrTwoHanded;
+        if (weaponType->mWeaponClass == ESM::WeaponType::Melee)
+        {
+            if (weaponType->mFlags & ESM::WeaponType::TwoHanded)
+                str += "TwoHanded";
+            else
+                str += "OneHanded";
+        }
+        if (weaponType->mWeaponClass == ESM::WeaponType::Ammo)
+            str += " ammo ";
+
+        if (weaponType->mWeaponClass == ESM::WeaponType::Thrown)
+            str += " thrown ";
+
+        str += ref->mBase->mModel;
+        return std::string_view(str);
+    }
+
     std::unique_ptr<MWWorld::Action> Weapon::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         return defaultItemActivate(ptr, actor);
