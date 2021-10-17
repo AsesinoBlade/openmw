@@ -48,6 +48,12 @@ namespace MWClass
     {
         return getNameOrId<ESM::Probe>(ptr);
     }
+
+    std::string_view Probe::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " stealth probe ";
+    }
+
     std::unique_ptr<MWWorld::Action> Probe::activate(const MWWorld::Ptr& ptr, const MWWorld::Ptr& actor) const
     {
         return defaultItemActivate(ptr, actor);
