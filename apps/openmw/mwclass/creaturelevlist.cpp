@@ -36,6 +36,7 @@ namespace MWClass
         const CreatureLevListCustomData& asCreatureLevListCustomData() const override { return *this; }
     };
 
+
     CreatureLevList::CreatureLevList()
         : MWWorld::RegisteredClass<CreatureLevList>(ESM::CreatureLevList::sRecordId)
     {
@@ -57,6 +58,12 @@ namespace MWClass
         MWWorld::Ptr creature = customData.getSpawnedPtr();
         if (!creature.isEmpty())
             MWBase::Environment::get().getWorld()->adjustPosition(creature, force);
+    }
+
+    std::string_view CreatureLevList::getSearchTags(const MWWorld::ConstPtr& ptr) const
+
+    {
+        return " creature level list ";
     }
 
     std::string_view CreatureLevList::getName(const MWWorld::ConstPtr& ptr) const

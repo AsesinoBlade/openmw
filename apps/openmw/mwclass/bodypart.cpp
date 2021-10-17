@@ -37,6 +37,12 @@ namespace MWClass
         return {};
     }
 
+    std::string_view BodyPart::getSearchTags(const MWWorld::ConstPtr& ptr) const
+    {
+        return " bodypart ";
+    }
+
+
     bool BodyPart::hasToolTip(const MWWorld::ConstPtr& ptr) const
     {
         return false;
