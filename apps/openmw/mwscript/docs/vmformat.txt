@@ -489,4 +489,9 @@ op 0x2000326: FillJournal
 op 0x2000327: ReportActiveQuests
 op 0x2000328: ReportActiveQuests
 op 0x2000329: GetGlobal
-opcodes 0x200032a-0x3ffffff unused
+op 0x200032a: ReportActiveQuests
+op 0x200032b: GetGlobal
+op 0x200032c: GetFollowers
+op 0x200032d: SaveFollowers
+op 0x200032f: RecoverFollowers
+opcodes 0x2000330-0x3ffffff unused
