@@ -332,6 +332,9 @@ namespace Compiler
         const int opcodeTestModels = 0x2000325;
         const int opcodeReportActiveQuests = 0x2000326;
         const int opcodeGetGlobal = 0x2000327;
+        const int opcodeGetFollowers = 0x2000328;
+        const int opcodeSetFollowers = 0x2000329;
+        const int opcodeRecoverFollowers = 0x200032a;
     }
 
     namespace Sky
