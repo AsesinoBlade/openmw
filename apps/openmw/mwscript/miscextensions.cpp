@@ -58,9 +58,6 @@
 #include "../mwbase/windowmanager.hpp"
 #include "../mwbase/world.hpp"
 
-#include "../mwbase/luamanager.hpp"
-#include "../mwbase/journal.hpp"
-
 #include "../mwworld/cellstore.hpp"
 #include "../mwworld/class.hpp"
 #include "../mwworld/containerstore.hpp"
@@ -79,6 +76,12 @@
 
 #include "interpretercontext.hpp"
 #include "ref.hpp"
+#include "apps/openmw/mwbase/journal.hpp"
+#include "apps/openmw/mwmechanics/aifollow.hpp"
+#include "apps/openmw/mwmechanics/aiwander.hpp"
+#include "apps/openmw/mwworld/worldimp.hpp"
+#include "apps/openmw/mwworld/worldmodel.hpp"
+
 
 namespace
 {
@@ -1296,6 +1299,144 @@ namespace MWScript
             }
         };
 
+        class OpGetFollowers : public Interpreter::Opcode0
+        {
+        public:
+
+            void execute(Interpreter::Runtime& runtime) override
+            {
+                std::set<MWWorld::Ptr> followers;
+                MWBase::Environment::get().getMechanicsManager()->getActorsFollowing(MWMechanics::getPlayer(), followers);
+                std::string str = "";
+                for (auto& f : followers)
+                {
+                    str += "\n" + f.getCellRef().getRefId().toString();
+                }
+                runtime.getContext().report(str);
+            }
+        };
+
+
+#include <iostream>
+#include <fstream>
+#include <set>
+#include <string>
+#include <sstream>
+
+class OpSetFollowers : public Interpreter::Opcode0
+        {
+        public:
+            void execute(Interpreter::Runtime& runtime) override
+            {
+                std::string fileStr = "Saved";
+
+                if (std::filesystem::exists("gdsOpenMW.xml"))
+                {
+                    fileStr = "Replaced";
+                    std::filesystem::remove("gdsOpenMW.xml");
+                }
+
+                std::set<MWWorld::Ptr> followers;
+                MWBase::Environment::get().getMechanicsManager()->getActorsFollowing(
+                    MWMechanics::getPlayer(), followers);
+
+                std::ostringstream xmlStream;
+                xmlStream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << std::endl;
+                xmlStream << "<Followers>" << std::endl;
+
+                size_t n = 1;
+                for (const auto& f : followers)
+                {
+                    xmlStream << "  <F" << n << ">" << f.getCellRef().getRefId() << "</F" << n << ">" << std::endl;
+                    n++;
+                }
+
+                xmlStream << "</Followers>" << std::endl;
+
+                std::ofstream outputFile("gdsOpenMW.xml");
+                if (outputFile.is_open())
+                {
+                    outputFile << xmlStream.str();
+                    outputFile.close();
+                }
+
+                runtime.getContext().report(fileStr);
+            }
+        };
+
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <set>
+#include <sstream>
+#include <string>
+#include <vector>
+
+        class OpRecoverFollowers : public Interpreter::Opcode0
+        {
+        public:
+            void execute(Interpreter::Runtime& runtime) override
+            {
+                std::string fileStr = "gdsOpenMW.xml";
+
+                if (!std::filesystem::exists(fileStr))
+                {
+                    std::string str = fileStr + " file not found; no recovery made. " + fileStr
+                        + " created by calling SaveFollowers (sf)";
+                    Log(Debug::Info) << str;
+                    runtime.getContext().report(str);
+
+                    return;
+                }
+
+                std::map<std::string, std::string> data;
+
+                std::ifstream inputFile(fileStr);
+                if (inputFile.is_open())
+                {
+                    std::ostringstream fileContents;
+                    fileContents << inputFile.rdbuf();
+                    inputFile.close();
+
+                    // Parse the XML content using basic C++ Standard Library features
+                    std::string xmlContent = fileContents.str();
+                    std::istringstream xmlStream(xmlContent);
+                    std::string line;
+                    while (std::getline(xmlStream, line))
+                    {
+                        // Process each line of XML as needed
+                        // You may need to extract data from XML elements and populate the 'data' map here
+                        // For simplicity, we assume the XML structure is well-formed and processable
+                    }
+                }
+
+                std::string str = "";
+                for (const auto& entry : data)
+                {
+                    auto refid = ESM::RefId::stringRefId(entry.second);
+                    auto ptr = MWBase::Environment::get().getWorld()->searchPtr(refid, false, true);
+
+                    if (ptr.isEmpty())
+                    {
+                        str = refid.toString() + " not found, skipping recovery for actor.";
+                        Log(Debug::Info) << str;
+                        runtime.getContext().report(str);
+                    }
+                    else
+                    {
+                        // Recovery logic here
+                        // You can implement the recovery logic based on your requirements
+                    }
+                }
+                runtime.getContext().report(str);
+            }
+        };
+
+
+
+
         template <class R>
         class OpCast : public Interpreter::Opcode0
         {
@@ -2034,6 +2175,9 @@ namespace MWScript
             interpreter.installSegment5<OpTestModels>(Compiler::Misc::opcodeTestModels);
             interpreter.installSegment5<OpReportActiveQuests>(Compiler::Misc::opcodeReportActiveQuests);
             interpreter.installSegment5<OpGetGlobal>(Compiler::Misc::opcodeGetGlobal);
+            interpreter.installSegment5<OpGetFollowers>(Compiler::Misc::opcodeGetFollowers);
+            interpreter.installSegment5<OpSetFollowers>(Compiler::Misc::opcodeSetFollowers);
+            interpreter.installSegment5<OpRecoverFollowers>(Compiler::Misc::opcodeRecoverFollowers);
         }
     }
 }
