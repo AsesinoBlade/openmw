@@ -337,7 +337,7 @@ namespace Compiler
             extensions.registerInstruction("sf", "", opcodeSetFollowers);
             extensions.registerInstruction("rf", "", opcodeRecoverFollowers);
             extensions.registerInstruction("recoverfollowers", "", opcodeRecoverFollowers);
-
+            extensions.registerInstruction("listspells", "", opcodeListSpells, opcodeListSpellsExplicit);
         }
     }
 
