@@ -364,7 +364,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::ArrowLeft) 
+            else if (key == MyGUI::KeyCode::ArrowLeft)
             {
                 float x = position.pos[0] = position.pos[0] - adjustment;
                 cellRef.hasChanged();
@@ -372,7 +372,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::ArrowUp) 
+            else if (key == MyGUI::KeyCode::ArrowUp)
             {
                 float x = position.pos[1] = position.pos[1] + adjustment;
                 cellRef.hasChanged();
@@ -380,7 +380,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::ArrowDown) 
+            else if (key == MyGUI::KeyCode::ArrowDown)
             {
                 float x = position.pos[1] = position.pos[1] - adjustment;
                 cellRef.hasChanged();
@@ -388,7 +388,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::PageUp) 
+            else if (key == MyGUI::KeyCode::PageUp)
             {
                 float x = position.pos[2] = position.pos[2] + adjustment;
                 cellRef.hasChanged();
@@ -396,7 +396,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::PageDown) 
+            else if (key == MyGUI::KeyCode::PageDown)
             {
                 float x = position.pos[2] = position.pos[2] - adjustment;
                 cellRef.hasChanged();
@@ -404,9 +404,9 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::D) 
+            else if (key == MyGUI::KeyCode::D)
             {
-                float x = position.rot[0]  + (adjustment * 3.14159265358979323846 / 180);
+                float x = position.rot[0] + (adjustment * 3.14159265358979323846 / 180);
                 //position.rot[0] = x;
                 //obj.setPosition(position);
                 //cellRef.setPosition(position);
@@ -416,7 +416,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::A) 
+            else if (key == MyGUI::KeyCode::A)
             {
                 float x = position.rot[0] - (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
@@ -425,7 +425,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::W) 
+            else if (key == MyGUI::KeyCode::W)
             {
                 float x = position.rot[1] + (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
@@ -434,7 +434,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::S) 
+            else if (key == MyGUI::KeyCode::S)
             {
                 float x = position.rot[1] - (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
@@ -443,7 +443,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::E) 
+            else if (key == MyGUI::KeyCode::E)
             {
                 float x = position.rot[2] + (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
@@ -452,7 +452,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::Q) 
+            else if (key == MyGUI::KeyCode::Q)
             {
                 float x = position.rot[2] - (adjustment * 3.14159265358979323846 / 180);
                 x = x * 180 / 3.14159265358979323846;
@@ -461,7 +461,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::Z) 
+            else if (key == MyGUI::KeyCode::Z)
             {
                 position.rot[0] = 0;
                 position.rot[1] = 0;
@@ -477,7 +477,7 @@ namespace MWGui
                 obj.hasChanged();
 
             }
-            else if (key == MyGUI::KeyCode::Equals)
+            else if (key == MyGUI::KeyCode::RightBracket)
             {
             float x = scale + 0.1;
             cellRef.hasChanged();
@@ -485,7 +485,7 @@ namespace MWGui
             obj.hasChanged();
             Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::Minus)
+            else if (key == MyGUI::KeyCode::LeftBracket)
             {
             float x = scale - 0.1;
             x = x < 0.1 ? 0.1 : x;
