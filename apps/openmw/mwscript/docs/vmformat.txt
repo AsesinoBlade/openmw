@@ -494,4 +494,7 @@ op 0x200032b: GetGlobal
 op 0x200032c: GetFollowers
 op 0x200032d: SaveFollowers
 op 0x200032f: RecoverFollowers
-opcodes 0x2000330-0x3ffffff unused
+op 0x2000330: ListSpells
+op 0x2000331: ListSpells, explicit reference
+opcodes 0x2000331-0x3ffffff unused
+>>>>>>> 359f94b47f (Added new console command ListSpells)
