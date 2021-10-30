@@ -335,6 +335,8 @@ namespace Compiler
         const int opcodeGetFollowers = 0x2000328;
         const int opcodeSetFollowers = 0x2000329;
         const int opcodeRecoverFollowers = 0x200032a;
+        const int opcodeListSpells = 0x200032b;
+        const int opcodeListSpellsExplicit = 0x200032c;
     }
 
     namespace Sky
