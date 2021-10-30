@@ -16,6 +16,15 @@
 #include <components/interpreter/runtime.hpp>
 
 #include <components/misc/resourcehelpers.hpp>
+#include <components/resource/resourcesystem.hpp>
+
+#include <components/esm3/loadmgef.hpp>
+#include <components/esm3/loadcrea.hpp>
+
+#include "../openmw//apps/esmtool/labels.hpp"
+
+#include <components/vfs/manager.hpp>
+
 #include <components/misc/rng.hpp>
 
 #include <components/resource/resourcesystem.hpp>
@@ -85,7 +94,6 @@
 
 namespace
 {
-
     struct TextureFetchVisitor : osg::NodeVisitor
     {
         std::vector<std::pair<std::string, std::string>> mTextures;
@@ -157,7 +165,7 @@ namespace
 namespace MWScript
 {
     namespace Misc
-    {
+    {        
         class OpMenuMode : public Interpreter::Opcode0
         {
         public:
@@ -871,6 +879,65 @@ namespace MWScript
                 MWWorld::Ptr ptr = R()(runtime);
 
                 runtime.push(ptr.getClass().getCreatureStats(ptr).getDrawState() == MWMechanics::DrawState::Spell);
+            }
+        };
+
+
+        template <class R>
+        class OpListSpells : public Interpreter::Opcode0
+        {
+        public:
+
+            void execute(Interpreter::Runtime& runtime) override
+            {
+                MWWorld::Ptr ptr = R()(runtime);
+                std::string str = "";
+                auto spells = ptr.getClass().getCreatureStats(ptr).getSpells();
+                auto wm = MWBase::Environment::get().getWindowManager();
+                const MWWorld::ESMStore& store = MWBase::Environment::get().getWorld()->getStore();
+
+                for (auto iter = spells.begin(); iter != spells.end(); ++iter)
+                {
+                    const ESM::Spell* spell = *iter;
+                    str = spell->mName + "   [" + spell->mId.toString() + "]";
+                    for (auto effectIt = spell->mEffects.mList.begin(); effectIt != spell->mEffects.mList.end(); ++effectIt)
+                    {
+
+                         auto &effect = *effectIt;
+                         auto effectIDStr = ESM::MagicEffect::indexToGmstString(effect.mEffectID);
+                         const ESM::MagicEffect* magicEffect = store.get<ESM::MagicEffect>().search(effect.mEffectID);
+
+                         std::string range = (effect.mRange == 0 ? "Self" : effect.mRange == 1 ? "Touch" : "Target");
+                         std::string magnitude = "";
+                         std::string area = "";
+                         if (effect.mMagnMin > 0)
+                             magnitude += std::to_string(effect.mMagnMin);
+                         std::string duration = "";
+                         if (effect.mMagnMax > effect.mMagnMin && effect.mMagnMin > 0)
+                             magnitude += " to " + std::to_string(effect.mMagnMax);
+
+                         if (effect.mMagnMin > 0 )
+                             if (effect.mMagnMin > 1 || effect.mMagnMax > 1)
+                                 magnitude += " pts";
+                             else
+                                 magnitude += " pt";
+
+                         if (effect.mDuration > 0)
+                             if (effect.mDuration > 1)
+                                duration = "for " + std::to_string(effect.mDuration) + " secs";
+                             else
+                                duration = "for " + std::to_string(effect.mDuration) + " sec";
+
+                         if (effect.mArea > 0)
+                             area = " in " + std::to_string(effect.mArea) + " ft";
+
+                         effectIDStr += " " + magnitude + " " + duration + area + " on " + range;
+                         str += "\n ---- " + effectIDStr;
+
+
+                    }
+                    runtime.getContext().report(str + "\n");
+                }
             }
         };
 
@@ -2178,6 +2245,8 @@ class OpSetFollowers : public Interpreter::Opcode0
             interpreter.installSegment5<OpGetFollowers>(Compiler::Misc::opcodeGetFollowers);
             interpreter.installSegment5<OpSetFollowers>(Compiler::Misc::opcodeSetFollowers);
             interpreter.installSegment5<OpRecoverFollowers>(Compiler::Misc::opcodeRecoverFollowers);
+            interpreter.installSegment5<OpListSpells<ImplicitRef>> (Compiler::Misc::opcodeListSpells);
+            interpreter.installSegment5<OpListSpells<ExplicitRef>> (Compiler::Misc::opcodeListSpellsExplicit);
         }
     }
 }
