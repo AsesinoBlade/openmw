@@ -85,11 +85,14 @@
 
 #include "interpretercontext.hpp"
 #include "ref.hpp"
+
 #include "apps/openmw/mwbase/journal.hpp"
 #include "apps/openmw/mwmechanics/aifollow.hpp"
 #include "apps/openmw/mwmechanics/aiwander.hpp"
 #include "apps/openmw/mwworld/worldimp.hpp"
 #include "apps/openmw/mwworld/worldmodel.hpp"
+#include <components/files/configurationmanager.hpp>
+
 
 
 namespace
@@ -1344,6 +1347,12 @@ class OpSetFollowers : public Interpreter::Opcode0
             {
                 std::string fileStr = "Saved";
 
+
+                Files::ConfigurationManager cfgMgr;
+                std::filesystem::path logPath = cfgMgr.getLogPath();
+                std::filesystem::path gdsOpenMW = logPath / "gdsOpenMW.xml";
+
+
                 if (std::filesystem::exists("gdsOpenMW.xml"))
                 {
                     fileStr = "Replaced";
@@ -1365,6 +1374,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                     n++;
                 }
 
+
                 xmlStream << "</Followers>" << std::endl;
 
                 std::ofstream outputFile("gdsOpenMW.xml");
@@ -1373,6 +1383,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                     outputFile << xmlStream.str();
                     outputFile.close();
                 }
+
 
                 runtime.getContext().report(fileStr);
             }
@@ -1395,7 +1406,11 @@ class OpSetFollowers : public Interpreter::Opcode0
             {
                 std::string fileStr = "gdsOpenMW.xml";
 
-                if (!std::filesystem::exists(fileStr))
+                Files::ConfigurationManager cfgMgr;
+                std::filesystem::path logPath = cfgMgr.getLogPath();
+                std::filesystem::path gdsOpenMW = logPath / "gdsOpenMW.xml";
+                if (!std::filesystem::exists(gdsOpenMW))
+
                 {
                     std::string str = fileStr + " file not found; no recovery made. " + fileStr
                         + " created by calling SaveFollowers (sf)";
@@ -1406,6 +1421,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                 }
 
                 std::map<std::string, std::string> data;
+
 
                 std::ifstream inputFile(fileStr);
                 if (inputFile.is_open())
