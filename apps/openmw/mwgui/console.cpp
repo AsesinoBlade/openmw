@@ -483,7 +483,7 @@ namespace MWGui
                 Console::execute(str);
                 obj.hasChanged();
             }
-            else if (key == MyGUI::KeyCode::Apostrophe)
+            else if (key == MyGUI::KeyCode::RightBracket)
             {
                 float x = scale + 0.1;
                 cellRef.hasChanged();
@@ -491,7 +491,7 @@ namespace MWGui
                 obj.hasChanged();
                 Console::execute(str);
             }
-            else if (key == MyGUI::KeyCode::Semicolon)
+            else if (key == MyGUI::KeyCode::LeftBracket)
             {
                 float x = scale - 0.1;
                 x = x < 0.1 ? 0.1 : x;
