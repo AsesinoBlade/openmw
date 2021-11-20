@@ -329,7 +329,7 @@ namespace MWGui
         return c == ' ' || c == '\t';
     }
 
-        bool Console::validRepositionKey(const MyGUI::KeyCode key)
+    bool Console::validRepositionKey(const MyGUI::KeyCode key)
     {
         if (key == MyGUI::KeyCode::ArrowRight || key == MyGUI::KeyCode::ArrowLeft || key == MyGUI::KeyCode::ArrowUp
             || key == MyGUI::KeyCode::ArrowDown || key == MyGUI::KeyCode::PageUp || key == MyGUI::KeyCode::PageDown
@@ -346,10 +346,6 @@ namespace MWGui
 
     void Console::repositionObject(MWWorld::Ptr ref, MWWorld::CellRef cellRef , MyGUI::KeyCode key)
     {
-       /* std::string str;
-        str = "Pointing at " + obj.getRefId();
-        MWBase::Environment::get().getWindowManager()->messageBox(str);*/
-        
         mCommandLine->setCaption("");
 
         auto obj = ref.getRefData();
@@ -603,6 +599,7 @@ namespace MWGui
                 }
             }
         }
+
         else if (!mPtr.isEmpty() 
             && MyGUI::InputManager::getInstance().isShiftPressed()
             && key != MyGUI::KeyCode::LeftShift 
