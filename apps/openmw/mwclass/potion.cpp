@@ -37,7 +37,7 @@ namespace MWClass
     {
     }
 
-        bool Potion::isPoison(const MWWorld::ConstPtr& ptr) const
+    bool Potion::isPoison(const MWWorld::ConstPtr& ptr) const
     {
         static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
         if (!poisonsEnabled)
