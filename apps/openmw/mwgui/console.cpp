@@ -355,10 +355,6 @@ namespace MWGui
 
     void Console::repositionObject(MWWorld::Ptr ref, MWWorld::CellRef cellRef , MyGUI::KeyCode key)
     {
-       /* std::string str;
-        str = "Pointing at " + obj.getRefId();
-        MWBase::Environment::get().getWindowManager()->messageBox(str);*/
-        
         mCommandLine->setCaption("");
 
         auto obj = ref.getRefData();
@@ -612,6 +608,7 @@ namespace MWGui
                 }
             }
         }
+
         else if (!mPtr.isEmpty() 
             && MyGUI::InputManager::getInstance().isShiftPressed()
             && key != MyGUI::KeyCode::LeftShift 
