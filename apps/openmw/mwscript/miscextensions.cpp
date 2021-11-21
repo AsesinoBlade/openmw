@@ -1509,8 +1509,92 @@ class OpSetFollowers : public Interpreter::Opcode0
                     }
                     else
                     {
-                        // Recovery logic here
-                        // You can implement the recovery logic based on your requirements
+                        //move to player
+                        MWWorld::CellStore* store = nullptr;
+                        try
+                        {
+                            store = &MWBase::Environment::get().getWorldModel()->getInterior(MWMechanics::getPlayer().getCell()->getCell()->getDisplayName());
+                        }
+                        catch (std::exception&)
+                        {
+                            auto pos = MWMechanics::getPlayer().getCellRef().getPosition().asVec3();
+
+                            store = &MWBase::Environment::get().getWorldModel()->getExterior(
+                                ESM::ExteriorCellLocation(pos[0], pos[1],ESM::Cell::sDefaultWorldspaceId ));
+                            if (pos.isNaN())
+                            {
+                                std::string error = "Warning: PositionCell: unknown interior cell (" + 
+                                    std::string(MWMechanics::getPlayer().getCell()->getCell()->getDisplayName()) + "), moving to exterior instead";
+                                runtime.getContext().report(error);
+                                Log(Debug::Warning) << error;
+                            }
+                        }
+
+                        MWWorld::Ptr companion = ptr;
+                        auto player = MWMechanics::getPlayer();
+                        auto position = player.getRefData().getPosition().asVec3();
+                        MWWorld::Ptr baseCompanion = companion;
+
+
+                        position[0] += (::Misc::Rng::rollDice(81) - 40 + 1);
+                        position[1] += (::Misc::Rng::rollDice(81) - 40 + 1);
+
+                        str = "recover " + ptr.getCellRef().getRefId().toString() + " to " + 
+                            std::string(MWMechanics::getPlayer().getCell()->getCell()->getDisplayName()) + ":" +
+                            std::to_string(position[0]) + ":" + std::to_string(position[1]) + ":" + std::to_string(position[2]);
+                        Log(Debug::Info) << str;
+                        runtime.getContext().report("report: " + str);
+
+
+                        companion = MWBase::Environment::get().getWorld()->moveObject(companion, MWMechanics::getPlayer().getCell(), osg::Vec3f(position));
+                        dynamic_cast<MWScript::InterpreterContext&>(runtime.getContext()).updatePtr(baseCompanion, companion);
+
+                        auto rot = companion.getRefData().getPosition().asRotationVec3();
+                        rot.z() = osg::DegreesToRadians(0.0f);
+                        MWBase::Environment::get().getWorld()->rotateObject(companion, rot);
+
+                        companion.getClass().adjustPosition(companion, false);
+
+                        //set wander / follow AI packages -- wander packages must come first so that follow is the latest and most current package
+                        MWMechanics::AiWander wanderPackage(120, 60, 40, std::vector<unsigned char>{30, 20, 0, 0, 0, 0, 0, 0, 0}, false);
+                        companion.getClass().getCreatureStats(companion).getAiSequence().stack(wanderPackage, companion);
+
+                        MWMechanics::AiFollow followPackage(MWMechanics::getPlayer().getCellRef().getRefId(), 0, 0, 0, 0, true);
+
+                        companion.getClass().getCreatureStats(companion).getAiSequence().stack(followPackage, companion);
+
+                        //set disposition and health
+                        if (companion.getClass().isNpc())
+                        {
+                            companion.getClass().getNpcStats(companion).setBaseDisposition(100);
+
+                            //get player health
+                            float playerHealthValue;
+                            if (player.getClass().hasItemHealth(player))
+                                playerHealthValue = static_cast<Interpreter::Type_Float>(player.getClass().getItemMaxHealth(player));
+                            else
+                                playerHealthValue = player.getClass().getCreatureStats(player).getDynamic(0).getCurrent();
+
+                            float oldValue;
+
+                            if (companion.getClass().hasItemHealth(companion))
+                                oldValue = static_cast<Interpreter::Type_Float>(companion.getClass().getItemMaxHealth(companion));
+                            else
+                                oldValue = companion.getClass().getCreatureStats(companion).getDynamic(0).getCurrent();
+
+                            if (oldValue < playerHealthValue * 3)
+                            {
+                                auto newValue = oldValue * 10;
+
+                                MWMechanics::DynamicStat<float> stat(companion.getClass().getCreatureStats(companion)
+                                    .getDynamic(0));
+
+                                stat.setModifier(newValue);
+                                stat.setCurrent(newValue);
+
+                                companion.getClass().getCreatureStats(companion).setDynamic(0, stat);
+                            }
+                        }
                     }
                 }
                 runtime.getContext().report(str);
