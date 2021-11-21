@@ -24,6 +24,7 @@ namespace MWGui
             , isPotion(false)
             , isPoison(false)
             , isIngredient(false)
+            , hasBeenUsed(false)
             , wordWrap(true)
         {
         }
@@ -47,6 +48,7 @@ namespace MWGui
         bool isPotion; // potions do not show target in the tooltip
         bool isPoison; // poisons have special mark on tooltip
         bool isIngredient; // ingredients have no effect magnitude
+        bool hasBeenUsed; // is marked as used (books)
         bool wordWrap;
     };
 
@@ -133,6 +135,11 @@ namespace MWGui
         bool mEnabled;
 
         bool mFullHelp;
+
+        
+        int mShowOwned;
+        bool const mShowUsed;
+        MyGUI::Colour mUsedBookColour;
 
         float mFrameDuration;
     };
