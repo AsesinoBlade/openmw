@@ -257,14 +257,11 @@ namespace MWSound
         if (!mOutput->isInitialized())
             return;
 
-        Log(Debug::Verbose) << "Playing " << filename;
-        mLastPlayedMusic = filename;
-
         stopMusic();
         if (filename.value().empty())
             return;
 
-        Log(Debug::Info) << "Playing \"" << filename << "\"";
+        Log(Debug::Verbose) << "Playing \"" << filename << "\"";
 
         DecoderPtr decoder = getDecoder();
         try
