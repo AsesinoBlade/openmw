@@ -41,6 +41,9 @@ namespace MWGui
         , mLastMouseY(0)
         , mEnabled(true)
         , mFullHelp(false)
+        , mShowOwned(0)
+        , mShowUsed(Settings::Manager::getBool("color book title enable", "GUI"))
+
         , mFrameDuration(0.f)
     {
         getWidget(mDynamicToolTipBox, "DynamicToolTipBox");
@@ -56,6 +59,14 @@ namespace MWGui
         {
             mMainWidget->getChildAt(i)->setVisible(false);
         }
+
+        
+        mShowOwned = Settings::Manager::getInt("show owned", "Game");
+
+        if (mShowUsed) {
+            mUsedBookColour = MyGUI::Colour::parse(Settings::Manager::getString("color topic exhausted", "GUI"));
+        }
+
     }
 
     void ToolTips::setEnabled(bool enabled)
@@ -454,6 +465,9 @@ namespace MWGui
         captionWidget->setEditStatic(true);
         captionWidget->setNeedKeyFocus(false);
         captionWidget->setCaptionWithReplacing(caption);
+        if (mShowUsed && info.hasBeenUsed) {
+            captionWidget->setTextColour(mUsedBookColour);
+        }
         MyGUI::IntSize captionSize = captionWidget->getTextSize();
 
         int captionHeight = std::max(!caption.empty() ? captionSize.height : 0, imageSize);
