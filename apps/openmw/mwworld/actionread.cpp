@@ -16,6 +16,7 @@
 
 namespace MWWorld
 {
+
     ActionRead::ActionRead(const MWWorld::Ptr& object)
         : Action(false, object)
     {
@@ -47,6 +48,7 @@ namespace MWWorld
         MWMechanics::NpcStats& npcStats = player.getClass().getNpcStats(player);
 
         // Skill gain from books
+
         ESM::RefId skill = ESM::Skill::indexToRefId(ref->mBase->mData.mSkillId);
         if (!skill.empty() && !npcStats.hasBeenUsed(ref->mBase->mId))
         {
