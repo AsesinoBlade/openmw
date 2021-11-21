@@ -118,6 +118,10 @@ namespace MWClass
         info.caption = MyGUI::TextIterator::toTagsString(MyGUI::UString(name)) + MWGui::ToolTips::getCountString(count);
         info.icon = ref->mBase->mIcon;
 
+        auto player = MWBase::Environment::get().getWorld()->getPlayerPtr();
+        MWMechanics::NpcStats& npcStats = player.getClass().getNpcStats(player);
+        info.hasBeenUsed = npcStats.hasBeenUsed(ref->mBase->mId);
+
         std::string text;
 
         text += MWGui::ToolTips::getWeightString(ref->mBase->mData.mWeight, "#{sWeight}");
