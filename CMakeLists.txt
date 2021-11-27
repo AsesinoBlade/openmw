@@ -259,7 +259,14 @@ if (WIN32)
 endif()
 
 if(MSVC)
-    add_compile_options("/utf-8")
+  add_compile_options("/utf-8")
+  add_compile_options("$<$<CONFIG:RELEASE>:/O2>")
+  add_compile_options("$<$<CONFIG:RELEASE>:/Oi>")
+  add_compile_options("$<$<CONFIG:RELEASE>:/Ot>")
+  add_compile_options("$<$<CONFIG:RELEASE>:/Oy>")
+  add_compile_options("$<$<CONFIG:RELEASE>:/GT>")
+  add_compile_options("$<$<CONFIG:RELEASE>:/GL>")
+  add_link_options("$<$<CONFIG:RELEASE>:/LTCG>")
 endif()
 
 # Dependencies
