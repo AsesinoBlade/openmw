@@ -67,6 +67,14 @@
 #include "../mwbase/windowmanager.hpp"
 #include "../mwbase/world.hpp"
 
+#include "../mwclass/actor.hpp"
+#include "../mwclass/npc.hpp"
+
+#include "../mwworld/class.hpp"
+#include "../mwworld/player.hpp"
+#include "../mwworld/containerstore.hpp"
+#include "../mwworld/inventorystore.hpp"
+#include "../mwworld/esmstore.hpp"
 #include "../mwworld/cellstore.hpp"
 #include "../mwworld/class.hpp"
 #include "../mwworld/containerstore.hpp"
@@ -1753,7 +1761,80 @@ class OpSetFollowers : public Interpreter::Opcode0
         class OpBetaComment : public Interpreter::Opcode1
         {
         public:
-            void execute(Interpreter::Runtime& runtime, unsigned int arg0) override
+
+            std::string processInventory(MWWorld::ConstPtr ptr, int slot )
+            {
+                std::stringstream msg;
+
+                const std::vector<std::string> slotNames{ "Helmet","Cuirass","Greaves","LeftPauldron","RightPauldron","LeftGauntlet","RightGauntlet", "Boots", "Shirt",
+            "Pants", "Skirt","Robe","LeftRing","RightRing", "Amulet","Belt","CarriedRight", "CarriedLeft", "Ammunition" };
+
+                if (ptr.isEmpty())
+                    return "";
+
+                if (slot < 0 || slot >> 18)
+                    return "";
+
+                msg << "Slot: " << std::to_string(slot) << " : " << slotNames[slot] << std::endl;
+                msg << "RefNum: " << ptr.getCellRef().getRefNum().mIndex << std::endl;
+
+                if (ptr.getRefData().isDeletedByContentFile())
+                    msg << "[Deleted by content file]" << std::endl;
+                if (!ptr.getRefData().getCount())
+                    msg << "[Deleted]" << std::endl;
+
+                msg << "Name: " << ptr.getClass().getName(ptr) << std::endl;
+                msg << "Class: " << ptr.getClass().getSearchTags(ptr) << std::endl;
+                msg << "RefID: " << ptr.getCellRef().getRefId() << std::endl;
+                msg << "Ref Type: " << ptr.getType() << std::endl;
+                msg << "Memory address: " << ptr.getBase() << std::endl;
+
+                if (ptr.getType() == ESM::Weapon::sRecordId)
+                {
+                    const MWWorld::LiveCellRef<ESM::Weapon>* ref = ptr.get<ESM::Weapon>();
+                    msg << "Enchant: " << ref->mBase->mEnchant << std::endl;
+                }
+
+                if (ptr.getType() == ESM::Armor::sRecordId)
+                {
+                    const MWWorld::LiveCellRef<ESM::Armor>* ref = ptr.get<ESM::Armor>();
+                    msg << "Enchant: " << ref->mBase->mEnchant << std::endl;
+                }
+
+                if (ptr.getType() == ESM::Clothing::sRecordId)
+                {
+                    const auto* ref = ptr.get<ESM::Clothing>();
+                    msg << "Enchant: " << ref->mBase->mEnchant << std::endl;
+                }
+
+                auto vfs = MWBase::Environment::get().getResourceSystem()->getVFS();
+                std::string model = ::Misc::ResourceHelpers::correctActorModelPath(ptr.getClass().getModel(ptr), vfs);
+                msg << "Model: " << model << std::endl;
+                if (!model.empty())
+                {
+                    const std::string archive = vfs->getArchive(model);
+                    if (!archive.empty())
+                        msg << "(" << archive << ")" << std::endl;
+                }
+                if (::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs) != "icons\\")
+                {
+                    std::string icon = ::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs);
+                    msg << "Icon: " << icon << std::endl;
+                    if (!icon.empty())
+                    {
+                        const std::string archive = vfs->getArchive(icon);
+                        if (!archive.empty())
+                            msg << "(" << archive << ")" << std::endl;
+                    }
+                }
+                if (!ptr.getClass().getScript(ptr).empty())
+                    msg << "Script: " << ptr.getClass().getScript(ptr) << std::endl;
+
+                return msg.str();
+            };
+
+            void execute(Interpreter::Runtime &runtime, unsigned int arg0) override
+
             {
                 MWWorld::Ptr ptr = R()(runtime);
 
@@ -1789,6 +1870,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                     msg << "[Deleted]" << std::endl;
 
                 msg << "Name: " << ptr.getClass().getName(ptr) << std::endl;
+                msg << "Class: " << ptr.getClass().getSearchTags(ptr) << std::endl;
                 msg << "RefID: " << ptr.getCellRef().getRefId() << std::endl;
                 msg << "Ref Type: " << ptr.getTypeDescription() << std::endl;
                 msg << "Memory address: " << ptr.getBase() << std::endl;
@@ -1904,8 +1986,22 @@ class OpSetFollowers : public Interpreter::Opcode0
                     --arg0;
                 }
 
+                if (ptr.getClass().isNpc())
+                {
+                    msg << std::endl << " Report on Inventory for " << ptr.getClass().getName(ptr) << std::endl << std::endl;
+                    const MWWorld::InventoryStore& invStore = ptr.getClass().getInventoryStore(ptr);
+                    for (int slot = 0; slot < MWWorld::InventoryStore::Slots; ++slot)
+                    {
+                        MWWorld::ConstContainerStoreIterator equipped = invStore.getSlot(slot);
+                        if (equipped != invStore.end())
+                        {
+                            std::string v = "";
+                            v = processInventory((*equipped), slot);
+                            msg << v << std::endl;
+                        }
+                    }
+                }
                 Log(Debug::Warning) << "\n" << msg.str();
-
                 runtime.getContext().report(msg.str());
             }
         };
