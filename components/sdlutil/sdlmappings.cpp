@@ -123,6 +123,8 @@ namespace SDLUtil
             keyMap[SDLK_MINUS] = MyGUI::KeyCode::Minus;
             keyMap[SDLK_EQUALS] = MyGUI::KeyCode::Equals;
             keyMap[SDLK_BACKSPACE] = MyGUI::KeyCode::Backspace;
+			keyMap[SDLK_LEFTBRACKET] = MyGUI::KeyCode::LeftBracket;
+			keyMap[SDLK_RIGHTBRACKET] = MyGUI::KeyCode::RightBracket;			
             keyMap[SDLK_TAB] = MyGUI::KeyCode::Tab;
             keyMap[SDLK_q] = MyGUI::KeyCode::Q;
             keyMap[SDLK_w] = MyGUI::KeyCode::W;
