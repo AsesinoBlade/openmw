@@ -1,7 +1,6 @@
 #ifndef CONTENTLOADER_HPP
 #define CONTENTLOADER_HPP
 
-
 #include <filesystem>
 #include <MyGUI_TextIterator.h>
 
@@ -24,3 +23,4 @@ namespace MWWorld
 } /* namespace MWWorld */
 
 #endif /* CONTENTLOADER_HPP */
+

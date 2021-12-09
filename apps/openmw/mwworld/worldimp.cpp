@@ -208,7 +208,7 @@ namespace MWWorld
             if (it != mLoaders.end())
             {
                 const auto filename = filepath.filename();
-                Log(Debug::Info) << "Loading content file " << filename;
+                Log(Debug::Info) << "Loading content file " << filename << " into index: " << index;
                 if (listener != nullptr)
                     listener->setLabel(MyGUI::TextIterator::toTagsString(Files::pathToUnicodeString(filename)));
                 it->second->load(filepath, index, listener);
