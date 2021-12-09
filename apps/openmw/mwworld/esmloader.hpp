@@ -37,6 +37,7 @@ namespace MWWorld
         MWWorld::ESMStore& mStore;
         ToUTF8::Utf8Encoder* mEncoder;
         ESM::Dialogue* mDialogue;
+
         std::optional<int> mMasterFileFormat;
         std::vector<int>& mESMVersions;
         std::map<std::string, int> mNameToIndex;
@@ -45,3 +46,4 @@ namespace MWWorld
 } /* namespace MWWorld */
 
 #endif // ESMLOADER_HPP
+
