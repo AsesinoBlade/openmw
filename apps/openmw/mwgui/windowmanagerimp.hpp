@@ -192,7 +192,6 @@ namespace MWGui
         MWGui::CompanionWindow* getCompanionWindow() override;
         void setCompanionWindow(MWGui::CompanionWindow* containerWindow) override;
 
-
         /// Make the player use an item, while updating GUI state accordingly
         void useItem(const MWWorld::Ptr& item, bool bypassBeastRestrictions = false) override;
 
@@ -448,7 +447,6 @@ namespace MWGui
         CountDialog* mCountDialog;
         TradeWindow* mTradeWindow;
         ItemModel* mItemModel = nullptr;
-        ContainerWindow* mContainerWindow = nullptr;
         CompanionWindow* mCompanionWindow = nullptr;
         SettingsWindow* mSettingsWindow;
         ConfirmationDialog* mConfirmationDialog;
@@ -466,6 +464,7 @@ namespace MWGui
         DebugWindow* mDebugWindow;
         PostProcessorHud* mPostProcessorHud;
         JailScreen* mJailScreen;
+        ContainerWindow* mContainerWindow;
 
         std::vector<std::unique_ptr<WindowBase>> mWindows;
 
