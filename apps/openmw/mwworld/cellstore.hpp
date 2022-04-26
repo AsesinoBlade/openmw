@@ -128,6 +128,9 @@ namespace MWWorld
         /// @return updated MWWorld::Ptr with the new CellStore pointer set.
         MWWorld::Ptr moveTo(const MWWorld::Ptr& object, MWWorld::CellStore* cellToMoveTo);
 
+        const ESM::Cell *mCell;
+
+
         void rest(double hours);
         void recharge(float duration);
 
@@ -143,6 +146,7 @@ namespace MWWorld
             requestMergedRefsUpdate();
             return ret;
         }
+
 
         /// @param readerList The readers to use for loading of the cell on-demand.
         CellStore(MWWorld::Cell&& cell, const MWWorld::ESMStore& store, ESM::ReadersCache& readers);

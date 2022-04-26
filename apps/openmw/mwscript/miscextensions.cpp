@@ -3,7 +3,14 @@
 #include <chrono>
 #include <cstdlib>
 #include <iomanip>
+
 #include <sstream>
+#include <components/misc/rng.hpp>
+
+#include "../Boost/boost/property_tree/ptree.hpp"
+#include "../Boost/boost/property_tree/xml_parser.hpp"
+#include "../Boost/boost/foreach.hpp"
+#include "../Boost/boost/filesystem.hpp"
 
 #include <components/compiler/extensions.hpp>
 #include <components/compiler/locals.hpp>
