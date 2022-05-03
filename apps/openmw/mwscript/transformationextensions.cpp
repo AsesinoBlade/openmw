@@ -371,7 +371,7 @@ namespace MWScript
             }
         };
 
-         template <class R>
+        template <class R>
         class OpPositionCell : public Interpreter::Opcode0
         {
         public:
@@ -497,7 +497,6 @@ namespace MWScript
                 MWBase::Environment::get().getLuaManager()->objectTeleported(ptr);
             }
         };
-
 
         class OpPlaceItemCell : public Interpreter::Opcode0
         {
