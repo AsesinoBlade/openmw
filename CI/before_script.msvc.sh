@@ -575,7 +575,6 @@ LZ4_VER="1.9.2"
 OPENAL_VER="1.23.0"
 QT_VER="6.6.3"
 
-
 OSG_ARCHIVE_NAME="OSGoS 3.6.5"
 OSG_ARCHIVE="OSGoS-3.6.5-123-g68c5c573d-msvc${OSG_MSVC_YEAR}-win${BITS}"
 OSG_ARCHIVE_REPO_URL="https://gitlab.com/OpenMW/openmw-deps/-/raw/main"
@@ -586,7 +585,6 @@ if [[ -n "$OSG_MULTIVIEW_BUILD" ]]; then
 fi
 
 add_cmake_opts "-DOPENMW_LTO_BUILD=True"
-
 
 echo
 echo "==================================="
