@@ -6,3 +6,4 @@ https://github.com/ThePhD/sol2/pull/1716 (5b6881ed94c795298eae72b6848308e9a37e42
 https://github.com/ThePhD/sol2/pull/1722 (ab874eb0e8ef8aea4c10074a89efa25f62a29d9a)
 
 License: MIT
+
