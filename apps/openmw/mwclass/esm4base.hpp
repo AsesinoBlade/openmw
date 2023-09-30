@@ -106,7 +106,7 @@ namespace MWClass
 
         std::string_view getName(const MWWorld::ConstPtr& ptr) const override { return {}; }
 
-        std::string_view getSearchTags(const MWWorld::ConstPtr& ptr) const override { return ""; }
+        std::string_view getSearchTags(const MWWorld::ConstPtr& ptr) const override { return {}; }
 
         VFS::Path::NormalizedView getModel(const MWWorld::ConstPtr& ptr) const override
         {
