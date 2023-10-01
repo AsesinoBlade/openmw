@@ -27,6 +27,7 @@
 #include "classmodel.hpp"
 #include "apps/openmw/mwworld/esmstore.hpp"
 #include "components/esm3/loadmgef.hpp"
+#include "components/settings/values.hpp"
 
 namespace MWClass
 {
@@ -37,8 +38,9 @@ namespace MWClass
 
     bool Potion::isPoison(const MWWorld::ConstPtr& ptr) const
     {
-        static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
-        if (!poisonsEnabled)
+        //static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
+        //if (!poisonsEnabled)
+        if (!Settings::game().mPoisons)
             return false;
 
         const MWWorld::LiveCellRef<ESM::Potion>* ref = ptr.get<ESM::Potion>();
