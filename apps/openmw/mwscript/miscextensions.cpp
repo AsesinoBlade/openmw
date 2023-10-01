@@ -106,6 +106,8 @@
 #include "apps/openmw/mwmechanics/aiwander.hpp"
 #include "apps/openmw/mwworld/worldimp.hpp"
 #include "apps/openmw/mwworld/worldmodel.hpp"
+
+#include <boost/iostreams/filter/zlib.hpp>
 #include <components/files/configurationmanager.hpp>
 
 
@@ -1787,7 +1789,8 @@ class OpSetFollowers : public Interpreter::Opcode0
 
                 if (ptr.getRefData().isDeletedByContentFile())
                     msg << "[Deleted by content file]" << std::endl;
-                if (!ptr.getRefData().getCount())
+                auto &refD = ptr.getRefData();
+                if (!refD.getBaseNode())
                     msg << "[Deleted]" << std::endl;
 
                 msg << "Name: " << ptr.getClass().getName(ptr) << std::endl;
@@ -1815,7 +1818,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                 }
 
                 auto vfs = MWBase::Environment::get().getResourceSystem()->getVFS();
-                std::string model = ::Misc::ResourceHelpers::correctActorModelPath(ptr.getClass().getModel(ptr), vfs);
+                std::string model = ::Misc::ResourceHelpers::correctActorModelPath(std::string(ptr.getClass().getModel(ptr)), vfs);
                 msg << "Model: " << model << std::endl;
                 if (!model.empty())
                 {

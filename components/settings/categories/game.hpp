@@ -73,12 +73,18 @@ namespace Settings
         SettingValue<bool> mDayNightSwitches{ mIndex, "Game", "day night switches" };
         SettingValue<DetourNavigator::CollisionShapeType> mActorCollisionShapeType{ mIndex, "Game",
             "actor collision shape type" };
+
         SettingValue<bool> mPlayerMovementIgnoresAnimation{ mIndex, "Game", "player movement ignores animation" };
 
         SettingValue<bool> mTerrainObstructsFocus{ mIndex, "Game", "terrain obstructs focus" };
 
         SettingValue<bool> mPoisons{ mIndex, "Game", "poisons" };
 
+
+        SettingValue<bool> mPlayerMovementIgnoresAnimation{ mIndex, "Game", "player movement ignores animation" };
+
+        SettingValue<bool> mPoisons{ mIndex, "Game", "poisons" };
+        SettingValue<bool> mSwiftCasting{ mIndex, "Game", "swift casting" };
     };
 }
 

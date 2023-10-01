@@ -25,6 +25,7 @@
 #include "creaturestats.hpp"
 #include "magiceffects.hpp"
 #include "components/settings/settings.hpp"
+#include "components/settings/values.hpp"
 
 namespace
 {
@@ -58,8 +59,9 @@ MWMechanics::Alchemy::Alchemy()
 
 bool MWMechanics::Alchemy::isPoison() const
 {
-    static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
-    if (!poisonsEnabled)
+    //static const bool poisonsEnabled = Settings::Manager::getBool("poisons", "Game");
+    //if (!poisonsEnabled)
+    if (!Settings::game().mPoisons)
         return false;
 
     std::vector<MWMechanics::EffectKey> effects(listEffects());
