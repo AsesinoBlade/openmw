@@ -1969,20 +1969,30 @@ class OpSetFollowers : public Interpreter::Opcode0
                             msg << "[None]" << std::endl;
                         }
                     }
-                    if (::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs) != "icons\\")
+                    try
                     {
-                        std::string icon = ::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs);
-                        msg << "Icon: " << icon << std::endl;
-                        if (!icon.empty())
+                        if (::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs)
+                            != "icons\\")
                         {
-                            const std::string archive = vfs->getArchive(icon);
-                            if (!archive.empty())
-                                msg << "(" << archive << ")" << std::endl;
+                            std::string icon
+                                = ::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs);
+                            msg << "Icon: " << icon << std::endl;
+                            if (!icon.empty())
+                            {
+                                const std::string archive = vfs->getArchive(icon);
+                                if (!archive.empty())
+                                    msg << "(" << archive << ")" << std::endl;
+                            }
                         }
+                        if (!ptr.getClass().getScript(ptr).empty())
+                            msg << "Script: " << ptr.getClass().getScript(ptr) << std::endl;
                     }
-                    if (!ptr.getClass().getScript(ptr).empty())
-                        msg << "Script: " << ptr.getClass().getScript(ptr) << std::endl;
+                    catch (const std::exception& e)
+                    {
+                        
+                    }
                 }
+
 
                 while (arg0 > 0)
                 {
