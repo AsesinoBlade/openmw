@@ -1576,9 +1576,9 @@ class OpSetFollowers : public Interpreter::Opcode0
                         MWMechanics::AiWander wanderPackage(120, 60, 40, std::vector<unsigned char>{30, 20, 0, 0, 0, 0, 0, 0, 0}, false);
                         companion.getClass().getCreatureStats(companion).getAiSequence().stack(wanderPackage, companion);
 
-                        MWMechanics::AiFollow followPackage(MWMechanics::getPlayer().getCellRef().getRefId(), 0, 0, 0, 0, true);
+ //                       MWMechanics::AiFollow followPackage(MWMechanics::getPlayer().getCellRef().getRefId(), 0, 0, 0, 0, true);
 
-                        companion.getClass().getCreatureStats(companion).getAiSequence().stack(followPackage, companion);
+//                        companion.getClass().getCreatureStats(companion).getAiSequence().stack(followPackage, companion);
 
                         //set disposition and health
                         if (companion.getClass().isNpc())
@@ -1969,23 +1969,31 @@ class OpSetFollowers : public Interpreter::Opcode0
                             msg << "[None]" << std::endl;
                         }
                     }
-                    if (::Misc::ResourceHelpers::correctIconPath(
-                            VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
-                        != "icons\\")
+                    try
                     {
-                        std::string icon = ::Misc::ResourceHelpers::correctIconPath(
-                            VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
-                        msg << "Icon: " << icon << std::endl;
-                        if (!icon.empty())
+                        if (::Misc::ResourceHelpers::correctIconPath(
+                                VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
+                            != "icons\\")
                         {
-                            const std::string archive = vfs->getArchive(icon);
-                            if (!archive.empty())
-                                msg << "(" << archive << ")" << std::endl;
+                            std::string icon = ::Misc::ResourceHelpers::correctIconPath(
+                                VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
+                            msg << "Icon: " << icon << std::endl;
+                            if (!icon.empty())
+                            {
+                                const std::string archive = vfs->getArchive(icon);
+                                if (!archive.empty())
+                                    msg << "(" << archive << ")" << std::endl;
+                            }
                         }
+                        if (!ptr.getClass().getScript(ptr).empty())
+                            msg << "Script: " << ptr.getClass().getScript(ptr) << std::endl;
                     }
-                    if (!ptr.getClass().getScript(ptr).empty())
-                        msg << "Script: " << ptr.getClass().getScript(ptr) << std::endl;
+                    catch (const std::exception& e)
+                    {
+                        
+                    }
                 }
+
 
                 while (arg0 > 0)
                 {
