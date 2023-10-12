@@ -185,6 +185,11 @@ namespace MWClass
         return data.mIsFemale ? data.mRace->mModelFemale : data.mRace->mModelMale;
     }
 
+    std::string_view ESM4Npc::getSearchTags(const MWWorld::ConstPtr& ptr) const  
+    {
+        return "";
+    }
+
     std::string_view ESM4Npc::getName(const MWWorld::ConstPtr& ptr) const
     {
         const ESM4::Npc* const baseData = getCustomData(ptr).mBaseData;
