@@ -1423,11 +1423,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                 std::filesystem::path gdsOpenMW = logPath / "gdsOpenMW.xml";
 
 
-                if (std::filesystem::exists("gdsOpenMW.xml"))
-                {
-                    fileStr = "Replaced";
-                    std::filesystem::remove("gdsOpenMW.xml");
-                }
+
 
                 std::set<MWWorld::Ptr> followers;
                 MWBase::Environment::get().getMechanicsManager()->getActorsFollowing(
@@ -1440,20 +1436,31 @@ class OpSetFollowers : public Interpreter::Opcode0
                 size_t n = 1;
                 for (const auto& f : followers)
                 {
-                    xmlStream << "  <F" << n << ">" << f.getCellRef().getRefId() << "</F" << n << ">" << std::endl;
+                    xmlStream << "  <F" << n << ">" << f.getCellRef().getRefId().toString() << "</F" << n << ">" << std::endl;
                     n++;
                 }
 
 
                 xmlStream << "</Followers>" << std::endl;
-
-                std::ofstream outputFile("gdsOpenMW.xml");
-                if (outputFile.is_open())
+                if (n == 1) //no followers - do not write out file
                 {
-                    outputFile << xmlStream.str();
-                    outputFile.close();
+                    fileStr = "No followers found.";
                 }
+                else
+                {
+                    if (std::filesystem::exists(gdsOpenMW))
+                    {
+                        fileStr = "Replaced";
+                        std::filesystem::remove(gdsOpenMW);
+                    }
 
+                    std::ofstream outputFile(gdsOpenMW);
+                    if (outputFile.is_open())
+                    {
+                        outputFile << xmlStream.str();
+                        outputFile.close();
+                    }
+                }
 
                 runtime.getContext().report(fileStr);
             }
@@ -1493,7 +1500,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                 std::map<std::string, std::string> data;
 
 
-                std::ifstream inputFile(fileStr);
+                std::ifstream inputFile(gdsOpenMW);
                 if (inputFile.is_open())
                 {
                     std::ostringstream fileContents;
@@ -1504,14 +1511,39 @@ class OpSetFollowers : public Interpreter::Opcode0
                     std::string xmlContent = fileContents.str();
                     std::istringstream xmlStream(xmlContent);
                     std::string line;
+                    bool inFollowersSection = false;
                     while (std::getline(xmlStream, line))
                     {
-                        // Process each line of XML as needed
-                        // You may need to extract data from XML elements and populate the 'data' map here
-                        // For simplicity, we assume the XML structure is well-formed and processable
+                        if (line.find("<Followers>") != std::string::npos)
+                        {
+                            inFollowersSection = true;
+                        }
+                        else if (line.find("</Followers>") != std::string::npos)
+                        {
+                            inFollowersSection = false;
+                        }
+                        else if (inFollowersSection)
+                        {
+                            size_t startPos = line.find("<F");
+                            if (startPos != std::string::npos)
+                            {
+                                size_t endPos = line.find(">", startPos);
+                                if (endPos != std::string::npos)
+                                {
+                                    std::string counter = line.substr(startPos + 2, endPos - startPos - 2);
+
+                                    // Now let's find the corresponding value within <F1> ... </F1>
+                                    size_t valueStartPos = line.find(">", endPos);
+                                    size_t valueEndPos = line.find("<", valueStartPos);
+                                    std::string value = line.substr(valueStartPos + 1, valueEndPos - valueStartPos - 1);
+
+                                    // Populate the map
+                                    data["F" + counter] = value;
+                                }
+                            }
+                        }
                     }
                 }
-
                 std::string str = "";
                 for (const auto& entry : data)
                 {
