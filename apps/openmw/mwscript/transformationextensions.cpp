@@ -630,6 +630,69 @@ namespace MWScript
             }
         };
 
+               template <class R>
+        class OpMoveToPC : public Interpreter::Opcode0
+        {
+        public:
+            void execute(Interpreter::Runtime& runtime) override
+            {
+                MWWorld::Ptr actor = MWMechanics::getPlayer();
+
+                MWWorld::Ptr itemId = R()(runtime);
+
+
+                Interpreter::Type_Float distance = runtime[0].mFloat;
+                runtime.pop();
+                Interpreter::Type_Integer zRot = runtime[0].mInteger;
+                runtime.pop();
+
+                if (!actor.isInCell())
+                    throw std::runtime_error("actor is not in a cell");
+
+                if (itemId.getContainerStore())
+                    return;
+                auto x = actor.getRefData().getPosition().pos[0] + distance;
+                auto y = actor.getRefData().getPosition().pos[1] + distance;
+                auto z = actor.getRefData().getPosition().pos[2] + 20;
+                auto world = MWBase::Environment::get().getWorld();
+                auto worldModel = MWBase::Environment::get().getWorldModel();
+                if (itemId.getClass().isActor())
+                    itemId.getClass().getCreatureStats(itemId).setTeleported(true);
+
+                MWWorld::CellStore* store = actor.getCell();
+
+                if (store != nullptr && store->isExterior())
+                    store = &worldModel->getExterior(
+                        ESM::positionToExteriorCellLocation(x, y, store->getCell()->getWorldSpace()));
+
+                if (store == nullptr)
+                {
+                    // cell not found, move to exterior instead if moving the player (vanilla PositionCell
+                    // compatibility)
+                    const ESM::ExteriorCellLocation cellIndex
+                        = ESM::positionToExteriorCellLocation(x, y, ESM::Cell::sDefaultWorldspaceId);
+                    store = &worldModel->getExterior(cellIndex);
+                }
+
+                MWWorld::Ptr base = itemId;
+                itemId = world->moveObject(itemId, store, osg::Vec3f(x, y, z));
+                dynamic_cast<MWScript::InterpreterContext&>(runtime.getContext()).updatePtr(base, itemId);
+
+                auto rot = itemId.getRefData().getPosition().asRotationVec3();
+                // Note that you must specify ZRot in minutes (1 degree = 60 minutes; north = 0, east = 5400, south
+                // = 10800, west = 16200) except for when you position the player, then degrees must be used. See
+                // "Morrowind Scripting for Dummies (9th Edition)" pages 50 and 54 for reference.
+                zRot = (int)(zRot / 60.0f);
+                rot.z() = osg::DegreesToRadians((float)zRot);
+                world->rotateObject(itemId, rot);
+
+                bool cellActive = MWBase::Environment::get().getWorldScene()->isCellActive(*itemId.getCell());
+                itemId.getClass().adjustPosition(itemId, false);
+                MWBase::Environment::get().getLuaManager()->objectTeleported(itemId);
+            }
+        };
+
+
         template <class R>
         class OpRotate : public Interpreter::Opcode0
         {
@@ -862,6 +925,9 @@ namespace MWScript
                 Compiler::Transformation::opcodeGetStartingAngleExplicit);
             interpreter.installSegment5<OpResetActors>(Compiler::Transformation::opcodeResetActors);
             interpreter.installSegment5<OpFixme>(Compiler::Transformation::opcodeFixme);
+            interpreter.installSegment5<OpMoveToPC<ImplicitRef>>(Compiler::Transformation::opcodeMoveToPC);
+            interpreter.installSegment5<OpMoveToPC<ExplicitRef>>(Compiler::Transformation::opcodeMoveToPCExplicit);
+
         }
     }
 }
