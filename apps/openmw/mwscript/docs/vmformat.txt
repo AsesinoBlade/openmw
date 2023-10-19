@@ -492,4 +492,6 @@ op 0x2000329: SaveFollowers
 op 0x200032a: RecoverFollowers
 op 0x200032b: ListSpells
 op 0x200032c: ListSpells, explicit reference
-opcodes 0x2000329-0x3ffffff unused
+op 0x200032d: MoveToPC
+op 0x200032e: MoveToPC, explicit
+opcodes 0x200032f-0x3ffffff unused
