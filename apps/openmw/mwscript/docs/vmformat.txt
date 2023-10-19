@@ -496,5 +496,7 @@ op 0x200032d: SaveFollowers
 op 0x200032f: RecoverFollowers
 op 0x2000330: ListSpells
 op 0x2000331: ListSpells, explicit reference
-opcodes 0x2000331-0x3ffffff unused
->>>>>>> 359f94b47f (Added new console command ListSpells)
+op 0x2000332: MoveToPC
+op 0x2000333: MoveToPC, explicit
+opcodes 0x2000334-0x3ffffff unused
+
