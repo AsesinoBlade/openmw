@@ -1825,11 +1825,11 @@ class OpSetFollowers : public Interpreter::Opcode0
                 if (!refD.getBaseNode())
                     msg << "[Deleted]" << std::endl;
 
-                msg << "Name: " << ptr.getClass().getName(ptr) << std::endl;
-                msg << "Class: " << ptr.getClass().getSearchTags(ptr) << std::endl;
-                msg << "RefID: " << ptr.getCellRef().getRefId() << std::endl;
-                msg << "Ref Type: " << ptr.getType() << std::endl;
-                msg << "Memory address: " << ptr.getBase() << std::endl;
+                msg << "Name: [" << ptr.getClass().getName(ptr) << "] " << std::endl;
+                msg << "Class: [" << ptr.getClass().getSearchTags(ptr) << "] " << std::endl;
+                msg << "RefID: [" << ptr.getCellRef().getRefId() << "] " << std::endl;
+                msg << "Ref Type: [" << ptr.getType() << "] " << std::endl;
+                msg << "Memory address: [" << ptr.getBase() << "] " << std::endl;
 
                 if (ptr.getType() == ESM::Weapon::sRecordId)
                 {
@@ -2036,9 +2036,91 @@ class OpSetFollowers : public Interpreter::Opcode0
                     --arg0;
                 }
 
+                if (ptr.getClass().getSearchTags(ptr) == " creature " || ptr.getClass().isNpc())
+                {
+                    msg << std::endl << " Health and Attributes: " << std::endl << std::endl;
+                    msg << std::endl << " Status for " << ptr.getClass().getName(ptr) << std::endl << std::endl;
+
+                    msg << "Level: " << round(ptr.getClass().getCreatureStats(ptr).getLevel()) << std::endl;
+                    msg << "Health: " << round(ptr.getClass().getCreatureStats(ptr).getHealth().getCurrent()) << ": "
+                        << round(ptr.getClass().getCreatureStats(ptr).getHealth().getBase()) << std::endl;
+                    msg << "Magicka: " << round(ptr.getClass().getCreatureStats(ptr).getMagicka().getCurrent()) << ": "
+                        << round(ptr.getClass().getCreatureStats(ptr).getMagicka().getBase()) << std::endl;
+                    msg << "Fatigue: " << round(ptr.getClass().getCreatureStats(ptr).getFatigue().getCurrent()) << ": "
+                        << round(ptr.getClass().getCreatureStats(ptr).getFatigue().getBase()) << std::endl;
+
+                    msg << std::endl
+                        << " Attributes base(modified) " << ptr.getClass().getName(ptr) << std::endl
+                        << std::endl;
+                    msg << "Strength: "
+                        << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Strength).getBase())
+                        << "("
+                        << round(ptr.getClass()
+                                     .getCreatureStats(ptr)
+                                     .getAttribute(ESM::Attribute::Strength)
+                                     .getModified())
+                        << ")" << std::endl;
+                    msg << "Intelligence: "
+                        << round(ptr.getClass()
+                                     .getCreatureStats(ptr)
+                                     .getAttribute(ESM::Attribute::Intelligence)
+                                     .getBase())
+                        << "("
+                        << round(ptr.getClass()
+                                     .getCreatureStats(ptr)
+                                     .getAttribute(ESM::Attribute::Intelligence)
+                                     .getModified())
+                        << ")" << std::endl;
+                    msg << "Willpower: "
+                        << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Willpower).getBase())
+                        << "("
+                        << round(ptr.getClass()
+                                     .getCreatureStats(ptr)
+                                     .getAttribute(ESM::Attribute::Willpower)
+                                     .getModified())
+                        << ")" << std::endl;
+                    msg << "Agility: "
+                        << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Agility).getBase())
+                        << "("
+                        << round(
+                               ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Agility).getModified())
+                        << ")" << std::endl;
+                    msg << "Speed: "
+                        << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Speed).getBase())
+                        << "("
+                        << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Speed).getModified())
+                        << ")" << std::endl;
+                    msg << "Endurance: "
+                        << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Endurance).getBase())
+                        << "("
+                        << round(ptr.getClass()
+                                     .getCreatureStats(ptr)
+                                     .getAttribute(ESM::Attribute::Endurance)
+                                     .getModified())
+                        << ")" << std::endl;
+                    msg << "Personality: "
+                        << round(
+                               ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Personality).getBase())
+                        << "("
+                        << round(ptr.getClass()
+                                     .getCreatureStats(ptr)
+                                     .getAttribute(ESM::Attribute::Personality)
+                                     .getModified())
+                        << ")" << std::endl;
+                    msg << "Luck: "
+                        << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Luck).getBase())
+                        << "("
+                        << round(ptr.getClass().getCreatureStats(ptr).getAttribute(ESM::Attribute::Luck).getModified())
+                        << ")" << std::endl;
+
+                }
+
                 if (ptr.getClass().isNpc())
                 {
-                    msg << std::endl << " Report on Inventory for " << ptr.getClass().getName(ptr) << std::endl << std::endl;
+                    msg << std::endl
+                        << " Report on Inventory for " << ptr.getClass().getName(ptr) << std::endl
+                        << std::endl;
+
                     const MWWorld::InventoryStore& invStore = ptr.getClass().getInventoryStore(ptr);
                     for (int slot = 0; slot < MWWorld::InventoryStore::Slots; ++slot)
                     {
