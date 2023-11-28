@@ -374,11 +374,12 @@ namespace MWWorld
             return action;
         }
         const auto player = MWBase::Environment::get().getWorld()->getPlayerPtr();
-        if (Settings::game().mNoAccidentalStealing && (actor == player && 
-            !MWBase::Environment::get().getMechanicsManager()->isSneaking(player) 
-            && ptr.getCellRef().getOwner() != player.getCellRef().getRefId()))
+        if (Settings::game().mNoAccidentalStealing
+            && (actor == player && !MWBase::Environment::get().getMechanicsManager()->isSneaking(player)
+                && ptr.getCellRef().getOwner() != player.getCellRef().getRefId()))
         {
-            MWBase::Environment::get().getWindowManager()->messageBox("Best not to interfere with someone else's property.");
+            MWBase::Environment::get().getWindowManager()->messageBox(
+                "Best not to interfere with someone else's property.");
             return std::make_unique<NullAction>();
         }
 
