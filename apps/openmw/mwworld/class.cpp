@@ -24,6 +24,7 @@
 #include "../mwgui/tooltips.hpp"
 
 #include "../mwmechanics/npcstats.hpp"
+#include "apps/openmw/mwbase/mechanicsmanager.hpp"
 
 namespace MWWorld
 {
@@ -370,6 +371,12 @@ namespace MWWorld
                 action->setSound(sound->mId);
 
             return action;
+        }
+        const auto player = MWBase::Environment::get().getWorld()->getPlayerPtr();
+        if (actor == player && !MWBase::Environment::get().getMechanicsManager()->isSneaking(player) && ptr.getCellRef().getOwner() != player.getCellRef().getRefId() )
+        {
+            MWBase::Environment::get().getWindowManager()->messageBox("Best not to interfere with someone else's property.");
+            return std::make_unique<NullAction>();
         }
 
         std::unique_ptr<MWWorld::Action> action = std::make_unique<ActionTake>(ptr);
