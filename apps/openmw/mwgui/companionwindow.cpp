@@ -164,12 +164,19 @@ void CompanionWindow::onItemSelected(int index)
 
     void CompanionWindow::setPtr(const MWWorld::Ptr& actor)
     {
+
         if (actor.isEmpty() || !actor.getClass().isActor())
             throw std::runtime_error("Invalid argument in CompanionWindow::setPtr");
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(nullptr);
+        MWBase::Environment::get().getWindowManager()->setContainerWindow(nullptr);
+        MWBase::Environment::get().getWindowManager()->setCompanionWindow(nullptr);
+
         mPtr = actor;
         updateEncumbranceBar();
         auto model = std::make_unique<CompanionItemModel>(actor);
         mModel = model.get();
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(model.get());
+        MWBase::Environment::get().getWindowManager()->setCompanionWindow(this);
         auto sortModel = std::make_unique<SortFilterItemModel>(std::move(model));
         mSortModel = sortModel.get();
         mFilterEdit->setCaption({});
