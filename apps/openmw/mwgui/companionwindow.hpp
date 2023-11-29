@@ -40,6 +40,7 @@ namespace MWGui
         void onInventoryUpdate(const MWWorld::Ptr& ptr) override;
 
         std::string_view getWindowIdForLua() const override { return "Companion"; }
+        CompanionItemModel* getModel() { return mModel; }
 
         bool onControllerButtonEvent(const SDL_ControllerButtonEvent& arg) override;
         void setActiveControllerWindow(bool active) override;
