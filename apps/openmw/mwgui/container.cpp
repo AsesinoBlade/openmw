@@ -202,7 +202,7 @@ namespace MWGui
         MWBase::Environment::get().getWindowManager()->setContainerWindow(nullptr);
         MWBase::Environment::get().getWindowManager()->setCompanionWindow(nullptr);
 
-        MWBase::Environment::get().getWindowManager()->setShareItemModel(mModel);
+        MWBase::Environment::get().getWindowManager()->setShareItemModel(model.get());
         MWBase::Environment::get().getWindowManager()->setContainerWindow(this);
 
         mDisposeCorpseButton->setVisible(loot);

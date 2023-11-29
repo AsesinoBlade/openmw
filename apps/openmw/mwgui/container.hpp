@@ -52,6 +52,7 @@ namespace MWGui
         void setActiveControllerWindow(bool active) override;
 
         MWGui::ItemView* getItemView() { return mItemView; }
+
         ItemModel* getModel() { return mModel; }
 
     private:
