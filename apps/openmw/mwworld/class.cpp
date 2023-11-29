@@ -7,6 +7,7 @@
 #include <components/esm3/loadmgef.hpp>
 #include <components/esm3/loadsoun.hpp>
 #include <components/misc/resourcehelpers.hpp>
+#include <components/settings/values.hpp>
 
 #include "../mwbase/environment.hpp"
 #include "../mwbase/windowmanager.hpp"
@@ -373,7 +374,9 @@ namespace MWWorld
             return action;
         }
         const auto player = MWBase::Environment::get().getWorld()->getPlayerPtr();
-        if (actor == player && !MWBase::Environment::get().getMechanicsManager()->isSneaking(player) && ptr.getCellRef().getOwner() != player.getCellRef().getRefId() )
+        if (Settings::game().mNoAccidentalStealing && (actor == player && 
+            !MWBase::Environment::get().getMechanicsManager()->isSneaking(player) 
+            && ptr.getCellRef().getOwner() != player.getCellRef().getRefId()))
         {
             MWBase::Environment::get().getWindowManager()->messageBox("Best not to interfere with someone else's property.");
             return std::make_unique<NullAction>();
