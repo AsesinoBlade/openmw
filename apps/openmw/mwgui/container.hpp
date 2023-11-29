@@ -50,6 +50,8 @@ namespace MWGui
 
         std::string_view getWindowIdForLua() const override { return "Container"; }
 
+        ItemModel* getModel() { return mModel; }
+
     private:
         Misc::NotNullPtr<DragAndDrop> mDragAndDrop;
         Misc::NotNullPtr<ItemTransfer> mItemTransfer;

@@ -43,6 +43,7 @@ namespace MWGui
         void itemRemoved(const MWWorld::ConstPtr& item, int count) override;
 
         std::string_view getWindowIdForLua() const override { return "Companion"; }
+        CompanionItemModel* getModel() { return mModel; }
 
     private:
         ItemView* mItemView;
