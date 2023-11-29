@@ -35,6 +35,7 @@ namespace MWGui
         void clear() override { resetReference(); }
 
         std::string_view getWindowIdForLua() const override { return "Companion"; }
+        CompanionItemModel* getModel() { return mModel; }
 
     private:
         ItemView* mItemView;
