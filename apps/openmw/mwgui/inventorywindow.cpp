@@ -376,8 +376,9 @@ namespace MWGui
                 transferItem(nullptr, count);
             else if (shift)
             {
-                auto companionItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
                 auto companionWindow = MWBase::Environment::get().getWindowManager()->getCompanionWindow();
+           //     auto companionItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
+                auto companionItemModel = companionWindow == nullptr ? nullptr : companionWindow->getModel();
 
                 if (companionItemModel && companionWindow)
                 {
@@ -389,8 +390,10 @@ namespace MWGui
                 }
                 else
                 {
-                    auto containerItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
                     auto containerWindow = MWBase::Environment::get().getWindowManager()->getContainerWindow();
+               //     auto containerItemModel = MWBase::Environment::get().getWindowManager()->getShareItemModel();
+                    auto containerItemModel = containerWindow == nullptr ? nullptr : containerWindow->getModel();
+
                     if (containerItemModel && containerWindow)
                     {
                         if (!containerWindow->canDropItem(object, count))
