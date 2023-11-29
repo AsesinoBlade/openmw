@@ -77,7 +77,7 @@ namespace Settings
         SettingValue<bool> mPlayerMovementIgnoresAnimation{ mIndex, "Game", "player movement ignores animation" };
 
         SettingValue<bool> mPoisons{ mIndex, "Game", "poisons" };
-        SettingValue<bool> mSwiftCasting{ mIndex, "Game", "swift casting" };
+        SettingValue<bool> mNoAccidentalStealing{ mIndex, "Game", "no accidental stealing" };
     };
 }
 
