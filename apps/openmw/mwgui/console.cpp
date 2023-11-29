@@ -359,7 +359,8 @@ namespace MWGui
 
         auto obj = ref.getRefData();
 
-        if (MyGUI::InputManager::getInstance().isShiftPressed())
+        if (MyGUI::InputManager::getInstance().isShiftPressed()
+            && MyGUI::InputManager::getInstance().isControlPressed())
         {
             ESM::Position position = obj.getPosition();
             float scale = cellRef.getScale();
@@ -611,6 +612,7 @@ namespace MWGui
 
         else if (!mPtr.isEmpty() 
             && MyGUI::InputManager::getInstance().isShiftPressed()
+            && MyGUI::InputManager::getInstance().isControlPressed()
             && key != MyGUI::KeyCode::LeftShift 
             && key != MyGUI::KeyCode::RightShift
             )
