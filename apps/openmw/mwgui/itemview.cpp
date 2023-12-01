@@ -1,4 +1,5 @@
 #include "itemview.hpp"
+#include "sortfilteritemmodel.hpp"
 
 #include <cmath>
 
@@ -16,12 +17,15 @@
 #include "itemmodel.hpp"
 #include "itemwidget.hpp"
 
+#include <MyGUI_Button.h>
+
 namespace MWGui
 {
 
     ItemView::ItemView()
         : mScrollView(nullptr)
         , mControllerActiveWindow(false)
+        , mSortButton(nullptr)
     {
     }
 
@@ -41,6 +45,18 @@ namespace MWGui
             throw std::runtime_error("Item view needs a scroll view");
 
         mScrollView->setCanvasAlign(MyGUI::Align::Left | MyGUI::Align::Top);
+
+        
+        static const int width = 60;
+        static const int height = 44;
+        MyGUI::IntCoord coord = MyGUI::IntCoord(
+            mScrollView->getLeft() + mScrollView->getWidth() - 5 - width, mScrollView->getTop() + 5, width, height);
+        mSortButton = createWidget<MyGUI::Button>(
+            MyGUI::WidgetStyle::Child, "MW_Button", coord, MyGUI::Align::Top | MyGUI::Align::Right, "");
+        mSortButton->eventMouseButtonClick += MyGUI::newDelegate(this, &ItemView::onSort);
+        mSortButton->setNeedMouseFocus(true);
+        mSortButton->setNeedKeyFocus(false);
+        
     }
 
     void ItemView::layoutWidgets()
@@ -136,6 +152,46 @@ namespace MWGui
         }
 
         layoutWidgets();
+        mSortButton->setVisible(mModel->canSort());
+        if (mModel->canSort())
+        {
+            switch (mModel->getSort())
+            {
+                case MWGui::ItemModel::Sort_None:
+                    mSortButton->setCaption("Sort\n[none]");
+                break;
+                case MWGui::ItemModel::Sort_Name:
+                    mSortButton->setCaption("Sort\n[name]");
+                break;
+                case MWGui::ItemModel::Sort_dName:
+                    mSortButton->setCaption("Sort\n[-name]");
+                break;
+                case MWGui::ItemModel::Sort_Type:
+                    mSortButton->setCaption("Sort\n[type]");
+                break;
+                case MWGui::ItemModel::Sort_dType:
+                    mSortButton->setCaption("Sort\n[-type]");
+                break;
+                case MWGui::ItemModel::Sort_Weight:
+                    mSortButton->setCaption("Sort\n[wt]");
+                break;
+                case MWGui::ItemModel::Sort_dWeight:
+                    mSortButton->setCaption("Sort\n[-wt]");
+                break;
+                case MWGui::ItemModel::Sort_Value:
+                    mSortButton->setCaption("Sort\n[value]");
+                break;
+                case MWGui::ItemModel::Sort_dValue:
+                    mSortButton->setCaption("Sort\n[-value]");
+                break;
+                case MWGui::ItemModel::Sort_ValuePerWeight:
+                    mSortButton->setCaption("Sort\n[$/wt]");
+                break;
+                case MWGui::ItemModel::Sort_dValuePerWeight:
+                    mSortButton->setCaption("Sort\n[-$/wt]");
+                break;
+            }
+        }
     }
 
     void ItemView::resetScrollBars()
@@ -166,6 +222,17 @@ namespace MWGui
         else
             mScrollView->setViewOffset(
                 MyGUI::IntPoint(static_cast<int>(mScrollView->getViewOffset().left + rel * 0.3f), 0));
+    }
+
+    void ItemView::onSort(MyGUI::Widget* sender)
+    {
+        if (!mModel || !mModel->canSort())
+            return;
+
+        MWGui::ItemModel::Sort sort = mModel->getSort();
+        sort = (MWGui::ItemModel::Sort)((sort + 1) % (MWGui::ItemModel::Sort_Last + 1));
+        mModel->setSort(sort);
+        update();
     }
 
     void ItemView::setSize(const MyGUI::IntSize& value)

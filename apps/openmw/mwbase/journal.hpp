@@ -36,8 +36,12 @@ namespace MWBase
 
     public:
         typedef std::deque<MWDialogue::StampedJournalEntry> TEntryContainer;
+        typedef TEntryContainer::const_iterator TEntryIter;
         typedef std::map<ESM::RefId, MWDialogue::Quest> TQuestContainer; // topic, quest
+        typedef TQuestContainer::const_iterator TQuestIter;
         typedef std::map<ESM::RefId, MWDialogue::Topic> TTopicContainer; // topic-id, topic-content
+        typedef TTopicContainer::const_iterator TTopicIter;
+
 
     public:
         Journal() {}
@@ -67,6 +71,28 @@ namespace MWBase
         virtual void removeLastAddedTopicResponse(const ESM::RefId& topicId, std::string_view actorName) = 0;
         ///< Removes the last topic response added for the given topicId and actor name.
         /// \note topicId must be lowercase
+
+        virtual TEntryIter begin() const = 0;
+        ///< Iterator pointing to the begin of the main journal.
+        ///
+        /// \note Iterators to main journal entries will never become invalid.
+
+        virtual TEntryIter end() const = 0;
+        ///< Iterator pointing past the end of the main journal.
+
+        virtual TQuestIter questBegin() const = 0;
+        ///< Iterator pointing to the first quest (sorted by topic ID)
+
+        virtual TQuestIter questEnd() const = 0;
+        ///< Iterator pointing past the last quest.
+
+        virtual TTopicIter topicBegin() const = 0;
+        ///< Iterator pointing to the first topic (sorted by topic ID)
+        ///
+        /// \note The topic ID is identical with the user-visible topic string.
+
+        virtual TTopicIter topicEnd() const = 0;
+        ///< Iterator pointing past the last topic.
 
         virtual const TEntryContainer& getEntries() const = 0;
 

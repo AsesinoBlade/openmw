@@ -78,6 +78,26 @@ namespace MWGui
 
         virtual bool usesContainer(const MWWorld::Ptr& container) = 0;
 
+        enum Sort
+        {
+            Sort_None,
+            Sort_Name,
+            Sort_dName,
+            Sort_Type,
+            Sort_dType,
+            Sort_Weight,
+            Sort_dWeight,
+            Sort_Value,
+            Sort_dValue,
+            Sort_ValuePerWeight,
+            Sort_dValuePerWeight,
+            Sort_Last = Sort_dValuePerWeight,
+        };
+
+        virtual bool canSort() { return false; }
+        virtual Sort getSort() { return Sort_None; }
+        virtual void setSort(Sort sort) {}
+
     private:
         ItemModel(const ItemModel&);
         ItemModel& operator=(const ItemModel&);
