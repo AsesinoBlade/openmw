@@ -48,6 +48,7 @@ namespace MWGui
 
         void onSelectedItem(MyGUI::Widget* sender);
         void onSelectedBackground(MyGUI::Widget* sender);
+
         void onMouseWheelMoved(MyGUI::Widget* sender, int rel);
 
         std::unique_ptr<ItemModel> mModel;
@@ -58,6 +59,10 @@ namespace MWGui
         int mControllerFocus = 0;
         bool mControllerActiveWindow;
         void updateControllerFocus(int prevFocus, int newFocus);
+
+        void onSort(MyGUI::Widget* _sender);
+
+        MyGUI::Button* mSortButton;
     };
 
 }
