@@ -950,7 +950,7 @@ namespace MWGui
         ItemModel::ModelIndex selected = -1;
         // not using mSortFilterModel as we only need sorting, not filtering
         SortFilterItemModel model(std::make_unique<InventoryItemModel>(player));
-        model.setSortByType(false);
+        model.setSort(SortFilterItemModel::Sort_None);
         model.update();
         if (model.getItemCount() == 0)
             return;

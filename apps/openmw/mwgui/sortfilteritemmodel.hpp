@@ -30,7 +30,9 @@ namespace MWGui
         void setApparatusTypeFilter(const int32_t type);
 
         /// Use ItemStack::Type for sorting?
-        void setSortByType(bool sort) { mSortByType = sort; }
+        bool canSort() { return true; }
+        Sort getSort() override { return mSort; }
+        void setSort(Sort sort) { mSort = sort; }
 
         void onClose() override;
         bool onDropItem(const MWWorld::Ptr& item, int count) override;
@@ -59,7 +61,7 @@ namespace MWGui
 
         int mCategory;
         int mFilter;
-        bool mSortByType;
+        Sort mSort;
 
         int32_t mApparatusTypeFilter; // filter by apparatus type
         std::string mNameFilter; // filter by item name
