@@ -7,11 +7,6 @@
 #include <sstream>
 #include <components/misc/rng.hpp>
 
-#include "../Boost/boost/property_tree/ptree.hpp"
-#include "../Boost/boost/property_tree/xml_parser.hpp"
-#include "../Boost/boost/foreach.hpp"
-#include "../Boost/boost/filesystem.hpp"
-
 #include <components/compiler/extensions.hpp>
 #include <components/compiler/locals.hpp>
 #include <components/compiler/opcodes.hpp>
@@ -1850,7 +1845,9 @@ class OpSetFollowers : public Interpreter::Opcode0
                 }
 
                 auto vfs = MWBase::Environment::get().getResourceSystem()->getVFS();
-                std::string model = ::Misc::ResourceHelpers::correctActorModelPath(std::string(ptr.getClass().getModel(ptr)), vfs);
+                std::string model = ::Misc::ResourceHelpers::correctActorModelPath(
+                    VFS::Path::Normalized(ptr.getClass().getModel(ptr)), vfs)
+                                        .value();
                 msg << "Model: " << model << std::endl;
                 if (!model.empty())
                 {

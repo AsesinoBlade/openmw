@@ -85,7 +85,7 @@ namespace MWClass
             str = str;
         else
         {
-            auto armorType = getEquipmentSkill(ptr);
+            auto armorType = getEquipmentSkill(ptr, false);
             if (armorType == ESM::Skill::LightArmor)
                 str += " light ";
             else if (armorType == ESM::Skill::MediumArmor)
