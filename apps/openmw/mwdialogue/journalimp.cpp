@@ -151,6 +151,37 @@ namespace MWDialogue
         return iter->second.getIndex();
     }
 
+    
+    Journal::TEntryIter Journal::begin() const
+    {
+        return mJournal.begin();
+    }
+
+    Journal::TEntryIter Journal::end() const
+    {
+        return mJournal.end();
+    }
+
+    Journal::TQuestIter Journal::questBegin() const
+    {
+        return mQuests.begin();
+    }
+
+    Journal::TQuestIter Journal::questEnd() const
+    {
+        return mQuests.end();
+    }
+
+    Journal::TTopicIter Journal::topicBegin() const
+    {
+        return mTopics.begin();
+    }
+
+    Journal::TTopicIter Journal::topicEnd() const
+    {
+        return mTopics.end();
+    }
+
     size_t Journal::countSavedGameRecords() const
     {
         std::size_t count = mQuests.size();

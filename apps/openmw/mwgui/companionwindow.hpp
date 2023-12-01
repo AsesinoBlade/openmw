@@ -46,7 +46,6 @@ namespace MWGui
         void setActiveControllerWindow(bool active) override;
 
         MWGui::ItemView* getItemView() { return mItemView; }
-        CompanionItemModel* getModel() { return mModel; }
 
     private:
         ItemView* mItemView;

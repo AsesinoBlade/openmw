@@ -67,17 +67,77 @@ namespace
         return getTypeOrder(type1) < getTypeOrder(type2);
     }
 
+        float stackWeight(const MWGui::ItemStack& stack)
+    {
+        return stack.mBase.getClass().getWeight(stack.mBase) * stack.mCount;
+    }
+
+    std::string_view stackName(const MWGui::ItemStack& stack)
+    {
+        return stack.mBase.getClass().getName(stack.mBase);
+    }
+
+    float stackValue(const MWGui::ItemStack& stack)
+    {
+        return stack.mBase.getClass().getValue(stack.mBase) * stack.mCount;
+    }
+
+    float stackValuePerWeight(const MWGui::ItemStack& stack)
+    {
+        float weight = stackWeight(stack);
+        if (weight < 1e-6f)
+            weight = 1e-6f;
+        return stackValue(stack) / weight;
+    }
+
+
     struct Compare
     {
-        bool mSortByType;
+        MWGui::SortFilterItemModel::Sort mSort;
         Compare()
-            : mSortByType(true)
+            : mSort(MWGui::SortFilterItemModel::Sort_Type)
         {
         }
         bool operator()(const MWGui::ItemStack& left, const MWGui::ItemStack& right)
         {
-            if (mSortByType && left.mType != right.mType)
-                return left.mType < right.mType;
+            float result = 0;
+            switch (mSort)
+            {
+                case MWGui::SortFilterItemModel::Sort_None:
+                    break;
+                case MWGui::SortFilterItemModel::Sort_Name:
+                    result = stackName(left).compare(stackName(right));
+                    break;
+                case MWGui::SortFilterItemModel::Sort_dName:
+                    result = stackName(right).compare(stackName(left));
+                    break;
+                case MWGui::SortFilterItemModel::Sort_Type:
+                    result = left.mType - right.mType;
+                    break;
+                case MWGui::SortFilterItemModel::Sort_dType:
+                    result = right.mType - left.mType;
+                    break;
+                case MWGui::SortFilterItemModel::Sort_Weight:
+                    result = stackWeight(left) - stackWeight(right);
+                    break;
+                case MWGui::SortFilterItemModel::Sort_dWeight:
+                    result = stackWeight(right) - stackWeight(left);
+                    break;
+                case MWGui::SortFilterItemModel::Sort_Value:
+                    result = stackValue(left) - stackValue(right);
+                    break;
+                case MWGui::SortFilterItemModel::Sort_dValue:
+                    result = stackValue(right) - stackValue(left);
+                    break;
+                case MWGui::SortFilterItemModel::Sort_ValuePerWeight:
+                    result = stackValuePerWeight(left) - stackValuePerWeight(right);
+                    break;
+                case MWGui::SortFilterItemModel::Sort_dValuePerWeight:
+                    result = stackValuePerWeight(right) - stackValuePerWeight(left);
+                    break;
+            }
+            if (result != 0)
+                return result < 0;
 
             // compare items by type
             auto leftType = left.mBase.getType();
@@ -164,10 +224,12 @@ namespace
             }
 
             // compare items by weight
-            float result = left.mBase.getClass().getWeight(left.mBase) - right.mBase.getClass().getWeight(right.mBase);
-            if (result != 0)
-                return result > 0;
-
+            {
+                float result
+                    = left.mBase.getClass().getWeight(left.mBase) - right.mBase.getClass().getWeight(right.mBase);
+                if (result != 0)
+                    return result > 0;
+            }
             return left.mBase.getCellRef().getRefId() < right.mBase.getCellRef().getRefId();
         }
     };
@@ -179,7 +241,7 @@ namespace MWGui
     SortFilterItemModel::SortFilterItemModel(std::unique_ptr<ItemModel> sourceModel)
         : mCategory(Category_All)
         , mFilter(0)
-        , mSortByType(true)
+        , mSort(Sort_Type)
         , mApparatusTypeFilter(-1)
     {
         mSourceModel = std::move(sourceModel);
@@ -430,7 +492,7 @@ namespace MWGui
         }
 
         Compare cmp;
-        cmp.mSortByType = mSortByType;
+        cmp.mSort = mSort;
         std::sort(mItems.begin(), mItems.end(), cmp);
     }
 
