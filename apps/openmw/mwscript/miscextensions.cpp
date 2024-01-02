@@ -1821,6 +1821,7 @@ class OpSetFollowers : public Interpreter::Opcode0
 
                 if (ptr.getRefData().isDeletedByContentFile())
                     msg << "[Deleted by content file]" << std::endl;
+
                 auto &refD = ptr.getRefData();
                 if (!refD.getBaseNode())
                     msg << "[Deleted]" << std::endl;
