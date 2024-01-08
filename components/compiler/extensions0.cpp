@@ -324,7 +324,7 @@ namespace Compiler
             extensions.registerInstruction("setnavmeshnumber", "l", opcodeSetNavMeshNumberToRender);
             extensions.registerFunction("repairedonme", 'l', "S", opcodeRepairedOnMe, opcodeRepairedOnMeExplicit);
             extensions.registerInstruction("togglerecastmesh", "", opcodeToggleRecastMesh);
-            extensions.registerInstruction("help", "", opcodeHelp);
+            extensions.registerInstruction("help", "/c", opcodeHelp);
             extensions.registerInstruction("reloadlua", "", opcodeReloadLua);
             extensions.registerInstruction("testmodels", "", opcodeTestModels);
             extensions.registerInstruction("t3d", "", opcodeTestModels);

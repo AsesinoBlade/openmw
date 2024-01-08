@@ -1,5 +1,5 @@
 #include "miscextensions.hpp"
-
+#include <regex>
 #include <chrono>
 #include <cstdlib>
 #include <iomanip>
@@ -2360,18 +2360,57 @@ class OpSetFollowers : public Interpreter::Opcode0
             }
         };
 
-        class OpHelp : public Interpreter::Opcode0
+        class OpHelp : public Interpreter::Opcode1
         {
         public:
-            void execute(Interpreter::Runtime& runtime) override
+            std::string wildcardToRegex(const std::string& wildcard)
             {
-                std::stringstream message;
-                message << MWBase::Environment::get().getWindowManager()->getVersionDescription() << "\n\n";
-                std::vector<std::string> commands;
-                MWBase::Environment::get().getScriptManager()->getExtensions().listKeywords(commands);
-                for (const auto& command : commands)
-                    message << command << "\n";
-                runtime.getContext().report(message.str());
+                std::string regex;
+                for (char c : wildcard)
+                {
+                    switch (c)
+                    {
+                            case '*':
+                            case '0':
+                                regex += ".*";
+                                break;
+                            case '?':
+                            case '1':
+                                regex += '.';
+                                break;
+                            default:
+                                regex += c;
+                                break;
+                    }
+                }
+                return regex;
+            }
+            void execute(Interpreter::Runtime& runtime, unsigned int arg0) override
+            {
+                if (arg0 == 1)
+                {
+                    auto filter = static_cast<std::string>(runtime.getStringLiteral(runtime[0].mInteger));
+                    runtime.pop();
+                    std::regex regexFilter = std::regex(wildcardToRegex(filter));
+                    std::stringstream message;
+                    message << MWBase::Environment::get().getWindowManager()->getVersionDescription() << "\n\n";
+                    std::vector<std::string> commands;
+                    MWBase::Environment::get().getScriptManager()->getExtensions().listKeywords(commands);
+                    for (const auto& command : commands)
+                            if (std::regex_match(command, regexFilter))
+                                message << command << "\n";
+                    runtime.getContext().report(message.str());
+                }
+                else
+                {
+                    std::stringstream message;
+                    message << MWBase::Environment::get().getWindowManager()->getVersionDescription() << "\n\n";
+                    std::vector<std::string> commands;
+                    MWBase::Environment::get().getScriptManager()->getExtensions().listKeywords(commands);
+                    for (const auto& command : commands)
+                        message << command << "\n";
+                    runtime.getContext().report(message.str());
+                }
             }
         };
 
@@ -2563,7 +2602,7 @@ class OpSetFollowers : public Interpreter::Opcode0
             interpreter.installSegment5<OpRepairedOnMe<ImplicitRef>>(Compiler::Misc::opcodeRepairedOnMe);
             interpreter.installSegment5<OpRepairedOnMe<ExplicitRef>>(Compiler::Misc::opcodeRepairedOnMeExplicit);
             interpreter.installSegment5<OpToggleRecastMesh>(Compiler::Misc::opcodeToggleRecastMesh);
-            interpreter.installSegment5<OpHelp>(Compiler::Misc::opcodeHelp);
+            interpreter.installSegment3<OpHelp>(Compiler::Misc::opcodeHelp);
             interpreter.installSegment5<OpReloadLua>(Compiler::Misc::opcodeReloadLua);
             interpreter.installSegment5<OpTestModels>(Compiler::Misc::opcodeTestModels);
             interpreter.installSegment5<OpReportActiveQuests>(Compiler::Misc::opcodeReportActiveQuests);
