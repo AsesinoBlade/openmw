@@ -327,7 +327,7 @@ namespace Compiler
         const int opcodeDisableExplicit = 0x200031b;
         const int opcodeGetDisabledExplicit = 0x200031c;
         const int opcodeStartScriptExplicit = 0x200031d;
-        const int opcodeHelp = 0x2000320;
+        const int opcodeHelp = 0x20031;
         const int opcodeReloadLua = 0x2000321;
         const int opcodeTestModels = 0x2000325;
         const int opcodeReportActiveQuests = 0x2000326;
