@@ -62,7 +62,8 @@ op 0x2002d: BetaComment
 op 0x2002e: BetaComment, explicit reference
 op 0x2002f: ShowSceneGraph
 op 0x20030: ShowSceneGraph, explicit
-opcodes 0x20031-0x3ffff unused
+op 0x20031: Help
+opcodes 0x20032-0x3ffff unused
 
 Segment 4:
 (not implemented yet)
@@ -479,7 +480,7 @@ op 0x200031c: GetDisabled, explicit
 op 0x200031d: StartScript, explicit
 op 0x200031e: GetDistance
 op 0x200031f: GetDistance, explicit
-op 0x2000320: Help
+op 0x2000320: Help removed from segment 5 and added to segment 3
 op 0x2000321: ReloadLua
 op 0x2000322: GetPCVisionBonus
 op 0x2000323: SetPCVisionBonus
