@@ -1817,8 +1817,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                 if (ptr.getRefData().isDeletedByContentFile())
                     msg << "[Deleted by content file]" << std::endl;
 
-                auto &refD = ptr.getRefData();
-                if (!refD.getBaseNode())
+                if (!ptr.getCellRef().getCount())
                     msg << "[Deleted]" << std::endl;
 
                 msg << "Name: [" << ptr.getClass().getName(ptr) << "] " << std::endl;
@@ -1846,9 +1845,11 @@ class OpSetFollowers : public Interpreter::Opcode0
                 }
 
                 auto vfs = MWBase::Environment::get().getResourceSystem()->getVFS();
+
                 std::string model = ::Misc::ResourceHelpers::correctActorModelPath(
                     VFS::Path::Normalized(ptr.getClass().getModel(ptr)), vfs)
                                         .value();
+
                 msg << "Model: " << model << std::endl;
                 if (!model.empty())
                 {
