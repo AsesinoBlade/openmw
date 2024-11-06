@@ -1811,7 +1811,7 @@ class OpSetFollowers : public Interpreter::Opcode0
                 }
 
                 auto vfs = MWBase::Environment::get().getResourceSystem()->getVFS();
-                std::string model = ::Misc::ResourceHelpers::correctActorModelPath(std::string(ptr.getClass().getModel(ptr)), vfs);
+                std::string model = ::Misc::ResourceHelpers::correctActorModelPath(VFS::Path::Normalized(ptr.getClass().getModel(ptr)), vfs).value();
 
                 msg << "Model: " << model << std::endl;
                 if (!model.empty())
