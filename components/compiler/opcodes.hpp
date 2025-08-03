@@ -330,13 +330,13 @@ namespace Compiler
         const int opcodeHelp = 0x20031;
         const int opcodeReloadLua = 0x2000321;
         const int opcodeTestModels = 0x2000325;
-        const int opcodeReportActiveQuests = 0x2000326;
-        const int opcodeGetGlobal = 0x2000327;
-        const int opcodeGetFollowers = 0x2000328;
-        const int opcodeSetFollowers = 0x2000329;
-        const int opcodeRecoverFollowers = 0x200032a;
-        const int opcodeListSpells = 0x200032b;
-        const int opcodeListSpellsExplicit = 0x200032c;
+        const int opcodeReportActiveQuests = 0x2000327;
+        const int opcodeGetGlobal = 0x2000328;
+        const int opcodeGetFollowers = 0x2000329;
+        const int opcodeSetFollowers = 0x200032a;
+        const int opcodeRecoverFollowers = 0x200032b;
+        const int opcodeListSpells = 0x200032c;
+        const int opcodeListSpellsExplicit = 0x200032d;
     }
 
     namespace Sky
@@ -551,8 +551,8 @@ namespace Compiler
         const int opcodeFixme = 0x2000302;
         const int opcodeGetDistance = 0x200031e;
         const int opcodeGetDistanceExplicit = 0x200031f;
-        const int opcodeMoveToPC = 0x200032d;
-        const int opcodeMoveToPCExplicit = 0x200032e;
+        const int opcodeMoveToPC = 0x200032e;
+        const int opcodeMoveToPCExplicit = 0x200032f;
 
     }
 

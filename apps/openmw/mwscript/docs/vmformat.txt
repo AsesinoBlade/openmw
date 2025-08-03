@@ -488,16 +488,13 @@ op 0x2000324: ModPCVisionBonus
 op 0x2000325: TestModels, T3D
 op 0x2000326: FillJournal
 op 0x2000327: ReportActiveQuests
-op 0x2000328: ReportActiveQuests
-op 0x2000329: GetGlobal
-op 0x200032a: ReportActiveQuests
-op 0x200032b: GetGlobal
-op 0x200032c: GetFollowers
-op 0x200032d: SaveFollowers
-op 0x200032f: RecoverFollowers
-op 0x2000330: ListSpells
-op 0x2000331: ListSpells, explicit reference
-op 0x2000332: MoveToPC
-op 0x2000333: MoveToPC, explicit
-opcodes 0x2000334-0x3ffffff unused
+op 0x2000328: GetGlobal
+op 0x2000329: GetFollowers
+op 0x200032a: SetFollowers
+op 0x200032b: RecoverFollowers
+op 0x200032c: ListSpells
+op 0x200032d: ListSpells, explicit reference
+op 0x200032e: MoveToPC
+op 0x200032f: MoveToPC, explicit
+opcodes 0x2000330-0x3ffffff unused
 
