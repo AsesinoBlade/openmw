@@ -2197,6 +2197,43 @@ class OpSetFollowers : public Interpreter::Opcode0
             }
         };
 
+        class OpGetGlobalAll : public Interpreter::Opcode0
+        {
+        public:
+            void execute(Interpreter::Runtime& runtime) override
+            {
+                MWBase::World* world = MWBase::Environment::get().getWorld();
+                auto& context = runtime.getContext();
+                std::vector<std::string> globals = context.getGlobals();
+
+                // Sort the globals alphabetically
+                std::sort(globals.begin(), globals.end());
+
+                std::string str;
+                for (const auto& global : globals)
+                {
+                    char type = world->getGlobalVariableType(global);
+                    str += "\n" + global + " = ";
+
+                    switch (type)
+                    {
+                        case 's':
+                            str += std::to_string(context.getGlobalShort(global)) + " (short)";
+                            break;
+                        case 'l':
+                            str += std::to_string(context.getGlobalLong(global)) + " (long)";
+                            break;
+                        case 'f':
+                            str += std::to_string(context.getGlobalFloat(global)) + " (float)";
+                            break;
+                        default:
+                            str += "<unknown type>";
+                    }
+                }
+                context.report(str);
+            }
+        };
+
         class OpRemoveFromLevCreature : public Interpreter::Opcode0
         {
         public:
@@ -2608,6 +2645,7 @@ class OpSetFollowers : public Interpreter::Opcode0
             interpreter.installSegment5<OpTestModels>(Compiler::Misc::opcodeTestModels);
             interpreter.installSegment5<OpReportActiveQuests>(Compiler::Misc::opcodeReportActiveQuests);
             interpreter.installSegment5<OpGetGlobal>(Compiler::Misc::opcodeGetGlobal);
+            interpreter.installSegment5<OpGetGlobalAll>(Compiler::Misc::opcodeGetGlobalAll);
             interpreter.installSegment5<OpGetFollowers>(Compiler::Misc::opcodeGetFollowers);
             interpreter.installSegment5<OpSetFollowers>(Compiler::Misc::opcodeSetFollowers);
             interpreter.installSegment5<OpRecoverFollowers>(Compiler::Misc::opcodeRecoverFollowers);
