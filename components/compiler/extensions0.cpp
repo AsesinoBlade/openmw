@@ -332,6 +332,8 @@ namespace Compiler
             extensions.registerInstruction("reportactivequests", "", opcodeReportActiveQuests);
             extensions.registerInstruction("getglobal", "c", opcodeGetGlobal);
             extensions.registerInstruction("gg", "c", opcodeGetGlobal);
+            extensions.registerInstruction("getglobalall", "", opcodeGetGlobalAll);
+            extensions.registerInstruction("gga", "", opcodeGetGlobalAll);
             extensions.registerInstruction("gf", "", opcodeGetFollowers);
             extensions.registerInstruction("getfollowers", "", opcodeGetFollowers);
             extensions.registerInstruction("setfollowers", "", opcodeSetFollowers);

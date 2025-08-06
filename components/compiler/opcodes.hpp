@@ -332,6 +332,7 @@ namespace Compiler
         const int opcodeTestModels = 0x2000325;
         const int opcodeReportActiveQuests = 0x2000327;
         const int opcodeGetGlobal = 0x2000328;
+        const int opcodeGetGlobalAll = 0x2000330;
         const int opcodeGetFollowers = 0x2000329;
         const int opcodeSetFollowers = 0x200032a;
         const int opcodeRecoverFollowers = 0x200032b;
