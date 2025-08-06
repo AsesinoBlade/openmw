@@ -496,5 +496,6 @@ op 0x200032c: ListSpells
 op 0x200032d: ListSpells, explicit reference
 op 0x200032e: MoveToPC
 op 0x200032f: MoveToPC, explicit
-opcodes 0x2000330-0x3ffffff unused
+op 0x2000330: GetGlobalAll
+opcodes 0x2000331-0x3ffffff unused
 
