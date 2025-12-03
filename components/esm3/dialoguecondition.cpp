@@ -17,13 +17,13 @@ namespace ESM
         variant.read(esm, Variant::Format_Info);
         if (rule.size() < 5)
         {
-            Log(Debug::Warning) << "Found invalid SCVR rule of size " << rule.size() << " in INFO " << context;
+            Log(Debug::Warning) << "Found invalid SCVR rule of size " << rule.size() << " in INFO " << context << " in esm: " << esm.getName();
             return {};
         }
         if (rule[4] < '0' || rule[4] > '5')
         {
             Log(Debug::Warning) << "Found invalid SCVR comparison operator " << static_cast<int>(rule[4]) << " in INFO "
-                                << context;
+                                << context << " in ESM: " << esm.getName();
             return {};
         }
         DialogueCondition condition;
@@ -31,7 +31,7 @@ namespace ESM
             condition.mIndex = rule[0] - '0';
         else
         {
-            Log(Debug::Info) << "Found invalid SCVR index " << static_cast<int>(rule[0]) << " in INFO " << context;
+            Log(Debug::Info) << "Found invalid SCVR index " << static_cast<int>(rule[0]) << " in INFO " << context << " in ESM: " << esm.getName();
             condition.mIndex = 0;
         }
         if (rule[1] == '1')
@@ -41,7 +41,7 @@ namespace ESM
                 condition.mFunction = static_cast<Function>(function);
             else
             {
-                Log(Debug::Warning) << "Encountered invalid SCVR function index " << function << " in INFO " << context;
+                Log(Debug::Warning) << "Encountered invalid SCVR function index " << function << " in INFO " << context << " in ESM: " << esm.getName();
                 return {};
             }
         }
@@ -49,7 +49,7 @@ namespace ESM
         {
             if (rule.size() == 5)
             {
-                Log(Debug::Warning) << "Missing variable for SCVR of type " << rule[1] << " in INFO " << context;
+                Log(Debug::Warning) << "Missing variable for SCVR of type " << rule[1] << " in INFO " << context << " in ESM: " << esm.getName();
                 return {};
             }
             bool malformed = rule[3] != 'X';
@@ -109,12 +109,13 @@ namespace ESM
                 malformed |= rule[2] != 'f' && rule[2] != 'l' && rule[2] != 's';
             }
             if (malformed)
-                Log(Debug::Info) << "Found malformed SCVR rule in INFO " << context;
+                Log(Debug::Info) << "Found malformed SCVR rule in INFO " << context << " in esm: " << esm.getName();
         }
         else
         {
-            Log(Debug::Warning) << "Found invalid SCVR function " << static_cast<int>(rule[1]) << " in INFO "
-                                << context;
+            Log(Debug::Warning) << "Found invalid SCVR function " << static_cast<int>(rule[1]) << " in INFO " 
+                                << context
+                                << " in ESM: " << esm.getName();
             return {};
         }
         condition.mComparison = static_cast<Comparison>(rule[4]);
@@ -125,7 +126,7 @@ namespace ESM
             condition.mValue = variant.getFloat();
         else
         {
-            Log(Debug::Warning) << "Found invalid SCVR variant " << variant.getType() << " in INFO " << context;
+            Log(Debug::Warning) << "Found invalid SCVR variant " << variant.getType() << " in INFO " << context << " in ESM: " << esm.getName();
             return {};
         }
         return condition;
