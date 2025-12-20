@@ -391,6 +391,7 @@ namespace MWGui
 
          mPoisonImage->setImageTexture(Misc::ResourceHelpers::correctIconPath(
             VFS::Path::toNormalized(effect->mIcon), *MWBase::Environment::get().getResourceSystem()->getVFS()));
+
     }
 
     void HUD::setSelectedEnchantItem(const MWWorld::Ptr& item, int chargePercent)
