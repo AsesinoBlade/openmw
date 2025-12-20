@@ -1,5 +1,7 @@
 #include "format.hpp"
 
+#include "components/debug/debuglog.hpp"
+
 #include <cstring>
 #include <istream>
 #include <stdexcept>
@@ -21,6 +23,16 @@ namespace ESM
                 throw std::runtime_error("Invalid format: " + std::to_string(value));
             return static_cast<Format>(value);
         }
+
+        Format toFormat(std::uint32_t value, const std::string& filepath)
+        {
+            if (!isValidFormat(value))
+            {
+                Log(Debug::Error) << "Invalid format: " << value << " for file: " << filepath;
+                throw std::runtime_error("Invalid format: " + std::to_string(value) + " for file: " + filepath);
+            }
+            return static_cast<Format>(value);
+        }
     }
 
     Format readFormat(std::istream& stream)
@@ -30,6 +42,15 @@ namespace ESM
         if (stream.gcount() != sizeof(format))
             throw std::runtime_error("Not enough bytes to read file header");
         return toFormat(format);
+    }
+
+    Format readFormat(std::istream& stream, const std::filesystem::path& filepath)
+    {
+        std::uint32_t format = 0;
+        stream.read(reinterpret_cast<char*>(&format), sizeof(format));
+        if (stream.gcount() != sizeof(format))
+            throw std::runtime_error("Not enough bytes to read file header");
+        return toFormat(format, filepath.string());
     }
 
     Format parseFormat(std::string_view value)
