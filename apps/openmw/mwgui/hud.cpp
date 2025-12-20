@@ -419,7 +419,8 @@ namespace MWGui
             poison->mEffects.mList.front().mData.mEffectID);
 
         mPoisonImage->setImageTexture(Misc::ResourceHelpers::correctIconPath(
-            effect->mIcon, MWBase::Environment::get().getResourceSystem()->getVFS()));
+            VFS::Path::toNormalized(effect->mIcon), *MWBase::Environment::get().getResourceSystem()->getVFS()));
+
     }
 
     void HUD::setSelectedEnchantItem(const MWWorld::Ptr& item, int chargePercent)

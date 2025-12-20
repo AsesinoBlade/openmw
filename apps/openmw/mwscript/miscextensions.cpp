@@ -1857,9 +1857,9 @@ class OpSetFollowers : public Interpreter::Opcode0
                     if (!archive.empty())
                         msg << "(" << archive << ")" << std::endl;
                 }
-                if (::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs) != "icons\\")
+                if (::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs) != "icons\\")
                 {
-                    std::string icon = ::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs);
+                    std::string icon = ::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
                     msg << "Icon: " << icon << std::endl;
                     if (!icon.empty())
                     {
@@ -2002,11 +2002,11 @@ class OpSetFollowers : public Interpreter::Opcode0
                     }
                     try
                     {
-                        if (::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs)
+                        if (::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
                             != "icons\\")
                         {
                             std::string icon
-                                = ::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs);
+                                = ::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
                             msg << "Icon: " << icon << std::endl;
                             if (!icon.empty())
                             {
