@@ -32,7 +32,7 @@ namespace MWWorld
     {
 
         auto stream = Files::openBinaryInputFileStream(filepath);
-        const ESM::Format format = ESM::readFormat(*stream);
+        const ESM::Format format = ESM::readFormat(*stream, filepath);
         stream->seekg(0);
 
         switch (format)
