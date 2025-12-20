@@ -915,41 +915,43 @@ namespace MWScript
                 {
                     const ESM::Spell* spell = *iter;
                     str = spell->mName + "   [" + spell->mId.toString() + "]";
-                    for (auto effectIt = spell->mEffects.mList.begin(); effectIt != spell->mEffects.mList.end(); ++effectIt)
+                    for (auto effectIt = spell->mEffects.mList.begin(); effectIt != spell->mEffects.mList.end();
+                        ++effectIt)
                     {
 
-                         auto &effect = *effectIt;
-                         auto effectIDStr = ESM::MagicEffect::indexToGmstString(effect.mData.mEffectID);
-                         const ESM::MagicEffect* magicEffect = store.get<ESM::MagicEffect>().search(effect.mData.mEffectID);
+                        auto& effect = *effectIt;
+                        auto effectIDStr = ESM::MagicEffect::refIdToGmstString(effect.mData.mEffectID);
+                        const ESM::MagicEffect* magicEffect
+                            = store.get<ESM::MagicEffect>().search(effect.mData.mEffectID);
 
-                         std::string range = (effect.mData.mRange == 0 ? "Self" : effect.mData.mRange == 1 ? "Touch" : "Target");
-                         std::string magnitude = "";
-                         std::string area = "";
-                         if (effect.mData.mMagnMin > 0)
-                             magnitude += std::to_string(effect.mData.mMagnMin);
-                         std::string duration = "";
-                         if (effect.mData.mMagnMax > effect.mData.mMagnMin && effect.mData.mMagnMin > 0)
-                             magnitude += " to " + std::to_string(effect.mData.mMagnMax);
+                        std::string range = (effect.mData.mRange == 0 ? "Self"
+                                : effect.mData.mRange == 1            ? "Touch"
+                                                                      : "Target");
+                        std::string magnitude = "";
+                        std::string area = "";
+                        if (effect.mData.mMagnMin > 0)
+                            magnitude += std::to_string(effect.mData.mMagnMin);
+                        std::string duration = "";
+                        if (effect.mData.mMagnMax > effect.mData.mMagnMin && effect.mData.mMagnMin > 0)
+                            magnitude += " to " + std::to_string(effect.mData.mMagnMax);
 
-                         if (effect.mData.mMagnMin > 0 )
-                             if (effect.mData.mMagnMin > 1 || effect.mData.mMagnMax > 1)
-                                 magnitude += " pts";
-                             else
-                                 magnitude += " pt";
+                        if (effect.mData.mMagnMin > 0)
+                            if (effect.mData.mMagnMin > 1 || effect.mData.mMagnMax > 1)
+                                magnitude += " pts";
+                            else
+                                magnitude += " pt";
 
-                         if (effect.mData.mDuration > 0)
-                             if (effect.mData.mDuration > 1)
+                        if (effect.mData.mDuration > 0)
+                            if (effect.mData.mDuration > 1)
                                 duration = "for " + std::to_string(effect.mData.mDuration) + " secs";
-                             else
+                            else
                                 duration = "for " + std::to_string(effect.mData.mDuration) + " sec";
 
-                         if (effect.mData.mArea > 0)
-                             area = " in " + std::to_string(effect.mData.mArea) + " ft";
-
-                         effectIDStr += " " + magnitude + " " + duration + area + " on " + range;
-                         str += "\n ---- " + effectIDStr;
-
-
+                        if (effect.mData.mArea > 0)
+                            area = " in " + std::to_string(effect.mData.mArea) + " ft";
+                        std::string effectIDString = std::string(effectIDStr);
+                        effectIDString += " " + magnitude + " " + duration + area + " on " + range;
+                        str += "\n ---- " + effectIDString;
                     }
                     runtime.getContext().report(str + "\n");
                 }
@@ -1857,9 +1859,9 @@ class OpSetFollowers : public Interpreter::Opcode0
                     if (!archive.empty())
                         msg << "(" << archive << ")" << std::endl;
                 }
-                if (::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs) != "icons\\")
+                if (::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs) != "icons\\")
                 {
-                    std::string icon = ::Misc::ResourceHelpers::correctIconPath(ptr.getClass().getInventoryIcon(ptr), vfs);
+                    std::string icon = ::Misc::ResourceHelpers::correctIconPath(VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
                     msg << "Icon: " << icon << std::endl;
                     if (!icon.empty())
                     {
@@ -2652,5 +2654,5 @@ class OpSetFollowers : public Interpreter::Opcode0
             interpreter.installSegment5<OpListSpells<ImplicitRef>> (Compiler::Misc::opcodeListSpells);
             interpreter.installSegment5<OpListSpells<ExplicitRef>> (Compiler::Misc::opcodeListSpellsExplicit);
         }
+        }
     }
-}
