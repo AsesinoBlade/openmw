@@ -16,7 +16,7 @@ namespace ESM
     };
 
     Format readFormat(std::istream& stream);
-
+    Format readFormat(std::istream& stream, const std::filesystem::path& filepath);
     Format parseFormat(std::string_view value);
 }
 
