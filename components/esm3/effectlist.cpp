@@ -2,6 +2,7 @@
 
 #include "esmreader.hpp"
 #include "esmwriter.hpp"
+#include "components/debug/debuglog.hpp"
 
 #include <format>
 
@@ -45,7 +46,11 @@ namespace ESM
 
         void fromBinary(const EsmENAMstruct& src, ENAMstruct& dst)
         {
-            dst.mEffectID = ESM::MagicEffect::indexToRefId(src.mEffectID);
+            int16_t index = src.mEffectID;
+            if (index < 0 || index >= ESM::MagicEffect::Length)
+                throw std::runtime_error(std::format("Cannot deserialize effect into ENAM with index {}.", index));
+
+            dst.mEffectID = ESM::MagicEffect::indexToRefId(index);
             dst.mSkill = ESM::Skill::indexToRefId(src.mSkill);
             dst.mAttribute = ESM::Attribute::indexToRefId(src.mAttribute);
             dst.mRange = src.mRange;
