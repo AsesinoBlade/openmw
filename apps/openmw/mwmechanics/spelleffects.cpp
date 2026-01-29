@@ -1407,7 +1407,7 @@ namespace MWMechanics
         auto& magnitudes = target.getClass().getCreatureStats(target).getMagicEffects();
         magnitudes.add(EffectKey(effect.mEffectId, effect.getSkillOrAttribute()), EffectParam(-effect.mMagnitude));
         removeMagicEffect(target, spellParams, effect);
-        if (magnitudes.getOrDefault(effect.mEffectId).getMagnitude() <= 0.f)
+//  if (magnitudes.getOrDefault(effect.mEffectId).getMagnitude() <= 0.f)
         {
             auto anim = MWBase::Environment::get().getWorld()->getAnimation(target);
             if (anim)
