@@ -112,6 +112,11 @@ namespace ESM
         {
             EsmENAMstruct bin;
             esm.getSubComposite(bin);
+            if (bin.mEffectID < 0 || bin.mEffectID > ESM::MagicEffect::Length)
+            {
+                Log(Debug::Warning) << std::format("Cannot deserialize effect with index {}", bin.mEffectID);
+                return;
+            }
             fromBinary(bin, s);
         }
         else
