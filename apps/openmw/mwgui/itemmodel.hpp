@@ -81,7 +81,7 @@ namespace MWGui
         virtual void removeItem(const ItemStack& item, size_t count) = 0;
         friend class ProxyItemModel;
 
-        enum Sort
+    public: enum Sort
         {
             Sort_None,
             Sort_Name,
