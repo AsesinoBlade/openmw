@@ -78,7 +78,7 @@ namespace MWClass
         if (weaponType->mWeaponClass == ESM::WeaponType::Thrown)
             str += " thrown ";
 
-        str += ref->mBase->mModel;
+        str += ref->mBase->mModel.getNormalized();
         return std::string_view(str);
     }
 

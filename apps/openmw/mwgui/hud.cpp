@@ -388,8 +388,8 @@ namespace MWGui
         const ESM::MagicEffect* effect = MWBase::Environment::get().getWorld()->getStore().get<ESM::MagicEffect>().find(
             poison->mEffects.mList.front().mData.mEffectID);
 
-         mPoisonImage->setImageTexture(Misc::ResourceHelpers::correctIconPath(
-            VFS::Path::toNormalized(effect->mIcon), *MWBase::Environment::get().getResourceSystem()->getVFS()));
+         //mPoisonImage->setImageTexture(Misc::ResourceHelpers::correctIconPath(
+         //   VFS::Path::toNormalized(effect->mIcon), *MWBase::Environment::get().getResourceSystem()->getVFS()));
     }
 
     void HUD::setSelectedEnchantItem(const MWWorld::Ptr& item, int chargePercent)

@@ -109,7 +109,7 @@ namespace MWClass
                 str += " heavy ";
         }
 
-        str += ref->mBase->mModel;
+        str += ref->mBase->mModel.getNormalized();
 
         return std::string_view(str);
     }

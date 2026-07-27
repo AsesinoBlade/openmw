@@ -80,10 +80,6 @@ namespace Settings
 
         SettingValue<bool> mPoisons{ mIndex, "Game", "poisons" };
 
-
-        SettingValue<bool> mPlayerMovementIgnoresAnimation{ mIndex, "Game", "player movement ignores animation" };
-
-        SettingValue<bool> mPoisons{ mIndex, "Game", "poisons" };
         SettingValue<bool> mNoAccidentalStealing{ mIndex, "Game", "no accidental stealing" };
     };
 }

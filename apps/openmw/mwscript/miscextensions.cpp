@@ -1853,11 +1853,11 @@ namespace MWScript
                         msg << "(" << archive << ")" << std::endl;
                 }
                 if (::Misc::ResourceHelpers::correctIconPath(
-                        VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
+                        VFS::Path::Normalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
                     != "icons\\")
                 {
                     std::string icon = ::Misc::ResourceHelpers::correctIconPath(
-                        VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
+                        VFS::Path::Normalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
                     msg << "Icon: " << icon << std::endl;
                     if (!icon.empty())
                     {
@@ -2001,11 +2001,11 @@ namespace MWScript
                     try
                     {
                         if (::Misc::ResourceHelpers::correctIconPath(
-                                VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
+                                VFS::Path::Normalized(ptr.getClass().getInventoryIcon(ptr)), *vfs)
                             != "icons\\")
                         {
                             std::string icon = ::Misc::ResourceHelpers::correctIconPath(
-                                VFS::Path::toNormalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
+                                VFS::Path::Normalized(ptr.getClass().getInventoryIcon(ptr)), *vfs);
                             msg << "Icon: " << icon << std::endl;
                             if (!icon.empty())
                             {
